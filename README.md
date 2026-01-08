@@ -2,6 +2,17 @@
 
 Template for FRC robot projects.
 
+## Migrating to 2026
+
+- WPILib
+  - [WPILib 2026.1.1-beta-1 Release](https://github.com/wpilibsuite/allwpilib/releases/tag/v2026.1.1-beta-1)
+- REV
+  - [REVLib 2026.0.0-alpha-1 Release](https://github.com/REVrobotics/REV-Software-Binaries/releases/tag/revlib-2026.0.0-alpha-1)
+  - [REVLib 2026.0.0-beta-1 Release](https://github.com/REVrobotics/REV-Software-Binaries/releases/tag/revlib-2026.0.0-beta-1)
+- CTRE
+  - [Phoenix Changelog](https://api.ctr-electronics.com/changelog)
+  - [Phoenix new for 2026](https://v6.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html)
+
 ## Run Configuration
 
 The project has several pre-made run configurations for your convenience. These configurations will be loaded automatically when you open the project.
