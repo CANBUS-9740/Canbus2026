@@ -21,8 +21,23 @@ The arm must:
 - Be able to track its own position
 - Be able to lower or raise arm between the two positions as fast and as smoothly as possible
 
-This implementation will be done with a _PID_ controller (running on the motor controller) to both keep the arm in place and to raise or lower it. The feedback
-sensor will be the absolute encoder and not the relative encoder.
+This implementation will be done with a _PID_ controller (running on the motor controller) to both keep the arm in place and to raise or lower it. The feedback sensor will be the absolute encoder and not the relative encoder.
+
+Because the encoder is going to be connected to the robot via the _SparkMax_, accessing it is done as follows:
+```java
+private final SparkAbsoluteEncoder encoder;
+
+public Subsystem() {
+    ...
+    encoder = motor.getAbsoluteEncoder();
+}
+
+public double getPositionDegrees() {
+    return encoder.getPosition() * 360;
+}
+```
+
+For pid control, use the `kPosition` control mode. Remember to configure the feedback sensor to the absolute encoder. See example [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max) and [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max).
 
 #### Collector
 
@@ -67,7 +82,21 @@ The rollers will be used in several cases
 
 There are several sensors to provide indication on the contents of the storage
 - 2x IR Limit Switch sensors placed in two specially selected positions to determine if there are any balls in the storage
-- 1x Limelight Camera placed at the top part of the tank to see if it is overflowing 
+- 1x Limelight Camera placed at the top part of the tank to see if it is overflowing. This will be done seperatly.
+
+To access each IR sensor, define a `DigitalInput` device for each.
+```java
+private final DigitalInput irSensor;
+
+public Subsystem() {
+    ...
+    irSensor = new DigitalInput(5);
+}
+
+public boolean doesSensorSeeSomething() {
+    return irSensor.get();
+}
+```
 
 ### Turret
 
@@ -77,7 +106,6 @@ itself is a large gear with a hole in the middle for balls to pass through into 
 It is made up of
 - 1x _NEO v1.1_ motor
 - 1x _SparkMax_ controlling the motor
-- 1x _ThroughBore_ encoder installed _before_ the small gear in _relative_ mode
 - 1x IR Limit Switch Sensor at position 0 for reset
 - the exact gear ratio is still unknown
 
@@ -86,8 +114,23 @@ The turret must
 - Be able to hold a specific position
 - Be able to quickly move between two positions
 
-The motion can be implemented with _PID_ (integrated in motor). While the position track must have a reset at the start of a match to easily find the real 0 position
-due to the reliance on a relative sensor.
+The motion can be implemented with _PID_ (integrated in motor). While the position track must have a reset at the start of a match to easily find the real 0 position due to the reliance on a relative sensor.
+
+To access each IR sensor, define a `DigitalInput` device.
+```java
+private final DigitalInput irSensor;
+
+public Subsystem() {
+    ...
+    irSensor = new DigitalInput(5);
+}
+
+public boolean doesSensorSeeSomething() {
+    return irSensor.get();
+}
+```
+
+For pid control, use the `kPosition` control mode. See example [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max) and [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max).
 
 ### Shooter
 
@@ -119,6 +162,40 @@ So the shooter must:
 
 The IR sensor is used to detect a feed-jam: i.e. no balls are being fed. In such a case we can unjam by operating the storage.
 
+To access each IR sensor, define a `DigitalInput` device.
+```java
+private final DigitalInput irSensor;
+
+public Subsystem() {
+    ...
+    irSensor = new DigitalInput(5);
+}
+
+public boolean doesSensorSeeSomething() {
+    return irSensor.get();
+}
+```
+
+To use servo, define a `Servo` device
+```java
+private final Servo servo;
+
+public Subsystem() {
+    ...
+    servo = new Servo(1);
+}
+
+public double getServoPosDegrees() {
+    return servo.getAngle();
+}
+
+public void setServoPosDegrees(double degrees) {
+    return servo.setAngle(degrees);
+}
+```
+
+For pid control, use the `kVelocity` control mode. See example [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max) and [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max).
+
 ### Climb
 
 The climb system is used to reach the first climbing height by relying on two telescopic hooks. Each of those hooks can be extended or retracted to reach the poll and then pull the robot up. It is made up of
@@ -133,6 +210,22 @@ the exact length at start time is unknown, so use the two limit switches to rese
 It must be able to
 - reset the arms to zero position without relying on the encoder
 - extending the arms to specific length based on the encoder reading with _PID_.
+
+For pid control, use the `kPosition` control mode. See example [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max) and [here](https://github.com/tomtzook/frc-learn-docs/blob/master/robot-code-snippets.md#motor-position-closed-loop-control-spark-max).
+
+To access each Limit Switch sensor, define a `DigitalInput` device.
+```java
+private final DigitalInput switchSensor;
+
+public Subsystem() {
+    ...
+    switchSensor = new DigitalInput(5);
+}
+
+public boolean isSwitchPressed() {
+    return switchSensor.get();
+}
+```
 
 ## Automations
 
