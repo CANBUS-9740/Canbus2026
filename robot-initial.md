@@ -121,15 +121,30 @@ The IR sensor is used to detect a feed-jam: i.e. no balls are being fed. In such
 
 ### Climb
 
+The climb system is used to reach the first climbing height by relying on two telescopic hooks. Each of those hooks can be extended or retracted to reach the poll and then pull the robot up. It is made up of
+- 2x _NEO v1.1_ motors, one for each arm
+- 2x _SparkMax_ motor controllers, one for each arm
+- 2x Magnetic Limit Switch, one for each arm
+
+To calculated the length of the arm, it will use the integrated encoders in the motors to count rotations. Each rotation can be translated to a set amount of length for the arms. Since the encoder is relative, 
+
+the exact length at start time is unknown, so use the two limit switches to reset the arms to the 0 position.
+
+It must be able to
+- reset the arms to zero position without relying on the encoder
+- extending the arms to specific length based on the encoder reading with _PID_.
+
 ## Automations
 
 The following automation capabilities are wanted
 - Go to position in field: use pathplanner to go to any wanted position on the field
+  - this will require localization of the robot position with odometry and april tag tracking 
 - Automatic shooting calculation: calculate firing speed and angle using physics based on distance to target
+  - this will require implementation of the algorithm + sensor information required by the calculation 
 - Shooter feed jam detection and handling: detect when feed into shooter is jammed and unjam it
 - Automatic balls on floor detection: detect ball positions on the floor with limelight
 - Storage empty/full detection: detect when storage is too full or empty of balls
-- Automatic climbing: automatically climb
+- Automatic climbing: automatically climb 
 - Constant tracking of hub with turret: keep turret aligned on hub for immediate shooting
 - Proper ball feeding into shooter: make sure to feed with a slight delay to keep firing consistent
 - Automatic intake: be able to collect balls from the floor without human interference.
