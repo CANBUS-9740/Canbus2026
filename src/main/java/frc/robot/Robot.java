@@ -2,11 +2,24 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.subsystems.Swerve;
 
 public class Robot extends TimedRobot {
 
+    private static Swerve swerveSystem;
+    private CommandXboxController driverController;
+    private CommandXboxController operationController;
+    private SwerveDriveCommand swerveDriveCommand;
+
     @Override
     public void robotInit() {
+        swerveSystem = new Swerve();
+        driverController = new CommandXboxController(0);
+        operationController = new CommandXboxController(1);
+
+        swerveSystem.setDefaultCommand(swerveDriveCommand);
 
     }
 
