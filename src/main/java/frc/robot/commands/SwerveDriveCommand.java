@@ -31,7 +31,7 @@ public class SwerveDriveCommand extends Command {
     public void execute() {
         double x = allianceSwapper * -MathUtil.applyDeadband(xboxController.getLeftY(), 0.1) * RobotMap.SWERVE_DRIVE_MAX_SPEED_MPS * 2;
         double y = allianceSwapper * -MathUtil.applyDeadband(xboxController.getLeftX(), 0.1) * RobotMap.SWERVE_DRIVE_MAX_SPEED_MPS * 2;
-        double rotation = -MathUtil.applyDeadband(xboxController.getRightX(), 0.1) * 0.3;
+        double rotation = -MathUtil.applyDeadband(xboxController.getRightX(), 0.1) * 2;
 
         if (fieldDrive) {
             swerveSub.driveFieldRelative(x, y, rotation);

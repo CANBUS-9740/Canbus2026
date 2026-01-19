@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,6 +19,7 @@ public class Robot extends TimedRobot {
         swerveSystem = new Swerve();
         driverController = new CommandXboxController(0);
         operationController = new CommandXboxController(1);
+        swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
 
         swerveSystem.setDefaultCommand(swerveDriveCommand);
 
@@ -60,7 +62,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-
+        //swerveSystem.drive(new ChassisSpeeds(0.5, 0, 0));
     }
 
     @Override
