@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -48,7 +49,7 @@ public class IntakeArmSystem extends SubsystemBase {
 
     public boolean IsArmInPositionAndSteady(double targetPosition){
 
-        return false; // לא הספקתי לעשות את זה. ממשיך מחר
+        return MathUtil.isNear(targetPosition, getPositionDegrees(), 0); // לא הספקתי לסיים. ממשיך מחר
     }
     public void periodic() {
         SmartDashboard.putNumber("IntakeArmPositionDegrees", getPositionDegrees());
