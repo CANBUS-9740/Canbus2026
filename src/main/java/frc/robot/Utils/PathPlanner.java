@@ -10,15 +10,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.Swerve;
 
 import java.util.List;
 import java.util.Set;
 
-public class PathPlanner {
+public class Pathplanner {
     private Boolean isInAutoMovement = false;
     private final Swerve swerve;
 
-    public PathPlanner(Swerve swerve) {
+    public Pathplanner(Swerve swerve) {
         this.swerve = swerve;
     }
 
@@ -100,4 +101,3 @@ public class PathPlanner {
     }
 }
 
-}
