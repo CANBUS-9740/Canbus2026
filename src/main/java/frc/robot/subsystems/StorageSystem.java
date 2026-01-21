@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -9,18 +12,21 @@ import frc.robot.RobotMap;
 
 public class StorageSystem extends SubsystemBase {
 
-    SparkMax motor1;
-    SparkMax motor2;
-    DigitalInput irSensor1;
-    DigitalInput irSensor2;
-    double speed1;
-    double speed2;
+    private final SparkMax GeneralRollers;
+    private final SparkMax FeedRollers;
+    private final DigitalInput irSensor1;
+    private final DigitalInput irSensor2;
+
+
 
     public StorageSystem() {
-        motor1 = new SparkMax(RobotMap.StorageMotor1ID, SparkLowLevel.MotorType.kBrushless);
-        motor2 = new SparkMax(RobotMap.StorageMotor2ID, SparkLowLevel.MotorType.kBrushless);
-        irSensor1 = new DigitalInput(RobotMap.StorageIRSENSOR1ID);
-        irSensor2 = new DigitalInput(RobotMap.StorageIRSENSOR2IID);
+        GeneralRollers = new SparkMax(RobotMap.STORAGR_MOTOR1_ID, SparkLowLevel.MotorType.kBrushless);
+        FeedRollers = new SparkMax(RobotMap.STORAGE_MOTOR2_ID, SparkLowLevel.MotorType.kBrushless);
+        irSensor1 = new DigitalInput(RobotMap.STORAGD_IRSENSOR1_ID);
+        irSensor2 = new DigitalInput(RobotMap.STORAGE_IRSENSOR2_ID);
+        SparkMaxConfig config = new SparkMaxConfig();
+        GeneralRollers.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        FeedRollers.configure(config,ResetMode.kNoResetSafeParameters,PersistMode.kNoPersistParameters);
     }
 
     public boolean atLeast1Ball(){
@@ -32,18 +38,17 @@ public class StorageSystem extends SubsystemBase {
     }
 
 
-    public void moveMotor1(double speed1) {
-        motor1.set(speed1);
+    public void moveGeneralRollers(double speed) {
+        GeneralRollers.set(speed);
     }
-    public void moveMotor2(double speed2) {
-        motor1.set(speed2);
+    public void moveFeedRollers(double speed) {
+        FeedRollers.set(speed);
     }
     public void stopMotors() {
-        motor1.stopMotor();
-        motor2.stopMotor();
+        GeneralRollers.stopMotor();
+        FeedRollers.stopMotor();
     }
     public void periodic() {
-        SmartDashboard.putNumber("StorageSpeed1", speed1);
-        SmartDashboard.putNumber("StorageSpeed1", speed2);
+
     }
 }

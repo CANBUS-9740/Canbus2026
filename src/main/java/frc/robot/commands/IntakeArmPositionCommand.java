@@ -1,34 +1,32 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeArmSystem;
 
 public class IntakeArmPositionCommand extends Command {
-    IntakeArmSystem intakeArmSystem;
-    double targetAngle;
+    private final IntakeArmSystem intakeArmSystem;
+    private final double targetPositionDegrees;
 
-    public IntakeArmPositionCommand(IntakeArmSystem intakeArmSystem, double targetAngle) {
+    public IntakeArmPositionCommand(IntakeArmSystem intakeArmSystem, double targetPositionDegrees) {
         this.intakeArmSystem= intakeArmSystem;
-        this.targetAngle = targetAngle;
-        addRequirements();
+        this.targetPositionDegrees = targetPositionDegrees;
+        addRequirements(intakeArmSystem);
     }
-
+    @Override
     public void initialize() {
-
+        intakeArmSystem.setTargetPosition(targetPositionDegrees);
     }
-
+    @Override
     public void execute() {
-        intakeArmSystem.movePosePID(targetAngle);
+
     }
 
-
+    @Override
     public void end(boolean interrupted) {
         intakeArmSystem.stop();
     }
 
-
+    @Override
     public boolean isFinished() {
         return false;
     }
