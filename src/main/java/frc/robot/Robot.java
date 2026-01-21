@@ -6,7 +6,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 
+import frc.robot.subsystems.Limelight;
+
+import java.util.Optional;
+
 public class Robot extends TimedRobot {
+    private Limelight limelight;
 
     private static Swerve swerveSystem;
     private CommandXboxController driverController;
@@ -15,6 +20,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        limelight = new Limelight("limelight-edi");
         swerveSystem = new Swerve();
         driverController = new CommandXboxController(0);
         operationController = new CommandXboxController(1);
@@ -27,6 +33,14 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+        /*
+        Optional<LimelightHelpers.PoseEstimate> poseEstimateOptional = limelight.getPose();
+        if(poseEstimateOptional.isPresent()){
+            LimelightHelpers.PoseEstimate poseEstimate = poseEstimateOptional.get();
+            swerveSystem.addVisionMeasurement(poseEstimate);
+        }
+        when merging with swerve
+         */
     }
 
     @Override
