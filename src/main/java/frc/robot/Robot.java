@@ -2,6 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import java.util.Optional;
+
 public class Robot extends TimedRobot {
 
     @Override
@@ -12,6 +15,14 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+        /*
+        Optional<LimelightHelpers.PoseEstimate> poseEstimateOptional = limelight.getPose();
+        if(poseEstimateOptional.isPresent()){
+            LimelightHelpers.PoseEstimate poseEstimate = poseEstimateOptional.get();
+            swerveSystem.addVisionMeasurement(poseEstimate);
+        }
+        when merging with swerve
+         */
     }
 
     @Override

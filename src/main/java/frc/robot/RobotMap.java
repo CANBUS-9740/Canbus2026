@@ -4,6 +4,7 @@ public class RobotMap {
 
     private RobotMap() {}
 
-    // add constants here
-    // public static final type NAME = value;
+    public static final int CLIMB_MOTOR_ID = 0;
+    public static final int CLIMB_BOTTOM_SWITCH_ID = 0;
+
 }
