@@ -47,6 +47,7 @@ public class IntakeArmSystem extends SubsystemBase {
     }
 
     public boolean IsArmInPositionAndSteady(double targetPosition){
+
         return false; // לא הספקתי לעשות את זה. ממשיך מחר
     }
     public void periodic() {
