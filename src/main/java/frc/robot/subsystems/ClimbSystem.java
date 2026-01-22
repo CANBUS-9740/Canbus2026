@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -42,6 +43,12 @@ public class ClimbSystem extends SubsystemBase {
     }
     public void stop2(){
         motor2.stopMotor();
+    }
+    public void setTargetPosition(double positionDegrees){
+        motor1.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
+        motor2.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
+
+
     }
     public boolean isSwitch1Pressed() {
         return switchSensor1.get();
