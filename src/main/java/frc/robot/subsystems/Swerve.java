@@ -9,11 +9,13 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotMap;
 import org.json.simple.parser.ParseException;
 import swervelib.SwerveDrive;
+import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
@@ -118,5 +120,11 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
+
+        for (SwerveModule module : swerveDrive.getModules()) {
+            SmartDashboard.putNumber("PosModule" + module.moduleNumber, module.getPosition().distanceMeters);
+            SmartDashboard.putNumber("AngleSparkModule" + module.moduleNumber, module.getAngleMotor().getPosition());
+            SmartDashboard.putNumber("AngleAbsModule" + module.moduleNumber, module.getAbsolutePosition());
+        }
     }
 }

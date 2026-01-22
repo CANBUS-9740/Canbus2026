@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.pathplanner.lib.path.PathConstraints;
-
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -11,9 +9,6 @@ public class RobotMap {
 
     private RobotMap() {
     }
-
-    public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 2.5, Math.PI, Math.PI);
-    public static final PathConstraints PATH_CONSTRAINTS_SLOW = new PathConstraints(1, 2.5, Math.PI, Math.PI);
 
     public static final int CLIMB_MOTOR_ID = 0;
     public static final int CLIMB_BOTTOM_SWITCH_ID = 0;
