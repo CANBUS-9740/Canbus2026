@@ -6,6 +6,8 @@ public class RobotMap {
     public static final int MOTOR2_ID = 0;
     public static final int SWITCH_SENSOR1_ID = 0;
     public static final int SWITCH_SENSOR2_ID = 0;
+    public static final double MOTOR1_SPEED = 0.5;
+    public static final double MOTOR2_SPEED = 0.5;
 
 
 

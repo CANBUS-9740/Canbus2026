@@ -37,8 +37,10 @@ public class ClimbSystem extends SubsystemBase {
     public void moveMotor2(double speed){
         motor2.set(speed);
     }
-    public void stop(){
+    public void stop1(){
         motor1.stopMotor();
+    }
+    public void stop2(){
         motor2.stopMotor();
     }
     public boolean isSwitch1Pressed() {

@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.ClimbSystem;
 
 public class ClimbMoveLeftArmCommand extends Command {
@@ -14,7 +15,7 @@ public class ClimbMoveLeftArmCommand extends Command {
 
     @Override
     public void initialize() {
-
+        climbSystem.moveMotor1(RobotMap.MOTOR1_SPEED);
     }
 
     @Override
@@ -24,11 +25,11 @@ public class ClimbMoveLeftArmCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-
+        climbSystem.stop1();
     }
 
     @Override
     public boolean isFinished() {
-
+        return climbSystem.isSwitch1Pressed();
     }
 }
