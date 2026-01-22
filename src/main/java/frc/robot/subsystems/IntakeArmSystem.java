@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase;
@@ -16,11 +17,13 @@ import frc.robot.RobotMap;
 public class IntakeArmSystem extends SubsystemBase {
     private final SparkMax motor;
     private final AbsoluteEncoder encoder;
+    private final RelativeEncoder relativeEncoder;
      SparkMaxConfig config;
 
     public IntakeArmSystem() {
         motor = new SparkMax(RobotMap.INTAKE_ARM_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         encoder = motor.getAbsoluteEncoder();
+        relativeEncoder = motor.getAlternateEncoder();
         config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
@@ -49,7 +52,7 @@ public class IntakeArmSystem extends SubsystemBase {
 
     public boolean IsArmInPositionAndSteady(double targetPosition){
 
-        return MathUtil.isNear(targetPosition, getPositionDegrees(), 0); // לא הספקתי לסיים. ממשיך מחר
+        return MathUtil.isNear(targetPosition, getPositionDegrees(), RobotMap.TOLERANCE_ARM_SPEED)&& Math.abs(relativeEncoder.getVelocity()) < RobotMap.TOLERANCE_ARM_SPEED;
     }
     public void periodic() {
         SmartDashboard.putNumber("IntakeArmPositionDegrees", getPositionDegrees());
