@@ -13,47 +13,47 @@ import frc.robot.RobotMap;
 
 public class ClimbSystem extends SubsystemBase {
 
-    SparkMax motor1;
-    SparkMax motor2;
-    private final DigitalInput switchSensor1;
-    private final DigitalInput switchSensor2;
+    SparkMax leftMotor;
+    SparkMax rightMotor;
+    private final DigitalInput switchLeftSensor;
+    private final DigitalInput switchRightSensor;
     SparkMaxConfig config;
 
     public ClimbSystem() {
-        motor1 = new SparkMax(RobotMap.MOTOR1_ID, SparkLowLevel.MotorType.kBrushless);
-        motor2 = new SparkMax(RobotMap.MOTOR2_ID, SparkLowLevel.MotorType.kBrushless);
-        switchSensor1 = new DigitalInput(RobotMap.SWITCH_SENSOR1_ID);
-        switchSensor2 = new DigitalInput(RobotMap.SWITCH_SENSOR2_ID);
+        leftMotor = new SparkMax(RobotMap.LEFT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        rightMotor = new SparkMax(RobotMap.RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        switchLeftSensor = new DigitalInput(RobotMap.SWITCH_LEFT_SENSOR_ID);
+        switchRightSensor = new DigitalInput(RobotMap.SWITCH_RIGHT_SENSOR_ID);
         config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-        motor1.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        motor2.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
     }
-    public void moveMotor1(double speed){
-        motor1.set(speed);
+    public void moveLeftMotor(double speed){
+        leftMotor.set(speed);
     }
-    public void moveMotor2(double speed){
-        motor2.set(speed);
+    public void moveRightMotor(double speed){
+        rightMotor.set(speed);
     }
-    public void stop1(){
-        motor1.stopMotor();
+    public void stopLeft(){
+        leftMotor.stopMotor();
     }
-    public void stop2(){
-        motor2.stopMotor();
+    public void stopRight(){
+        rightMotor.stopMotor();
     }
     public void setTargetPosition(double positionDegrees){
-        motor1.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
-        motor2.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
+        leftMotor.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
+        rightMotor.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
 
 
     }
     public boolean isSwitch1Pressed() {
-        return switchSensor1.get();
+        return switchLeftSensor.get();
     }
     public boolean isSwitch2Pressed() {
-        return switchSensor2.get();
+        return switchRightSensor.get();
     }
 }
