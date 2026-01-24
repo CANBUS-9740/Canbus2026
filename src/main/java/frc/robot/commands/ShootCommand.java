@@ -64,7 +64,7 @@ public class ShootCommand extends Command {
         }
 
         shooterSystem.setWheelVoltage(RPM/ RobotMap.MAX_RPM);
-        if(shooterSystem.getRPM()>=RPM-10){
+        if(shooterSystem.getRPM()>=RPM-10 && isAtPitch){
             shooterSystem.setFeederVoltage(RobotMap.FEEDER_CONSTATNT);
         }
     }
