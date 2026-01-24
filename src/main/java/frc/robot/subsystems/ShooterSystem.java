@@ -10,6 +10,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -23,6 +24,9 @@ public class ShooterSystem extends SubsystemBase {
     private final SparkMax feederMotor;
     private final RelativeEncoder feederEncoder;
 
+
+    private final DigitalInput lowerLimit;
+    private final DigitalInput upperLimit;
     public final SparkClosedLoopController sparkPIDcontroller;
 
     public ShooterSystem(){
@@ -30,6 +34,8 @@ public class ShooterSystem extends SubsystemBase {
         shooterMotorFollow=new SparkMax(RobotMap.FOLLOWING_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
         pitchMotor=new SparkMax(RobotMap.PITCH_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederMotor=new SparkMax(RobotMap.FEEDER_MOTOR, SparkLowLevel.MotorType.kBrushless);
+        lowerLimit=new DigitalInput(RobotMap.LOWER_LIMIT);
+        upperLimit=new DigitalInput(RobotMap.UPPER_LIMIT);
 
         sparkPIDcontroller = shooterMotorMain.getClosedLoopController();
 
@@ -54,8 +60,8 @@ public class ShooterSystem extends SubsystemBase {
                 .d(RobotMap.KD);
         config_Pitch.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         config_Pitch.encoder
-                .positionConversionFactor(1/RobotMap.GEAR_RATIO)
-                .velocityConversionFactor(1/RobotMap.GEAR_RATIO);
+                .positionConversionFactor(1/RobotMap.PITCH_GEAR_RATIO)
+                .velocityConversionFactor(1/RobotMap.PITCH_GEAR_RATIO);
         config_Pitch.idleMode(SparkBaseConfig.IdleMode.kBrake);
         pitchMotor.configure(config_Pitch,ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
 
@@ -79,7 +85,7 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public double getRPM(){
-      return Units.radiansToDegrees(speedEncoder.getVelocity())/RobotMap.GEAR_RATIO;
+      return Units.radiansToDegrees(speedEncoder.getVelocity())/RobotMap.PITCH_GEAR_RATIO;
     }
 
     public void moveToAngle(double targetAngle){
@@ -95,6 +101,9 @@ public class ShooterSystem extends SubsystemBase {
         feederMotor.stopMotor();
     }
     public void stop_Angle(){pitchMotor.stopMotor();}
+
+    public boolean getLowerLimit(){return !lowerLimit.get();}
+    public boolean getUpperLimit(){return !upperLimit.get();}
 
 
 
