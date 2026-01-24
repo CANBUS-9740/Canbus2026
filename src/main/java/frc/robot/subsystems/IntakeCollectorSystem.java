@@ -14,7 +14,7 @@ public class IntakeCollectorSystem extends SubsystemBase {
 
 
 
-    public IntakeCollectorSystem(IntakeCollectorSystem collectorSystem) {
+    public IntakeCollectorSystem() {
         motor = new SparkMax(RobotMap.COLLECTOR_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         SparkMaxConfig config = new SparkMaxConfig();
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
