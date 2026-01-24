@@ -17,14 +17,14 @@ public class ClimbSystem extends SubsystemBase {
     private final SparkMax rightMotor;
     private final DigitalInput bottomSwitchLeft;
     private final DigitalInput bottomSwitchRight;
-    SparkMaxConfig config;
+
 
     public ClimbSystem() {
         leftMotor = new SparkMax(RobotMap.CLIMB_LEFT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         rightMotor = new SparkMax(RobotMap.CLIMB_RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         bottomSwitchLeft = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_LEFT_SENSOR_ID);
         bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
-        config = new SparkMaxConfig();
+        SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -44,9 +44,9 @@ public class ClimbSystem extends SubsystemBase {
     public void stopRight(){
         rightMotor.stopMotor();
     }
-    public void setTargetPosition(double positionDegrees){
-        leftMotor.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
-        rightMotor.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
+    public void setTargetPosition(double positionMeters){
+        leftMotor.getClosedLoopController().setSetpoint(positionMeters/360, SparkBase.ControlType.kPosition);
+        rightMotor.getClosedLoopController().setSetpoint(positionMeters/360, SparkBase.ControlType.kPosition);
 
 
     }
