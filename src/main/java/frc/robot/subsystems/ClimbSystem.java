@@ -13,17 +13,17 @@ import frc.robot.RobotMap;
 
 public class ClimbSystem extends SubsystemBase {
 
-    SparkMax leftMotor;
-    SparkMax rightMotor;
-    private final DigitalInput switchLeftSensor;
-    private final DigitalInput switchRightSensor;
+    private final SparkMax leftMotor;
+    private final SparkMax rightMotor;
+    private final DigitalInput bottomSwitchLeft;
+    private final DigitalInput bottomSwitchRight;
     SparkMaxConfig config;
 
     public ClimbSystem() {
-        leftMotor = new SparkMax(RobotMap.LEFT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-        rightMotor = new SparkMax(RobotMap.RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-        switchLeftSensor = new DigitalInput(RobotMap.SWITCH_LEFT_SENSOR_ID);
-        switchRightSensor = new DigitalInput(RobotMap.SWITCH_RIGHT_SENSOR_ID);
+        leftMotor = new SparkMax(RobotMap.CLIMB_LEFT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        rightMotor = new SparkMax(RobotMap.CLIMB_RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        bottomSwitchLeft = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_LEFT_SENSOR_ID);
+        bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
         config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
@@ -50,10 +50,10 @@ public class ClimbSystem extends SubsystemBase {
 
 
     }
-    public boolean isSwitch1Pressed() {
-        return switchLeftSensor.get();
+    public boolean isBottomSwitchLeftPressed() {
+        return bottomSwitchLeft.get();
     }
-    public boolean isSwitch2Pressed() {
-        return switchRightSensor.get();
+    public boolean isBottomSwitchRightPressed() {
+        return bottomSwitchRight.get();
     }
 }

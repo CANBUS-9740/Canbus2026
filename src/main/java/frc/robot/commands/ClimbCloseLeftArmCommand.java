@@ -15,7 +15,7 @@ public class ClimbCloseLeftArmCommand extends Command {
 
     @Override
     public void initialize() {
-        climbSystem.moveLeftMotor(RobotMap.LEFT_MOTOR_BACKWARD_SPEED);
+        climbSystem.moveLeftMotor(RobotMap.CLIMB_LEFT_MOTOR_BACKWARD_SPEED);
     }
 
     @Override
@@ -30,6 +30,6 @@ public class ClimbCloseLeftArmCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return climbSystem.isSwitch1Pressed();
+        return climbSystem.isBottomSwitchLeftPressed();
     }
 }

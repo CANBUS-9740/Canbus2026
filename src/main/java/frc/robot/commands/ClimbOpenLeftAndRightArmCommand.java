@@ -5,18 +5,18 @@ import frc.robot.subsystems.ClimbSystem;
 
 public class ClimbOpenLeftAndRightArmCommand extends Command {
     private final ClimbSystem climbSystem;
-    private final double targetPositionDegrees;
+    private final double targetPositionMeters;
 
-    public ClimbOpenLeftAndRightArmCommand(ClimbSystem climbSystem, double targetPositionDegrees){
+    public ClimbOpenLeftAndRightArmCommand(ClimbSystem climbSystem, double targetPositionMeters){
         this.climbSystem = climbSystem;
-        this.targetPositionDegrees = targetPositionDegrees;
+        this.targetPositionMeters = targetPositionMeters;
         addRequirements(climbSystem);
     }
 
 
     @Override
     public void initialize() {
-        climbSystem.setTargetPosition(targetPositionDegrees);
+        climbSystem.setTargetPosition(targetPositionMeters);
     }
 
     @Override
