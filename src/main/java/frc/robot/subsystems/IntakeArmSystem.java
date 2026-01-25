@@ -17,13 +17,13 @@ import frc.robot.RobotMap;
 public class IntakeArmSystem extends SubsystemBase {
     private final SparkMax motor;
     private final AbsoluteEncoder encoder;
-    RelativeEncoder relativeEncoder;
-     SparkMaxConfig config;
+    private final RelativeEncoder relativeEncoder;
+     private final SparkMaxConfig config;
 
     public IntakeArmSystem() {
         motor = new SparkMax(RobotMap.INTAKE_ARM_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         encoder = motor.getAbsoluteEncoder();
-        RelativeEncoder relativeEncoder = motor.getEncoder();
+       relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
