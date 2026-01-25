@@ -38,6 +38,12 @@ public class ClimbSystem extends SubsystemBase {
 
 
     }
+    public double getLeftPositionMeters() {
+        return encoderLeft.getPosition() * 360;
+    }
+    public double getRightPositionMeters() {
+        return encoderRight.getPosition() * 360;
+    }
     public void moveLeftMotor(double speed){
         leftMotor.set(speed);
     }
@@ -56,9 +62,13 @@ public class ClimbSystem extends SubsystemBase {
 
 
     }
-    public boolean isAtTarget(double targetPosition) {
-        return MathUtil(targetPosition,)
+    public boolean isAtLeftTarget(double targetPosition) {
+        return MathUtil.isNear(targetPosition,getLeftPositionMeters(),RobotMap.CLIMB_LEFT_ARM_TARGET_TOLERANCE);
     }
+    public boolean isAtRightTarget(double targetPosition) {
+        return MathUtil.isNear(targetPosition,getRightPositionMeters(),RobotMap.CLIMB_RIGHT_ARM_TARGET_TOLERANCE);
+    }
+
     public boolean isBottomSwitchLeftPressed() {
         return bottomSwitchLeft.get();
     }

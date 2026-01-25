@@ -8,6 +8,9 @@ public class RobotMap {
     public static final int CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID = 0;
     public static final double CLIMB_LEFT_MOTOR_BACKWARD_SPEED = -0.4;
     public static final double CLIMB_RIGHT_MOTOR_BACKWARD_SPEED = -0.4;
+    public static final double CLIMB_LEFT_ARM_TARGET_TOLERANCE = 0;
+    public static final double CLIMB_RIGHT_ARM_TARGET_TOLERANCE = 0;
+
 
 
 
