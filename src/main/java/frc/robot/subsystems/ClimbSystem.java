@@ -19,7 +19,8 @@ public class ClimbSystem extends SubsystemBase {
     private final SparkMax rightMotor;
     private final DigitalInput bottomSwitchLeft;
     private final DigitalInput bottomSwitchRight;
-    private final RelativeEncoder encoder;
+    private final RelativeEncoder encoderLeft;
+    private final RelativeEncoder encoderRight;
 
 
     public ClimbSystem() {
@@ -27,7 +28,8 @@ public class ClimbSystem extends SubsystemBase {
         rightMotor = new SparkMax(RobotMap.CLIMB_RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         bottomSwitchLeft = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_LEFT_SENSOR_ID);
         bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
-
+        encoderLeft = leftMotor.getEncoder();
+        encoderRight = rightMotor.getEncoder();
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
