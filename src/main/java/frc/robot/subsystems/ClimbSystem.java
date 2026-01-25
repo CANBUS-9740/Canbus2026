@@ -32,17 +32,17 @@ public class ClimbSystem extends SubsystemBase {
         encoderRight = rightMotor.getEncoder();
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
     }
     public double getLeftPositionMeters() {
-        return encoderLeft.getPosition() * 360;
+        return encoderLeft.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
     }
     public double getRightPositionMeters() {
-        return encoderRight.getPosition() * 360;
+        return encoderRight.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
     }
     public void moveLeftMotor(double speed){
         leftMotor.set(speed);
@@ -57,16 +57,16 @@ public class ClimbSystem extends SubsystemBase {
         rightMotor.stopMotor();
     }
     public void setTargetPosition(double positionMeters){
-        leftMotor.getClosedLoopController().setSetpoint(positionMeters/360, SparkBase.ControlType.kPosition);
-        rightMotor.getClosedLoopController().setSetpoint(positionMeters/360, SparkBase.ControlType.kPosition);
+        leftMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
+        rightMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
 
 
     }
     public boolean isAtLeftTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getLeftPositionMeters(),RobotMap.CLIMB_LEFT_ARM_TARGET_TOLERANCE);
+        return MathUtil.isNear(targetPosition,getLeftPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE);
     }
     public boolean isAtRightTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getRightPositionMeters(),RobotMap.CLIMB_RIGHT_ARM_TARGET_TOLERANCE);
+        return MathUtil.isNear(targetPosition,getRightPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE);
     }
 
     public boolean isBottomSwitchLeftPressed() {
