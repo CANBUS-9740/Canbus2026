@@ -63,10 +63,10 @@ public class ClimbSystem extends SubsystemBase {
 
     }
     public boolean isAtLeftTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getLeftPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderLeft.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_TOLERANCE;
+        return MathUtil.isNear(targetPosition,getLeftPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderLeft.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
     public boolean isAtRightTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getRightPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderRight.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_TOLERANCE;
+        return MathUtil.isNear(targetPosition,getRightPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderRight.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
 
     public boolean isBottomSwitchLeftPressed() {
