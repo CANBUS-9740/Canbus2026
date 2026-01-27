@@ -1,64 +1,52 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.ShootTurretSystem;
 
 public class MoveShootTurretCommand extends Command {
     private final ShootTurretSystem shootTurretSystem;
-    private double targetAngle;
-    private boolean targetChanged;
+    private final double targetAngle;
+    private TrapezoidProfile motionProfile;
+    private TrapezoidProfile.State motionProfileGoal;
+    private TrapezoidProfile.State motionProfileSetPoint;
 
-    public MoveShootTurretCommand(ShootTurretSystem shootTurretSystem) {
+    public MoveShootTurretCommand(ShootTurretSystem shootTurretSystem, double targetAngle) {
         this.shootTurretSystem = shootTurretSystem;
+        this.targetAngle = targetAngle;
 
         addRequirements(shootTurretSystem);
     }
 
     @Override
     public void initialize() {
-        targetChanged = false;
-        targetAngle = 0;
+
     }
 
     @Override
     public void execute() {
         // Need to implement reference to swerve angle in the future
 
-        if (targetChanged) {
-            shootTurretSystem.setPosition(targetAngle);
-            targetChanged = false;
-        }
+        if (targetAngle < RobotMap.SHOOT_TURRET_MAX_ANGLE_DEGREES && targetAngle > RobotMap.SHOOT_TURRET_MIN_ANGLE_DEGREES) {
+            motionProfile = new TrapezoidProfile(RobotMap.SHOOT_TURRET_MOTION_PROFILE_CONSTRAINTS);
+            motionProfileGoal = new TrapezoidProfile.State(targetAngle, 0);
+            motionProfileSetPoint = new TrapezoidProfile.State(shootTurretSystem.getEncoderAngleInDegrees(), 0);
+            motionProfileSetPoint = motionProfile.calculate(0.02, motionProfileSetPoint, motionProfileGoal);
 
-        if (shootTurretSystem.getLimitSwitch()) {
-            shootTurretSystem.setEncoderAngle(0);
+            shootTurretSystem.setPosition(motionProfileSetPoint.position);
+        } else {
+            shootTurretSystem.stop();
         }
-
-        SmartDashboard.putBoolean("ShootTurretIsAtAngle", getIsNearTarget());
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return shootTurretSystem.isAtAngle(targetAngle);
     }
 
     @Override
     public void end(boolean interrupted) {
         shootTurretSystem.stop();
-    }
-
-    public void setAngleInDegrees(double angle) {
-        if (angle < RobotMap.SHOOT_TURRET_MAX_ANGLE || angle > RobotMap.SHOOT_TURRET_MIN_ANGLE) {
-            this.targetAngle = angle;
-            targetChanged = true;
-        } else {
-            DriverStation.reportWarning("Request to set angle out of range", true);
-        }
-    }
-
-    public boolean getIsNearTarget() {
-        return shootTurretSystem.isAtAngle(targetAngle);
     }
 }
