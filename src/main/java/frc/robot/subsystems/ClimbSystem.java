@@ -10,8 +10,16 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.sim.ClimbSim;
 
 public class ClimbSystem extends SubsystemBase {
 
@@ -21,6 +29,11 @@ public class ClimbSystem extends SubsystemBase {
     private final DigitalInput bottomSwitchRight;
     private final RelativeEncoder encoderLeft;
     private final RelativeEncoder encoderRight;
+    private final ClimbSim sim;
+    private final Mechanism2d mechanism;
+    private final MechanismLigament2d leftLigament;
+    private final MechanismLigament2d rightLigament;
+
 
 
     public ClimbSystem() {
@@ -35,6 +48,23 @@ public class ClimbSystem extends SubsystemBase {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        if (RobotBase.isSimulation()) {
+            sim = new ClimbSim(leftMotor,rightMotor);
+        }
+        else{
+            sim = null;
+        }
+
+        mechanism = new Mechanism2d(5,5);
+        MechanismRoot2d leftRoot = mechanism.getRoot("leftArm",2.5,2);
+        MechanismRoot2d rightRoot = mechanism.getRoot("rightArm",2.5,2);
+        leftLigament = leftRoot.append(new MechanismLigament2d("leftArm",2,0,1,new Color8Bit(Color.kRed)));
+        rightLigament = rightRoot.append(new MechanismLigament2d("rightArm",2,0,1,new Color8Bit(Color.kRed)));
+        SmartDashboard.putData("leftArm", mechanism);
+        SmartDashboard.putData("rightArm", mechanism);
+
+
 
 
     }
@@ -75,4 +105,13 @@ public class ClimbSystem extends SubsystemBase {
     public boolean isBottomSwitchRightPressed() {
         return bottomSwitchRight.get();
     }
+
+
+    public void periodic() {
+
+    }
+    public void simulationPeriodic() {
+        sim.update();
+    }
+
 }
