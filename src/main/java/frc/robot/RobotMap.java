@@ -24,8 +24,8 @@ public class RobotMap {
     public static final int INTAKE_ARM_MOTOR_ID = 0;
     public static final int STORAGR_MOTOR1_ID = 0;
     public static final int STORAGE_MOTOR2_ID = 1;
-    public static final int STORAGD_IRSENSOR1_ID = 0;
-    public static final int STORAGE_IRSENSOR2_ID = 0;
+    public static final int STORAGD_IRSENSOR1_ID = 2;
+    public static final int STORAGE_IRSENSOR2_ID = 3;
 
     // add constants here
     // public static final type NAME = value;
