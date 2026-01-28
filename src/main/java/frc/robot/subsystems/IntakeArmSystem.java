@@ -10,15 +10,25 @@ import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+import frc.robot.sim.IntakeArmSim;
 
 public class IntakeArmSystem extends SubsystemBase {
     private final SparkMax motor;
     private final AbsoluteEncoder encoder;
     private final RelativeEncoder relativeEncoder;
      private final SparkMaxConfig config;
+     private final IntakeArmSim sim;
+     private final Mechanism2d mechanism;
+     private final MechanismLigament2d ligament;
 
     public IntakeArmSystem() {
         motor = new SparkMax(RobotMap.INTAKE_ARM_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
@@ -28,6 +38,18 @@ public class IntakeArmSystem extends SubsystemBase {
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        if (RobotBase.isSimulation()) {
+            sim = new IntakeArmSim(motor);
+        }
+        else{
+            sim = null;
+        }
+
+        mechanism = new Mechanism2d(5,5);
+        MechanismRoot2d root = mechanism.getRoot("arm",2.5,2);
+        ligament = root.append(new MechanismLigament2d("arm",2,0,1,new Color8Bit(Color.kRed)));
+        SmartDashboard.putData("arm",mechanism);
 
 
 
@@ -56,5 +78,12 @@ public class IntakeArmSystem extends SubsystemBase {
     }
     public void periodic() {
         SmartDashboard.putNumber("IntakeArmPositionDegrees", getPositionDegrees());
+        ligament.setAngle(getPositionDegrees());
+    }
+
+
+    @Override
+    public void simulationPeriodic() {
+        sim.update();
     }
 }
