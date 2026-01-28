@@ -1,15 +1,23 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.sim.IntakeCollectorSim;
+import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.IntakeArmSystem;
+import frc.robot.subsystems.StorageSystem;
 
 public class Robot extends TimedRobot {
     IntakeArmSystem intakeArmSystem;
+    StorageSystem storageSystem;
+
 
     @Override
     public void robotInit() {
-        intakeArmSystem = new IntakeArmSystem();
+
+        storageSystem = new StorageSystem();
+
     }
 
     @Override
@@ -49,7 +57,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        intakeArmSystem.move(-0.5);
+
+        storageSystem.moveGeneralRollers(0.5);
+        storageSystem.moveFeedRollers(0.5);
+
     }
 
     @Override
