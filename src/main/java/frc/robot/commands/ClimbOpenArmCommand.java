@@ -3,11 +3,11 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ClimbSystem;
 
-public class ClimbOpenLeftAndRightArmCommand extends Command {
+public class ClimbOpenArmCommand extends Command {
     private final ClimbSystem climbSystem;
     private final double targetPositionMeters;
 
-    public ClimbOpenLeftAndRightArmCommand(ClimbSystem climbSystem, double targetPositionMeters){
+    public ClimbOpenArmCommand(ClimbSystem climbSystem, double targetPositionMeters){
         this.climbSystem = climbSystem;
         this.targetPositionMeters = targetPositionMeters;
         addRequirements(climbSystem);
@@ -26,8 +26,8 @@ public class ClimbOpenLeftAndRightArmCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        climbSystem.stopLeft();
-        climbSystem.stopRight();
+
+        climbSystem.stop();
     }
 
     @Override

@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.ClimbSystem;
 
-public class ClimbCloseLeftArmCommand extends Command {
+public class ClimbCloseArmCommand extends Command {
     private final ClimbSystem climbSystem;
 
-    public ClimbCloseLeftArmCommand(ClimbSystem climbSystem){
+    public ClimbCloseArmCommand(ClimbSystem climbSystem){
         this.climbSystem = climbSystem;
         addRequirements(climbSystem);
     }
@@ -15,7 +15,7 @@ public class ClimbCloseLeftArmCommand extends Command {
 
     @Override
     public void initialize() {
-        climbSystem.moveLeftMotor(RobotMap.CLIMB_LEFT_MOTOR_BACKWARD_SPEED);
+        climbSystem.moveMotor(RobotMap.CLIMB_MOTOR_BACKWARD_SPEED);
     }
 
     @Override
@@ -25,11 +25,11 @@ public class ClimbCloseLeftArmCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        climbSystem.stopLeft();
+        climbSystem.stop();
     }
 
     @Override
     public boolean isFinished() {
-        return climbSystem.isBottomSwitchLeftPressed();
+        return climbSystem.isBottomSwitchPressed();
     }
 }
