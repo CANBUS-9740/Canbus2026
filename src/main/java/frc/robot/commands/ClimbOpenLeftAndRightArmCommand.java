@@ -27,7 +27,6 @@ public class ClimbOpenLeftAndRightArmCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         climbSystem.stopLeft();
-        climbSystem.stopRight();
     }
 
     @Override

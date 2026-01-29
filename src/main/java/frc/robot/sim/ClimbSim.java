@@ -31,8 +31,8 @@ public class ClimbSim {
     public static final boolean CLIMB_SIMULATE_GRAVITY = true;
     public static final double CLIMB_LEFT_ARM_START_HEIGHT = 0;
     public static final double CLIMB_RIGHT_ARM_START_HEIGHT = 0;
-    public static final int CLIMB_LIMIT_SWITCH_1_ID = 3;
-    public static final int CLIMB_LIMIT_SWITCH_2_ID = 4;
+    public static final int CLIMB_LIMIT_SWITCH_1_ID = 14;
+    public static final int CLIMB_LIMIT_SWITCH_2_ID = 15;
 
 
 

@@ -44,7 +44,7 @@ public class ClimbSystem extends SubsystemBase {
         encoderLeft = leftMotor.getEncoder();
         encoderRight = rightMotor.getEncoder();
         SparkMaxConfig config = new SparkMaxConfig();
-        config.closedLoop.pid(0,0,0)
+        config.closedLoop.pid(0.5,0,0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -89,7 +89,6 @@ public class ClimbSystem extends SubsystemBase {
     public void setTargetPosition(double positionMeters){
         leftMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
         rightMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
-
 
     }
     public boolean isAtLeftTarget(double targetPosition) {
