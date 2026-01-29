@@ -31,4 +31,6 @@ public class RobotMap {
     public static final int KI = 4;
     public static final int KD = 4;
     public static final int FF = 3;
+
+    public static final double MOMENT_OF_INERTIA = 1.0;
 }

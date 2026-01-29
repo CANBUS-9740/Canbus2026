@@ -2,9 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.simulation.ShooterSim;
 
 public class Robot extends TimedRobot {
 
+    private ShooterSim shooterSim=new ShooterSim();
     @Override
     public void robotInit() {
 
@@ -22,7 +24,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationPeriodic() {
-
+        shooterSim.periodic();
     }
 
     @Override

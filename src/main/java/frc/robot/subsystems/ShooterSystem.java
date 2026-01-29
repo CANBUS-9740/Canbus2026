@@ -117,5 +117,27 @@ public class ShooterSystem extends SubsystemBase {
         return !upperLimit.get();
     }
 
+    // these are for the sim to get
 
+    // motor gets
+    public SparkMax getShooterMotorMain() {
+        return shooterMotorMain;
+    }
+    public SparkMax getShooterMotorFollow(){
+        return shooterMotorFollow;
+    }
+    public SparkMax getFeederMotor() {
+        return feederMotor;
+    }
+    public SparkMax getPitchMotor() {
+        return pitchMotor;
+    }
+
+    //encoder gets
+    public RelativeEncoder getSpeedEncoder() {
+        return speedEncoder;
+    }
+    public RelativeEncoder getPitchEncoder() {
+        return pitchEncoder;
+    }
 }
