@@ -15,64 +15,45 @@ import frc.robot.RobotMap;
 
 public class ClimbSystem extends SubsystemBase {
 
-    private final SparkMax leftMotor;
-    private final SparkMax rightMotor;
-    private final DigitalInput bottomSwitchLeft;
-    private final DigitalInput bottomSwitchRight;
-    private final RelativeEncoder encoderLeft;
-    private final RelativeEncoder encoderRight;
+    private final SparkMax Motor;
+    private final DigitalInput bottomSwitch;
+    private final RelativeEncoder encoder;
 
 
     public ClimbSystem() {
-        leftMotor = new SparkMax(RobotMap.CLIMB_LEFT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-        rightMotor = new SparkMax(RobotMap.CLIMB_RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-        bottomSwitchLeft = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_LEFT_SENSOR_ID);
-        bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
-        encoderLeft = leftMotor.getEncoder();
-        encoderRight = rightMotor.getEncoder();
+        Motor = new SparkMax(RobotMap.CLIMB_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
+        bottomSwitch = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_SENSOR_ID);
+        encoder = Motor.getEncoder();
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-        leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        Motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
     }
-    public double getLeftPositionMeters() {
-        return encoderLeft.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
+
+    public double getPositionMeters() {
+        return encoder.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
     }
-    public double getRightPositionMeters() {
-        return encoderRight.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
+
+    public void moveMotor(double speed){
+        Motor.set(speed);
     }
-    public void moveLeftMotor(double speed){
-        leftMotor.set(speed);
+
+    public void stop(){
+        Motor.stopMotor();
     }
-    public void moveRightMotor(double speed){
-        rightMotor.set(speed);
-    }
-    public void stopLeft(){
-        leftMotor.stopMotor();
-    }
-    public void stopRight(){
-        rightMotor.stopMotor();
-    }
+  
     public void setTargetPosition(double positionMeters){
-        leftMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
-        rightMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
-
-
-    }
-    public boolean isAtLeftTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getLeftPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderLeft.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
-    }
-    public boolean isAtRightTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getRightPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderRight.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
+        Motor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
     }
 
-    public boolean isBottomSwitchLeftPressed() {
-        return bottomSwitchLeft.get();
+    public boolean isAtTarget(double targetPosition) {
+        return MathUtil.isNear(targetPosition,getPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoder.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
-    public boolean isBottomSwitchRightPressed() {
-        return bottomSwitchRight.get();
+
+    public boolean isBottomSwitchPressed() {
+        return bottomSwitch.get();
     }
 }
