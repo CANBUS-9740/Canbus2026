@@ -9,9 +9,9 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.Swerve;
 
 public class SwerveDriveCommand extends Command {
-    private Swerve swerveSub;
-    private CommandXboxController xboxController;
-    private boolean fieldDrive;
+    private final Swerve swerveSub;
+    private final CommandXboxController xboxController;
+    private final boolean fieldDrive;
     private double allianceSwapper = 1;
 
     public SwerveDriveCommand(Swerve swerveSub, CommandXboxController xboxController, boolean fieldDrive) {

@@ -10,7 +10,7 @@ public class Limelight extends SubsystemBase {
 
     private static final double MAX_DISTANCE_FOR_POSE = 3;
 
-    private String name;
+    private final String name;
 
     public Limelight(String name){
         this.name = name;

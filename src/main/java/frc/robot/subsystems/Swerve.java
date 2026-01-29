@@ -42,8 +42,6 @@ public class Swerve extends SubsystemBase {
         swerveDrive.setModuleStateOptimization(true);
         swerveDrive.synchronizeModuleEncoders();
 
-//        swerveDrive.resetOdometry(new Pose2d(new Translation2d(2.164, 6.271), new Rotation2d(0)));
-
         autoBuilderConfiguration();
     }
 
@@ -107,10 +105,6 @@ public class Swerve extends SubsystemBase {
                 ),
                 config,
                 () -> {
-                    /*var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }*/
                     return false;
                 },
                 this
@@ -120,11 +114,5 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
-
-        for (SwerveModule module : swerveDrive.getModules()) {
-            SmartDashboard.putNumber("PosModule" + module.moduleNumber, module.getPosition().distanceMeters);
-            SmartDashboard.putNumber("AngleSparkModule" + module.moduleNumber, module.getAngleMotor().getPosition());
-            SmartDashboard.putNumber("AngleAbsModule" + module.moduleNumber, module.getAbsolutePosition());
-        }
     }
 }

@@ -1,18 +1,13 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Utils.Pathplanner;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Swerve;
 
 import frc.robot.subsystems.Limelight;
 
-import java.util.Optional;
 
 public class Robot extends TimedRobot {
     private Limelight limelight;
@@ -38,14 +33,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        /*
-        Optional<LimelightHelpers.PoseEstimate> poseEstimateOptional = limelight.getPose();
-        if(poseEstimateOptional.isPresent()){
-            LimelightHelpers.PoseEstimate poseEstimate = poseEstimateOptional.get();
-            swerveSystem.addVisionMeasurement(poseEstimate);
-        }
-        when merging with swerve
-         */
     }
 
     @Override
@@ -80,7 +67,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        //swerveSystem.drive(new ChassisSpeeds(0.5, 0, 0));
     }
 
     @Override
@@ -90,8 +76,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        Command command = pathplanner.goToPoseSlow(new Pose2d(4, 1, Rotation2d.kZero));
-        CommandScheduler.getInstance().schedule(command);
     }
 
     @Override

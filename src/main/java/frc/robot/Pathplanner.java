@@ -1,7 +1,8 @@
-package frc.robot.Utils;
+package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,7 +10,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.Swerve;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class Pathplanner {
         );
     }
 
-    public Command goToPose(Pose2d pose) {
+    public Command goToPose(Pose2d pose, PathConstraints constraints) {
         return Commands.defer(() -> {
             List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
                     swerve.getPose(),
@@ -40,7 +40,7 @@ public class Pathplanner {
 
             PathPlannerPath path = new PathPlannerPath(
                     waypoints,
-                    RobotMap.PATH_CONSTRAINTS,
+                    constraints,
                     null,
                     new GoalEndState(0.0, pose.getRotation()));
 
@@ -56,33 +56,6 @@ public class Pathplanner {
             );
         }, Set.of(swerve));
     }
-
-    public Command goToPoseSlow(Pose2d pose) {
-        return Commands.defer(() -> {
-            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                    swerve.getPose(),
-                    pose
-            );
-
-            PathPlannerPath path = new PathPlannerPath(
-                    waypoints,
-                    RobotMap.PATH_CONSTRAINTS_SLOW,
-                    null,
-                    new GoalEndState(0.0, pose.getRotation()));
-
-            path.preventFlipping = true;
-
-            return new SequentialCommandGroup(
-                    Commands.runOnce(() -> {
-                        isInAutoMovement = true;
-                        swerve.getField().getObject("Target").setPose(pose);
-                    }),
-                    AutoBuilder.followPath(path),
-                    Commands.runOnce(() -> isInAutoMovement = false)
-            );
-        }, Set.of(swerve));
-    }
-
 
     public Command followPath(String pathName) {
         try {
