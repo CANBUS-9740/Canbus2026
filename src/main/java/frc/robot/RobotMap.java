@@ -2,11 +2,8 @@ package frc.robot;
 
 public class RobotMap {
 
-
     public static final int CLIMB_MOTOR_ID = 0;
-
     public static final int CLIMB_BOTTOM_SWITCH_SENSOR_ID = 0;
-
     public static final double CLIMB_MOTOR_BACKWARD_SPEED = -0.4;
     public static final double CLIMB_ARMS_TARGET_TOLERANCE = 0;
     public static final double CLIMB_ARMS_TARGET_RPM_TOLERANCE = 0;

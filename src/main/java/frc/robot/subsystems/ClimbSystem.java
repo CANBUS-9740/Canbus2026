@@ -15,20 +15,14 @@ import frc.robot.RobotMap;
 
 public class ClimbSystem extends SubsystemBase {
 
-
     private final SparkMax Motor;
-
     private final DigitalInput bottomSwitch;
-
     private final RelativeEncoder encoder;
 
 
     public ClimbSystem() {
-
         Motor = new SparkMax(RobotMap.CLIMB_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-
         bottomSwitch = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_SENSOR_ID);
-
         encoder = Motor.getEncoder();
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(0,0,0)
@@ -50,17 +44,14 @@ public class ClimbSystem extends SubsystemBase {
     public void stop(){
         Motor.stopMotor();
     }
+  
     public void setTargetPosition(double positionMeters){
-
         Motor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
-
-
     }
 
     public boolean isAtTarget(double targetPosition) {
         return MathUtil.isNear(targetPosition,getPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoder.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
-
 
     public boolean isBottomSwitchPressed() {
         return bottomSwitch.get();
