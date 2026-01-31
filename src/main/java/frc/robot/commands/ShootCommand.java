@@ -28,41 +28,28 @@ public class ShootCommand extends Command {
     @Override
     public void initialize() {
         setNewTarget = true;
-
+        pitchProfile = new TrapezoidProfile(RobotMap.SHOOTER_PITCH_MOTION_PROFILE_CONSTRAINTS);
+        pitchProfileGoal = new TrapezoidProfile.State(targetPitch, 0);
+        pitchProfileSetPoint = new TrapezoidProfile.State(shooterSystem.getPitchAngleDegrees(), 0);
+        shooterSystem.setShootVoltage(targetRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
 
     }
 
     @Override
     public void execute() {
-        if (setNewTarget) {
-            setNewTarget = false;
 
-            if (getIsNear()) {
-                shooterSystem.stop_Pitch();
-            } else {
-                pitchProfile = new TrapezoidProfile(RobotMap.SHOOTER_PITCH_MOTION_PROFILE_CONSTRAINTS);
-                pitchProfileGoal = new TrapezoidProfile.State(targetPitch, 0);
-                pitchProfileSetPoint = new TrapezoidProfile.State(shooterSystem.getAngle(), 0);
-            }
-        }
-        if (shooterSystem.getPitchLowerLimit()) {
-            shooterSystem.setPitchAngle(0);
-        } else if (shooterSystem.getPitchUpperLimit()) {
-            shooterSystem.setPitchAngle(90);
-        }
-        if (getIsNear()) {
-            if (MathUtil.isNear(0.0, shooterSystem.getAngle(), 0.5)) {
-                shooterSystem.stop_Pitch();
-            } else {
-                shooterSystem.setPitchAngle(targetPitch);
-                isAtPitch = true;
-            }
+
+        if (shooterSystem.isAtAngle(targetPitch)) {
+
+            shooterSystem.setPitchPosition(targetPitch);
+            isAtPitch = true;
+
         } else {
             pitchProfileSetPoint = pitchProfile.calculate(0.02, pitchProfileSetPoint, pitchProfileGoal);
-            shooterSystem.setPitchAngle(pitchProfileSetPoint.position);
+            shooterSystem.setPitchPosition(pitchProfileSetPoint.position);
         }
 
-        shooterSystem.setWheelVoltage(targetRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
+
         if (shooterSystem.getShooterVelocityRPM() >= targetRPM - 10 && isAtPitch) {
             shooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTATNT);
         }
@@ -75,15 +62,10 @@ public class ShootCommand extends Command {
 
     @Override
     public void end(boolean wasInterrupted) {
-        shooterSystem.stop_Pitch();
+        shooterSystem.stopPitch();
         shooterSystem.stopShooterAndFeeder();
     }
 
-    public boolean getIsNear() {
-        if (setNewTarget) {
-            return false;
-        } else {
-            return shooterSystem.isAtAngle(targetPitch);
-        }
-    }
+
+
 }

@@ -4,140 +4,118 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.*;
+import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class ShooterSystem extends SubsystemBase {
-    private final SparkMax shooterMotorMain;
-    private final RelativeEncoder speedEncoder;
-    private final SparkMax shooterMotorFollow;
+    private final SparkMax shooterMotor;
+    private final RelativeEncoder shooterEncoder;
     private final SparkMax pitchMotor;
     private final RelativeEncoder pitchEncoder;
     private final SparkMax feederMotor;
-    private final RelativeEncoder feederEncoder;
 
 
-    private final DigitalInput lowerLimit;
-    private final DigitalInput upperLimit;
-    private final SparkClosedLoopController shooterRPMPIDcontroller;
+    private final SparkLimitSwitch shooterLowerLimit;
+    private final SparkLimitSwitch shooterUpperLimit;
+
 
     public ShooterSystem() {
-        shooterMotorMain = new SparkMax(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
-        shooterMotorFollow = new SparkMax(RobotMap.FOLLOWING_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
+        shooterMotor = new SparkMax(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
+
         pitchMotor = new SparkMax(RobotMap.SOOTER_PITCH_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_MOTOR, SparkLowLevel.MotorType.kBrushless);
-        lowerLimit = new DigitalInput(RobotMap.SHOOTER_LOWER_LIMIT);
-        upperLimit = new DigitalInput(RobotMap.SHOOTER_UPPER_LIMIT);
 
-        shooterRPMPIDcontroller = shooterMotorMain.getClosedLoopController();
 
         SparkMaxConfig configLead = new SparkMaxConfig();
-        SparkMaxConfig configFollow = new SparkMaxConfig();
         SparkMaxConfig configFeeder = new SparkMaxConfig();
+        configLead.limitSwitch
+                .forwardLimitSwitchEnabled(true)
+                .forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen)
+                .reverseLimitSwitchEnabled(true)
+                .reverseLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen);
 
 
-        configLead.closedLoop
-                .p(RobotMap.KP)
-                .i(RobotMap.KI)
-                .d(RobotMap.KD);
+        shooterLowerLimit = shooterMotor.getReverseLimitSwitch();
+        shooterUpperLimit = shooterMotor.getForwardLimitSwitch();
 
-        shooterMotorMain.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        configFollow.follow(shooterMotorMain, true);
-        shooterMotorFollow.configure(configFollow, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        SparkMaxConfig config_Pitch = new SparkMaxConfig();
-        config_Pitch.closedLoop
-                .p(RobotMap.KP)
-                .i(RobotMap.KI)
-                .d(RobotMap.KD);
-        config_Pitch.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-        config_Pitch.encoder
+        SparkMaxConfig configPitch = new SparkMaxConfig();
+        configPitch.closedLoop
+                .p(RobotMap.SHOOTER_PITCH_KP)
+                .i(RobotMap.SHOOTER_PITCH_KI)
+                .d(RobotMap.SHOOTER_PITCH_KD);
+        configPitch.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        configPitch.encoder
                 .positionConversionFactor(1 / RobotMap.SHOOTER_PITCH_GEAR_RATIO)
                 .velocityConversionFactor(1 / RobotMap.SHOOTER_PITCH_GEAR_RATIO);
-        config_Pitch.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        pitchMotor.configure(config_Pitch, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        configPitch.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        pitchMotor.configure(configPitch, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        speedEncoder = shooterMotorMain.getEncoder();
+        shooterEncoder = shooterMotor.getEncoder();
         pitchEncoder = pitchMotor.getEncoder();
-        feederEncoder = feederMotor.getEncoder();
+
     }
 
-    public void setWheelVoltage(double wheelVolts) {
-        shooterMotorMain.setVoltage(wheelVolts);
+    public void setShootVoltage(double shootVolts) {
+        shooterMotor.setVoltage(shootVolts);
     }
 
     public void setFeederVoltage(double feederVolts) {
         feederMotor.setVoltage(feederVolts);
     }
 
-    public double getRotations() {
-        return pitchEncoder.getPosition();
-    }
 
-    public double getAngle() {
-        return pitchEncoder.getPosition() * 90;
+    public double getPitchAngleDegrees() {
+        return pitchEncoder.getPosition() * RobotMap.SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES;
     }
 
     public double getShooterVelocityRPM() {
-        return speedEncoder.getVelocity();
+        return shooterEncoder.getVelocity();
     }
 
     public void setPitchPosition(double angleDegrees) {
-        pitchMotor.getClosedLoopController().setSetpoint(angleDegrees / RobotMap.SHOOTER_PITCH_ANGLE_CONSTANT, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, RobotMap.SHOOTER_PITCH_FF_VOLTAGE, SparkClosedLoopController.ArbFFUnits.kVoltage);
+        pitchMotor.getClosedLoopController().setSetpoint(angleDegrees / RobotMap.SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, RobotMap.SHOOTER_PITCH_FF_VOLTAGE, SparkClosedLoopController.ArbFFUnits.kVoltage);
     }
 
     public boolean isAtAngle(double targetAngle) {
-        return MathUtil.isNear(targetAngle, getAngle(), RobotMap.PITCH_TOLARANCE) && Math.abs(pitchEncoder.getVelocity()) < RobotMap.PITCH_RPM_THRESHOLD;
+        return MathUtil.isNear(targetAngle, getPitchAngleDegrees(), RobotMap.PITCH_TOLARANCE) && Math.abs(pitchEncoder.getVelocity()) < RobotMap.PITCH_RPM_THRESHOLD;
     }
 
-    public void setPitchAngle(double pos) {
-        pitchEncoder.setPosition(pos * (90 / RobotMap.SHOOTER_PITCH_ANGLE_CONSTANT));
+    public void setEncoderAngle(double angleDeg) {
+        pitchEncoder.setPosition(angleDeg / (RobotMap.SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES));
     }
 
     public void stopShooterAndFeeder() {
-        shooterMotorMain.stopMotor();
+        shooterMotor.stopMotor();
         feederMotor.stopMotor();
     }
 
-    public void stop_Pitch() {
+    public void stopPitch() {
         pitchMotor.stopMotor();
     }
 
     public boolean getPitchLowerLimit() {
-        return !lowerLimit.get();
+        return shooterLowerLimit.isPressed();
     }
 
     public boolean getPitchUpperLimit() {
-        return !upperLimit.get();
+        return shooterUpperLimit.isPressed();
     }
 
-    // these are for the sim to get
 
-    // motor gets
-    public SparkMax getShooterMotorMain() {
-        return shooterMotorMain;
-    }
-    public SparkMax getShooterMotorFollow(){
-        return shooterMotorFollow;
-    }
-    public SparkMax getFeederMotor() {
-        return feederMotor;
-    }
-    public SparkMax getPitchMotor() {
-        return pitchMotor;
-    }
-
-    //encoder gets
-    public RelativeEncoder getSpeedEncoder() {
-        return speedEncoder;
-    }
-    public RelativeEncoder getPitchEncoder() {
-        return pitchEncoder;
+    @Override
+    public void periodic() {
+        if (getPitchLowerLimit()) {
+            setEncoderAngle(RobotMap.SHOOTER_PITCH_LOWER_LIMIT_DEG);
+        } else if (getPitchUpperLimit()) {
+            setEncoderAngle(RobotMap.SHOOTER_PITCH_UPPER_LIMIT_DEG);
+        }
     }
 }

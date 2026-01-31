@@ -1,6 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 public class RobotMap {
 
@@ -16,21 +18,23 @@ public class RobotMap {
     public static final int SHOOTER_LOWER_LIMIT =5;
     public static final int SHOOTER_UPPER_LIMIT =6;
 
-    public static final double SHOOTER_PITCH_ANGLE_CONSTANT =45;
+    public static final double SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES =45;
     public static final double SHOOTER_PITCH_FF_VOLTAGE =0.5;
     public static final double PITCH_RPM_THRESHOLD=1500;
     public static TrapezoidProfile.Constraints SHOOTER_PITCH_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(3.5, 8);
     public static final double PITCH_TOLARANCE = 0.02;
+    public static final double SHOOTER_PITCH_LOWER_LIMIT_DEG= 11;
+    public static final double SHOOTER_PITCH_UPPER_LIMIT_DEG= 47;
     
-    public static final double SHOOTER_MECHANISM_MAX_RPM =7500.0;
+    public static final double SHOOTER_MECHANISM_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNeoVortex(1).freeSpeedRadPerSec);
     public static final double SHOOTER_PITCH_GEAR_RATIO =2.0;
     public static final double SHOOTER_FEEDER_CONSTATNT = 3500.0;
 
 
-    public static final int KP = 4;
-    public static final int KI = 4;
-    public static final int KD = 4;
-    public static final int FF = 3;
+    public static final int SHOOTER_PITCH_KP = 4;
+    public static final int SHOOTER_PITCH_KI = 4;
+    public static final int SHOOTER_PITCH_KD = 4;
+
 
     public static final double MOMENT_OF_INERTIA = 1.0;
 }
