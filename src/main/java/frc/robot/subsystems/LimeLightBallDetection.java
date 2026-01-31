@@ -47,6 +47,10 @@ public class LimeLightBallDetection extends SubsystemBase {
         double yBall = botPos.getY() + (xBallBot * Math.sin(botYaw) + yBallBot * Math.cos(botYaw));
         double xBall = botPos.getX() + (xBallBot * Math.cos(botYaw) - yBallBot * Math.sin(botYaw));
 
+        double[] pos = {xBall, yBall};
+
+        SmartDashboard.putNumberArray("BallPos: ", pos );
+
         return Optional.of(new Pose2d(xBall, yBall, new Rotation2d(0)));
 
     }
