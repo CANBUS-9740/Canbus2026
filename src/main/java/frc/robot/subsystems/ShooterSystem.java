@@ -32,7 +32,7 @@ public class ShooterSystem extends SubsystemBase {
 
         SparkMaxConfig configLead = new SparkMaxConfig();
         SparkMaxConfig configFeeder = new SparkMaxConfig();
-
+        SparkMaxConfig configPitch = new SparkMaxConfig();
 
 
         shooterLowerLimit = shooterMotor.getReverseLimitSwitch();
@@ -42,7 +42,7 @@ public class ShooterSystem extends SubsystemBase {
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        SparkMaxConfig configPitch = new SparkMaxConfig();
+
         configPitch.limitSwitch
                 .forwardLimitSwitchEnabled(true)
                 .forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen)
