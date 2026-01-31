@@ -32,11 +32,7 @@ public class ShooterSystem extends SubsystemBase {
 
         SparkMaxConfig configLead = new SparkMaxConfig();
         SparkMaxConfig configFeeder = new SparkMaxConfig();
-        configLead.limitSwitch
-                .forwardLimitSwitchEnabled(true)
-                .forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen)
-                .reverseLimitSwitchEnabled(true)
-                .reverseLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen);
+
 
 
         shooterLowerLimit = shooterMotor.getReverseLimitSwitch();
@@ -47,6 +43,11 @@ public class ShooterSystem extends SubsystemBase {
 
 
         SparkMaxConfig configPitch = new SparkMaxConfig();
+        configPitch.limitSwitch
+                .forwardLimitSwitchEnabled(true)
+                .forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen)
+                .reverseLimitSwitchEnabled(true)
+                .reverseLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen);
         configPitch.closedLoop
                 .p(RobotMap.SHOOTER_PITCH_KP)
                 .i(RobotMap.SHOOTER_PITCH_KI)
