@@ -35,8 +35,8 @@ public class ShooterSystem extends SubsystemBase {
         SparkMaxConfig configPitch = new SparkMaxConfig();
 
 
-        shooterLowerLimit = shooterMotor.getReverseLimitSwitch();
-        shooterUpperLimit = shooterMotor.getForwardLimitSwitch();
+        shooterLowerLimit = pitchMotor.getReverseLimitSwitch();
+        shooterUpperLimit = pitchMotor.getForwardLimitSwitch();
 
         shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -59,7 +59,7 @@ public class ShooterSystem extends SubsystemBase {
         configPitch.idleMode(SparkBaseConfig.IdleMode.kBrake);
         pitchMotor.configure(configPitch, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        shooterEncoder = pitchMotor.getEncoder();
+        shooterEncoder = shooterMotor.getEncoder();
         pitchEncoder = pitchMotor.getEncoder();
 
     }
