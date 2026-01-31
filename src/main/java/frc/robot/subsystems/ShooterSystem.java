@@ -59,7 +59,7 @@ public class ShooterSystem extends SubsystemBase {
         configPitch.idleMode(SparkBaseConfig.IdleMode.kBrake);
         pitchMotor.configure(configPitch, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
-        shooterEncoder = shooterMotor.getEncoder();
+        shooterEncoder = pitchMotor.getEncoder();
         pitchEncoder = pitchMotor.getEncoder();
 
     }
