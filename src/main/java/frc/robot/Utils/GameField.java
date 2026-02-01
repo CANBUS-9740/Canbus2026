@@ -6,8 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
-import java.util.Optional;
-
 public class GameField {
     // Origin 0,0 at blue (close to AprilTag 29)
     // Positive X towards ID 28, positive Y towards ID 31
@@ -24,9 +22,15 @@ public class GameField {
 
     public Pose2d getHubPose(DriverStation.Alliance alliance) {
         int id = alliance == DriverStation.Alliance.Red ? APRIL_TAG_HUB_RED : APRIL_TAG_HUB_BLUE;
-        Pose2d tagPose = layout.getTagPose(id).get().toPose2d();
-        Pose2d hubPose = new Pose2d(tagPose.getX() , tagPose.getY()- 23.5, tagPose.getRotation());
-        return hubPose;
+
+        Pose2d tagPose = new Pose2d();
+        if (layout.getTagPose(id).isPresent()) {
+            tagPose = layout.getTagPose(id).get().toPose2d();
+        } else {
+            System.out.println("[GameField] Warning: No location for AprilTag " + id);
+        }
+
+        return new Pose2d(tagPose.getX() , tagPose.getY()- 23.5, tagPose.getRotation());
     }
 
     public static final int APRIL_TAG_TOWER_MIDDLE_RED = 15;
@@ -34,12 +38,18 @@ public class GameField {
 
     public Pose2d getTowerMiddleBotPose(DriverStation.Alliance alliance) {
         int id = alliance == DriverStation.Alliance.Red ? APRIL_TAG_TOWER_MIDDLE_RED : APRIL_TAG_TOWER_MIDDLE_BLUE;
-        Pose2d tagPose = layout.getTagPose(id).get().toPose2d();
+
+        Pose2d tagPose = new Pose2d();
+        if (layout.getTagPose(id).isPresent()) {
+            tagPose = layout.getTagPose(id).get().toPose2d();
+        } else {
+            System.out.println("[GameField] Warning: No location for AprilTag " + id);
+        }
+
         // if blue add if red subtract
         double offsetX = alliance == DriverStation.Alliance.Red ? -43.51 : 43.51;
-        Pose2d midTowerPose = new Pose2d(tagPose.getX() + offsetX,
+        return new Pose2d(tagPose.getX() + offsetX,
                 tagPose.getY(),
                 Rotation2d.fromRadians((tagPose.getRotation().getRadians() + Math.PI) % (2 * Math.PI)));
-        return midTowerPose;
     }
 }
