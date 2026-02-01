@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
-import frc.robot.sim.IntakeCollectorSim;
 import frc.robot.sim.StorageSim;
 
 public class StorageSystem extends SubsystemBase {
@@ -25,7 +24,7 @@ public class StorageSystem extends SubsystemBase {
     public StorageSystem() {
         generalRollers = new SparkMax(RobotMap.STORAGR_MOTOR1_ID, SparkLowLevel.MotorType.kBrushless);
         feedRollers = new SparkMax(RobotMap.STORAGE_MOTOR2_ID, SparkLowLevel.MotorType.kBrushless);
-        irSensor1 = new DigitalInput(RobotMap.STORAGD_IRSENSOR1_ID);
+        irSensor1 = new DigitalInput(RobotMap.STORAGE_IRSENSOR1_ID);
         irSensor2 = new DigitalInput(RobotMap.STORAGE_IRSENSOR2_ID);
         SparkMaxConfig config = new SparkMaxConfig();
         generalRollers.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);

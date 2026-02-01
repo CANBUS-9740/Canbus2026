@@ -35,7 +35,7 @@ public class IntakeArmSystem extends SubsystemBase {
         encoder = motor.getAbsoluteEncoder();
        relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
-        config.closedLoop.pid(0,0,0)
+        config.closedLoop.pid(0.7,0.1,0.07)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 

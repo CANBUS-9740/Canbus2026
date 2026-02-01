@@ -4,10 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.ClimbCloseLeftArmCommand;
-import frc.robot.commands.ClimbCloseRightArmCommand;
-import frc.robot.commands.ClimbOpenLeftAndRightArmCommand;
-import frc.robot.commands.StorageBothRollersBackwardsCommand;
+import frc.robot.commands.*;
 import frc.robot.sim.IntakeCollectorSim;
 import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.IntakeArmSystem;
@@ -21,7 +18,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-
+        intakeArmSystem = new IntakeArmSystem();
         storageSystem = new StorageSystem();
         climbSystem = new ClimbSystem();
 
@@ -59,6 +56,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem,0));
 
     }
 
@@ -67,21 +65,27 @@ public class Robot extends TimedRobot {
         //StorageBothRollersBackwardsCommand storageBothRollersBackwardsCommand = new StorageBothRollersBackwardsCommand(storageSystem);
         //CommandScheduler.getInstance().schedule(storageBothRollersBackwardsCommand);
         //storageSystem.moveGeneralRollers(0.5);
-        //storageSystem.moveFeedRollers(0.5);
-        climbSystem.moveLeftMotor(0.5);
-        ClimbCloseLeftArmCommand climbCloseLeftArmCommand = new ClimbCloseLeftArmCommand(climbSystem);
-        ClimbCloseRightArmCommand climbCloseRightArmCommand = new ClimbCloseRightArmCommand(climbSystem);
-        ClimbOpenLeftAndRightArmCommand climbOpenLeftAndRightArmCommand = new ClimbOpenLeftAndRightArmCommand(climbSystem,8);
+        //storageSystem.moveFeedRollers(-0.5);
+        //climbSystem.moveLeftMotor(0.5);
+        //climbSystem.moveRightMotor(0.5);
+
+       // intakeArmSystem.move(-0.5);
     }
 
     @Override
     public void teleopExit() {
-
+        //climbSystem.stopLeft();
+        //climbSystem.stopRight();
+        intakeArmSystem.stop();
     }
 
     @Override
     public void autonomousInit() {
+        //CommandScheduler.getInstance().schedule(new ClimbCloseLeftArmCommand(climbSystem));
+        //CommandScheduler.getInstance().schedule(new ClimbCloseRightArmCommand(climbSystem));
 
+        CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem,90));
+        //intakeArmSystem.move(0.5);
     }
 
     @Override

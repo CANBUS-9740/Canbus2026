@@ -11,8 +11,8 @@ public class IntakeArmSim {
     private final SparkMaxSim motorSim;
     private final SingleJointedArmSim armSim;
     public static final DCMotor INTAKE_ARM_MOTOR = DCMotor.getNEO(1);
-    public static final double INTAKE_ARM_GEAR_RATIO = 1;
-    public static final double INTAKE_ARM_MASS_KG = 2;
+    public static final double INTAKE_ARM_GEAR_RATIO = 32.41 / 1;
+    public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
     public static final double INTAKE_ARM_MOI = 1/3.0*INTAKE_ARM_MASS_KG*INTAKE_ARM_LENGTH_METERS*INTAKE_ARM_LENGTH_METERS;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;

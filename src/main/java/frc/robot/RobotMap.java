@@ -1,6 +1,16 @@
 package frc.robot;
 
+import edu.wpi.first.math.system.plant.DCMotor;
+
 public class RobotMap {
+    public static final DCMotor CLIMB_LEFT_ARM_MOTOR = DCMotor.getNEO(1);
+    public static final DCMotor CLIMB_RIGHT_ARM_MOTOR = DCMotor.getNEO(1);
+    public static final double CLIMB_MOTOR_TO_DRUM_GEAR_RATIO = 4.0 / 1.0;
+    public static final double CLIMB_ARM_MASS_KG = 1;
+    public static final double CLIMB_ARM_DRUM_RADIUS_METERS = 0.05;
+    public static final double CLIMB_ARM_MIN_HEIGHT = 0;
+    public static final double CLIMB_ARM_MAX_HEIGHT = 1;
+
 
     public static final int CLIMB_LEFT_MOTOR_ID = 9;
     public static final int CLIMB_RIGHT_MOTOR_ID = 10;
@@ -10,7 +20,7 @@ public class RobotMap {
     public static final double CLIMB_RIGHT_MOTOR_BACKWARD_SPEED = -0.4;
     public static final double CLIMB_ARMS_TARGET_TOLERANCE = 0;
     public static final double CLIMB_ARMS_TARGET_RPM_TOLERANCE = 0;
-    public static final double CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS = 1;
+    public static final double CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS = (2 * Math.PI * CLIMB_ARM_DRUM_RADIUS_METERS) / CLIMB_MOTOR_TO_DRUM_GEAR_RATIO;
 
     public static final double COLLECTOR_SPEED = 0.5;
     public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.5;
@@ -21,11 +31,13 @@ public class RobotMap {
     public static final double STORAGE_FEED_ROLLERS_BACKWARDS_LOW_SPEED = -0.2;
     public static final double TOLERANCE_ARM_SPEED = 0;
     public static final int COLLECTOR_MOTOR_ID = 0;
-    public static final int INTAKE_ARM_MOTOR_ID = 0;
+    public static final int INTAKE_ARM_MOTOR_ID = 20;
     public static final int STORAGR_MOTOR1_ID = 0;
     public static final int STORAGE_MOTOR2_ID = 1;
-    public static final int STORAGD_IRSENSOR1_ID = 2;
+    public static final int STORAGE_IRSENSOR1_ID = 2;
     public static final int STORAGE_IRSENSOR2_ID = 3;
+
+
 
     // add constants here
     // public static final type NAME = value;

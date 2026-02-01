@@ -57,17 +57,13 @@ public class ClimbSystem extends SubsystemBase {
         }
 
         mechanism = new Mechanism2d(5,5);
-        MechanismRoot2d leftRoot = mechanism.getRoot("leftArm",2.5,2);
-        MechanismRoot2d rightRoot = mechanism.getRoot("rightArm",2.5,2);
-        leftLigament = leftRoot.append(new MechanismLigament2d("leftArm",2,0,1,new Color8Bit(Color.kRed)));
-        rightLigament = rightRoot.append(new MechanismLigament2d("rightArm",2,0,1,new Color8Bit(Color.kRed)));
-        SmartDashboard.putData("leftArm", mechanism);
-        SmartDashboard.putData("rightArm", mechanism);
-
-
-
-
+        MechanismRoot2d leftRoot = mechanism.getRoot("leftArm",2,2);
+        MechanismRoot2d rightRoot = mechanism.getRoot("rightArm",3,2);
+        leftLigament = leftRoot.append(new MechanismLigament2d("leftArm",0,90,5,new Color8Bit(Color.kRed)));
+        rightLigament = rightRoot.append(new MechanismLigament2d("rightArm",0,90,5,new Color8Bit(Color.kRed)));
+        SmartDashboard.putData("climb", mechanism);
     }
+
     public double getLeftPositionMeters() {
         return encoderLeft.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
     }
@@ -106,8 +102,18 @@ public class ClimbSystem extends SubsystemBase {
     }
 
 
+    @Override
     public void periodic() {
+        double leftLength = getLeftPositionMeters();
+        SmartDashboard.putNumber("ClimbArmLeftPosition", leftLength);
+        leftLigament.setLength(leftLength + 0.1);
 
+        double rightLength = getRightPositionMeters();
+        SmartDashboard.putNumber("ClimbArmRightPosition", rightLength);
+        rightLigament.setLength(rightLength + 0.1);
+
+        SmartDashboard.putBoolean("climbLeftSwitch", isBottomSwitchLeftPressed());
+        SmartDashboard.putBoolean("climbRightSwitch", isBottomSwitchRightPressed());
     }
     public void simulationPeriodic() {
         sim.update();
