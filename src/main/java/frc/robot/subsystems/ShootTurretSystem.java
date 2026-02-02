@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.Sim.ShootTurretSim;
+import frc.robot.sim.ShootTurretSim;
 
 public class ShootTurretSystem extends SubsystemBase {
 

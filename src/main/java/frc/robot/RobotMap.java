@@ -10,8 +10,6 @@ public class RobotMap {
     // ShootTurret
     public static final DCMotor SHOOT_TURRET_MOTOR = DCMotor.getNEO(1);
     public static final int SHOOT_TURRET_MOTOR_ID = 0;
-    public static final int SHOOT_TURRET_LIMIT_SWITCH_MIN_CHANNEL = 0;
-    public static final int SHOOT_TURRET_LIMIT_SWITCH_MAX_CHANNEL = 1;
     public static final int SHOOT_TURRET_LIMIT_SWITCH_CENTER_PORT = 2;
     public static final double SHOOT_TURRET_GEAR_RATIO = 12.41 / 1;
     public static final double SHOOT_TURRET_MASS_KG = 5;
