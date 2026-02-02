@@ -29,30 +29,35 @@ public class ClimbSystem extends SubsystemBase {
     private final DigitalInput bottomSwitchRight;
     private final RelativeEncoder encoderLeft;
     private final RelativeEncoder encoderRight;
+
     private final ClimbSim sim;
     private final Mechanism2d mechanism;
     private final MechanismLigament2d leftLigament;
     private final MechanismLigament2d rightLigament;
 
 
-
     public ClimbSystem() {
         leftMotor = new SparkMax(RobotMap.CLIMB_LEFT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         rightMotor = new SparkMax(RobotMap.CLIMB_RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
-        bottomSwitchLeft = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_LEFT_SENSOR_ID);
-        bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
         encoderLeft = leftMotor.getEncoder();
         encoderRight = rightMotor.getEncoder();
+
+        bottomSwitchLeft = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_LEFT_SENSOR_ID);
+        bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
+
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop.pid(0.5,0,0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+        config = new SparkMaxConfig();
+        config.closedLoop.pid(0.5,0,0)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         if (RobotBase.isSimulation()) {
             sim = new ClimbSim(leftMotor,rightMotor);
-        }
-        else{
+        } else {
             sim = null;
         }
 
@@ -67,40 +72,44 @@ public class ClimbSystem extends SubsystemBase {
     public double getLeftPositionMeters() {
         return encoderLeft.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
     }
+
     public double getRightPositionMeters() {
         return encoderRight.getPosition() * RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS;
     }
-    public void moveLeftMotor(double speed){
+
+    public void setMotors(double speed) {
         leftMotor.set(speed);
-    }
-    public void moveRightMotor(double speed){
         rightMotor.set(speed);
     }
-    public void stopLeft(){
+
+    public void stopLeft() {
         leftMotor.stopMotor();
     }
-    public void stopRight(){
+
+    public void stopRight() {
         rightMotor.stopMotor();
     }
-    public void setTargetPosition(double positionMeters){
+
+    public void setTargetPosition(double positionMeters) {
         leftMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
         rightMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
+    }
 
-    }
     public boolean isAtLeftTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getLeftPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderLeft.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
+        return MathUtil.isNear(targetPosition,getLeftPositionMeters(), RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderLeft.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
+
     public boolean isAtRightTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getRightPositionMeters(),RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderRight.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
+        return MathUtil.isNear(targetPosition,getRightPositionMeters(), RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderRight.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
 
     public boolean isBottomSwitchLeftPressed() {
         return bottomSwitchLeft.get();
     }
+
     public boolean isBottomSwitchRightPressed() {
         return bottomSwitchRight.get();
     }
-
 
     @Override
     public void periodic() {
@@ -115,8 +124,9 @@ public class ClimbSystem extends SubsystemBase {
         SmartDashboard.putBoolean("climbLeftSwitch", isBottomSwitchLeftPressed());
         SmartDashboard.putBoolean("climbRightSwitch", isBottomSwitchRightPressed());
     }
+
+    @Override
     public void simulationPeriodic() {
         sim.update();
     }
-
 }

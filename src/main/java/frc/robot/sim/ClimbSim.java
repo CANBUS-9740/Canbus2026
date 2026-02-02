@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 
 public class ClimbSim {
+
     private final SparkMaxSim leftMotorSim;
     private final SparkMaxSim rightMotorSim;
     private final ElevatorSim leftElevatorSim;
@@ -46,6 +47,7 @@ public class ClimbSim {
                 false,
                 0);
     }
+
     public void update() {
         double leftVoltage = leftMotorSim.getAppliedOutput() * RobotController.getBatteryVoltage();
         double rightVoltage = rightMotorSim.getAppliedOutput() * RobotController.getBatteryVoltage();
