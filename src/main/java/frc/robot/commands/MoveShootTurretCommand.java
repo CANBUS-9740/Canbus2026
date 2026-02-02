@@ -34,7 +34,7 @@ public class MoveShootTurretCommand extends Command {
             motionProfileSetPoint = new TrapezoidProfile.State(shootTurretSystem.getEncoderAngleInDegrees(), 0);
             motionProfileSetPoint = motionProfile.calculate(0.02, motionProfileSetPoint, motionProfileGoal);
 
-            shootTurretSystem.setPosition(motionProfileSetPoint.position);
+            shootTurretSystem.setTargetPosition(motionProfileSetPoint.position);
         } else {
             shootTurretSystem.stop();
         }

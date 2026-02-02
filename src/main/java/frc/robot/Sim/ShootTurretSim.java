@@ -1,64 +1,65 @@
 package frc.robot.Sim;
 
+import com.revrobotics.sim.SparkLimitSwitchSim;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.DIOSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
-import frc.robot.subsystems.ShootTurretSystem;
 
 public class ShootTurretSim {
 
-    private final FlywheelSim sim;
+    private final DCMotorSim sim;
     private final SparkMaxSim motorSim;
+    private final SparkLimitSwitchSim forwardLimitSwitchSim;
+    private final SparkLimitSwitchSim reverseLimitSwitchSim;
 
-    private final DigitalInput limitSwitchMin;
-    private final DigitalInput limitSwitchMax;
-    private final DigitalInput limitSwitchMiddle;
+    private final DIOSim limitSwitchMiddle;
 
-    private final MechanismLigament2d shootTurret;
-
-    public ShootTurretSim(SparkMax motor, DigitalInput limitSwitchMin, DigitalInput limitSwitchMax, DigitalInput limitSwitchMiddle) {
+    public ShootTurretSim(SparkMax motor, DigitalInput limitSwitchMiddle) {
         motorSim = new SparkMaxSim(motor, RobotMap.SHOOT_TURRET_MOTOR);
+        forwardLimitSwitchSim = motorSim.getForwardLimitSwitchSim();
+        reverseLimitSwitchSim = motorSim.getReverseLimitSwitchSim();
 
-        this.limitSwitchMax = limitSwitchMax;
-        this.limitSwitchMin = limitSwitchMin;
-        this.limitSwitchMiddle = limitSwitchMiddle;
+        this.limitSwitchMiddle = new DIOSim(limitSwitchMiddle.getChannel());
+        this.limitSwitchMiddle.setIsInput(true);
 
-        sim = new FlywheelSim(
-                LinearSystemId.createFlywheelSystem(
-                        RobotMap.SHOOT_TURRET_MOTOR,
-                        1,
-                        RobotMap.SHOOT_TURRET_GEAR_RATIO
-                ),
+        sim = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(RobotMap.SHOOT_TURRET_MOTOR, RobotMap.SHOOT_TURRET_MOMENT_OF_INERTIA, RobotMap.SHOOT_TURRET_GEAR_RATIO),
                 RobotMap.SHOOT_TURRET_MOTOR
         );
-
-        Mechanism2d mech = new Mechanism2d(3, 3);
-        MechanismRoot2d root = mech.getRoot("ShootTurret", 1.5, 1.5);
-        shootTurret = root.append(new MechanismLigament2d("ShootTurret", 0.2, 90));
-
-        SmartDashboard.putData("Mech2d", mech);
     }
 
     public void update() {
-        sim.setInputVoltage(motorSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+        sim.setInputVoltage(motorSim.getAppliedOutput() * RobotController.getBatteryVoltage());
+
+        if (forwardLimitSwitchSim.getPressed() || reverseLimitSwitchSim.getPressed()) {
+            sim.setState(sim.getAngularPositionRad(), 0);
+        }
+
         sim.update(0.02);
 
-        RoboRioSim.setVInVoltage(
-                BatterySim.calculateDefaultBatteryLoadedVoltage(sim.getCurrentDrawAmps()));
+        motorSim.iterate(sim.getAngularVelocityRPM(), RobotController.getBatteryVoltage(), 0.02);
 
-        double angleInDegrees = motorSim.getRelativeEncoderSim().getPosition() * 360;
+        double posDegrees = Units.radiansToDegrees(sim.getAngularPositionRad()) % 360;
+        limitSwitchMiddle.setValue(MathUtil.isNear(RobotMap.SHOOT_TURRET_MIDDLE_ANGLE_DEGREES, posDegrees, 3));
+        forwardLimitSwitchSim.setPressed(MathUtil.isNear(RobotMap.SHOOT_TURRET_MAX_ANGLE_DEGREES, posDegrees, 5));
+        reverseLimitSwitchSim.setPressed(MathUtil.isNear(RobotMap.SHOOT_TURRET_MIN_ANGLE_DEGREES, posDegrees, 5));
+    }
 
-        shootTurret.setAngle(angleInDegrees);
+    private double translateAngle(double angleDegrees) {
+        angleDegrees %= 360;
+        if (angleDegrees < 0) {
+            angleDegrees += 360;
+        }
+
+        return angleDegrees;
     }
 }

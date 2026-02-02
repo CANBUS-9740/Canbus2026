@@ -25,18 +25,19 @@ public class ShootTurretResetCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return shootTurretSystem.getLimitSwitchMin() || shootTurretSystem.getLimitSwitchMax() || shootTurretSystem.getLimitSwitchMiddle();
+        return shootTurretSystem.getLimitSwitchMin() || shootTurretSystem.getLimitSwitchMax() || shootTurretSystem.getLimitSwitchCenter();
     }
 
     @Override
     public void end(boolean interrupted) {
+        shootTurretSystem.stop();
+
         if (shootTurretSystem.getLimitSwitchMin()) {
             shootTurretSystem.setEncoderAngle(RobotMap.SHOOT_TURRET_MIN_ANGLE_DEGREES);
         } else if (shootTurretSystem.getLimitSwitchMax()) {
             shootTurretSystem.setEncoderAngle(RobotMap.SHOOT_TURRET_MAX_ANGLE_DEGREES);
-        } else if (shootTurretSystem.getLimitSwitchMiddle()) {
+        } else if (shootTurretSystem.getLimitSwitchCenter()) {
             shootTurretSystem.setEncoderAngle(RobotMap.SHOOT_TURRET_MIDDLE_ANGLE_DEGREES);
         }
-        shootTurretSystem.stop();
     }
 }
