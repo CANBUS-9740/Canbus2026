@@ -23,9 +23,6 @@ public class GameField {
     public static final int APRIL_TAG_TOWER_MIDDLE_BLUE = 32;
     private final AprilTagFieldLayout layout;
 
-
-
-
     public GameField() {
         layout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
         layout.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
