@@ -44,6 +44,11 @@ public class Robot extends TimedRobot {
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
         pathplanner = new Pathplanner(swerveSystem);
         swerveSystem.setDefaultCommand(swerveDriveCommand);
+
+
+        //group commands
+        //intake until full, intake
+        //
     }
 
     @Override
