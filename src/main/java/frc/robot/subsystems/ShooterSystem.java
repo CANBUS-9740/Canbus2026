@@ -18,6 +18,13 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder pitchEncoder;
     private final SparkMax feederMotor;
 
+    private double wheelAngularVelocityrads;
+    private double ballExitVelocityms;
+    private double trajectroryQuadraticA;
+    private double trajectroryQuadraticB;
+    private double trajectroryQuadraticC;
+
+
 
     private final SparkLimitSwitch shooterLowerLimit;
     private final SparkLimitSwitch shooterUpperLimit;
@@ -108,6 +115,15 @@ public class ShooterSystem extends SubsystemBase {
 
     public boolean getPitchUpperLimit() {
         return shooterUpperLimit.isPressed();
+    }
+
+    public double calculateRequieredPitchAngleDegrees(double distanceMeters,double desiredRPMDegrees) {
+        wheelAngularVelocityrads= (desiredRPMDegrees*2*Math.PI)/60;
+        ballExitVelocityms=wheelAngularVelocityrads*0.1016;
+        trajectroryQuadraticA=(RobotMap.GRAVITY*Math.pow(distanceMeters, 2))/(2*Math.pow(ballExitVelocityms,2));
+        trajectroryQuadraticB=distanceMeters*-1;
+        trajectroryQuadraticC=trajectroryQuadraticA+RobotMap.RELATIVE_HUB_HEIGHT;
+        return Math.atan((-trajectroryQuadraticB-Math.sqrt(Math.pow(trajectroryQuadraticB,2)-4*trajectroryQuadraticC*trajectroryQuadraticA))/(trajectroryQuadraticA*2));
     }
 
 

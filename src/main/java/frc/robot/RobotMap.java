@@ -34,6 +34,8 @@ public class RobotMap {
     // add constants here
     // public static final type NAME = value;
     //Shooting
+    public static final double GRAVITY=9.8;
+    public static final double RELATIVE_HUB_HEIGHT=1.435;
     public static final int MAIN_SHOOTER_MOTOR = 1;
     public static final int SOOTER_PITCH_MOTOR = 3;
     public static final int SHOOTER_FEEDER_MOTOR = 4;
