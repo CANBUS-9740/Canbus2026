@@ -52,4 +52,15 @@ public class GameField {
             throw new IllegalStateException((String.format(Locale.ENGLISH, "AprilTag %d not found in layout", id)));
         }
     }
+
+    public double getTargetAngleTurretToHub(Pose2d swervePose, DriverStation.Alliance alliance){
+        double swerveAngle360 = swervePose.getRotation().getDegrees();
+        //double turretFieldAngle = swerveAngle360 + shootTurretSystem.getEncoderAngleInDegrees();
+        double hubAngleBotCentric = Math.atan(
+                this.getHubPose(alliance).getY() - swervePose.getY() /
+                        this.getHubPose(alliance).getX() - swervePose.getX());
+        hubAngleBotCentric = hubAngleBotCentric < 0 ? hubAngleBotCentric + 180 : hubAngleBotCentric;
+        double swerveAngleMinusToPlus = swerveAngle360>180? swerveAngle360 - 360 : swerveAngle360;
+        return hubAngleBotCentric - swerveAngleMinusToPlus; //botCentric
+    }
 }

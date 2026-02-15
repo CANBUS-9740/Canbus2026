@@ -72,6 +72,7 @@ public class RobotMap {
     public static final int SHOOT_TURRET_MOTOR_ID = 0;
     public static final int SHOOT_TURRET_LIMIT_SWITCH_CENTER_PORT = 2;
     public static final double SHOOT_TURRET_GEAR_RATIO = 12.41 / 1;
+    public static final double SHOOT_TURRET_OFFSET = 12.41 / 1;
     public static final double SHOOT_TURRET_MASS_KG = 5;
     public static final double SHOOT_TURRET_RADIUS_METERS = 0.1;
     public static final double SHOOT_TURRET_MOMENT_OF_INERTIA = 0.5 * SHOOT_TURRET_MASS_KG * SHOOT_TURRET_RADIUS_METERS * SHOOT_TURRET_RADIUS_METERS;

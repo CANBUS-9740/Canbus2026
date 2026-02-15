@@ -5,16 +5,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.GameField;
 import frc.robot.Pathplanner;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.ShootTurretSystem;
 import frc.robot.subsystems.Swerve;
-import org.opencv.core.Mat;
 
-public class TurnSwerveAndTurretToHub extends Command {
+public class AlignToHubForShooting extends Command {
 
     private final ShootTurretSystem shootTurretSystem;
     private final Swerve swerve;
@@ -25,12 +23,14 @@ public class TurnSwerveAndTurretToHub extends Command {
     private TrapezoidProfile.State motionProfileGoal;
     private TrapezoidProfile.State motionProfileSetPoint;
     private DriverStation.Alliance alliance;
+    private double swerveAngle360;
+    private Pose2d swervePose;
 
 
-    public TurnSwerveAndTurretToHub(ShootTurretSystem shootTurretSystem, Swerve swerve) {
-        gameField = new GameField();
+    public AlignToHubForShooting(ShootTurretSystem shootTurretSystem, Swerve swerve, GameField gameField, Pathplanner pathplanner) {
+        this.gameField = gameField;
         this.swerve = swerve;
-        pathplanner = new Pathplanner(swerve);
+        this.pathplanner = pathplanner;
         this.shootTurretSystem = shootTurretSystem;
         addRequirements(shootTurretSystem);
         addRequirements(swerve);
@@ -38,17 +38,16 @@ public class TurnSwerveAndTurretToHub extends Command {
 
     public void initialize() {
         alliance = DriverStation.getAlliance().get();
+        swervePose = swerve.getPose();
+
     }
 
     public void execute() {
-
-        double swerveAngle360 = swerve.getPose().getRotation().getDegrees();
         double hubAngleBotCentric = Math.atan(
                         gameField.getHubPose(alliance).getY() - swerve.getPose().getY() /
                         gameField.getHubPose(alliance).getX() - swerve.getPose().getX());
         hubAngleBotCentric = hubAngleBotCentric < 0 ? hubAngleBotCentric + 180 : hubAngleBotCentric;
-        double swerveAngleMinusToPlus = swerveAngle360 > 180 ? swerveAngle360 - 360 : swerveAngle360;
-        double turretTargetAngleBotCentric = hubAngleBotCentric - swerveAngleMinusToPlus;
+        double turretTargetAngleBotCentric = gameField.getTargetAngleTurretToHub(swervePose, alliance);;
 
 
         if (turretTargetAngleBotCentric <= 90 && turretTargetAngleBotCentric >= -90) {
@@ -87,6 +86,4 @@ public class TurnSwerveAndTurretToHub extends Command {
     public boolean isFinished() {
         return isArrived;
     }
-
-
 }
