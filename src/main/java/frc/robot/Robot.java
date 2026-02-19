@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.ClimbSystem;
@@ -32,7 +33,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         swerveSystem = new Swerve();
         shootTurretSystem = new ShootTurretSystem();
-        shooterSystem = new ShooterSystem();
+        shooterSystem = new ShooterSystem(swerveSystem.getField());
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
         climbSystem = new ClimbSystem();
@@ -77,8 +78,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-
-
+        //shooterSystem.launchSimBall(swerveSystem.getPose(), shootTurretSystem.getEncoderAngleInDegrees());
+        double angle = shooterSystem.calculateRequieredPitchAngleDegrees(1, 5100);
+        shooterSystem.sim.ballSim.launchBall(
+                new Translation3d(swerveSystem.getPose().getTranslation()),
+                0,
+                5100,
+                Math.toDegrees(angle)
+        );
     }
 
     @Override

@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -58,10 +59,10 @@ public class RobotMap {
 
 
     public static final double TOLERANCE_ARM_SPEED = 0;
-    public static final int COLLECTOR_MOTOR_ID = 0;
+    public static final int COLLECTOR_MOTOR_ID = 12;
     public static final int INTAKE_ARM_MOTOR_ID = 20;
-    public static final int STORAGR_MOTOR1_ID = 0;
-    public static final int STORAGE_MOTOR2_ID = 1;
+    public static final int STORAGR_MOTOR1_ID = 13;
+    public static final int STORAGE_MOTOR2_ID = 14;
     public static final int STORAGE_IRSENSOR1_ID = 2;
     public static final int STORAGE_IRSENSOR2_ID = 3;
 
@@ -92,8 +93,6 @@ public class RobotMap {
     public static final int MAIN_SHOOTER_MOTOR = 1;
     public static final int SOOTER_PITCH_MOTOR = 3;
     public static final int SHOOTER_FEEDER_MOTOR = 4;
-    public static final int SHOOTER_LOWER_LIMIT =5;
-    public static final int SHOOTER_UPPER_LIMIT =6;
     public static final double SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES =45;
     public static final double SHOOTER_PITCH_FF_VOLTAGE =0.5;
     public static final double PITCH_RPM_THRESHOLD=1500;
@@ -104,9 +103,19 @@ public class RobotMap {
     public static final double SHOOTER_MECHANISM_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNeoVortex(1).freeSpeedRadPerSec);
     public static final double SHOOTER_PITCH_GEAR_RATIO =2.0;
     public static final double SHOOTER_FEEDER_CONSTATNT = 3500.0;
+    public static final double SHOOTER_WHEEL_RADIUS_METERS = Units.inchesToMeters(4);
+    public static final DCMotor SHOOTER_MOTOR = DCMotor.getNeoVortex(1);
+    public static final DCMotor SHOOTER_PITCH_MOTOR = DCMotor.getNEO(1);
+    public static final double SHOOTER_MASS_KG = 1;
+    public static final double SHOOTER_MOI = 0.5*SHOOTER_MASS_KG*SHOOTER_WHEEL_RADIUS_METERS*SHOOTER_WHEEL_RADIUS_METERS;
+    public static final double SHOOTER_PITCH_RADIUS_METERS = Units.inchesToMeters(4);
+    public static final double SHOOTER_PITCH_MASS_KG = 1;
+    public static final double SHOOTER_PITCH_MOI = 0.5*SHOOTER_PITCH_MASS_KG*SHOOTER_PITCH_RADIUS_METERS*SHOOTER_PITCH_RADIUS_METERS;
+    public static final double SHOOTER_GEAR_RATIO = 1;
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;
+    public static final Transform3d SHOOTER_POSE_ON_ROBOT = new Transform3d();
 
     //Swerve System
     public static final DCMotor SWERVE_DRIVE_MOTOR = DCMotor.getKrakenX60(1);
