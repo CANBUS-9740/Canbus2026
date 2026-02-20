@@ -58,27 +58,30 @@ public class RobotMap {
 
 
     public static final double TOLERANCE_ARM_SPEED = 0;
-    public static final int COLLECTOR_MOTOR_ID = 0;
+    public static final int COLLECTOR_MOTOR_ID = 11;
     public static final int INTAKE_ARM_MOTOR_ID = 20;
-    public static final int STORAGR_MOTOR1_ID = 0;
-    public static final int STORAGE_MOTOR2_ID = 1;
+    public static final int STORAGR_MOTOR1_ID = 12;
+    public static final int STORAGE_MOTOR2_ID = 13;
     public static final int STORAGE_IRSENSOR1_ID = 2;
     public static final int STORAGE_IRSENSOR2_ID = 3;
 
 
 
     // ShootTurret
+    //angles in -180 to 180
     public static final DCMotor SHOOT_TURRET_MOTOR = DCMotor.getNEO(1);
-    public static final int SHOOT_TURRET_MOTOR_ID = 0;
+    public static final int SHOOT_TURRET_MOTOR_ID = 5;
     public static final int SHOOT_TURRET_LIMIT_SWITCH_CENTER_PORT = 2;
     public static final double SHOOT_TURRET_GEAR_RATIO = 12.41 / 1;
-    public static final double SHOOT_TURRET_OFFSET = 12.41 / 1;
+    public static final double SHOOT_TURRET_OFFSET_FROM_CENTER_M = 0.2;
     public static final double SHOOT_TURRET_MASS_KG = 5;
     public static final double SHOOT_TURRET_RADIUS_METERS = 0.1;
     public static final double SHOOT_TURRET_MOMENT_OF_INERTIA = 0.5 * SHOOT_TURRET_MASS_KG * SHOOT_TURRET_RADIUS_METERS * SHOOT_TURRET_RADIUS_METERS;
     public static final double SHOOT_TURRET_MIDDLE_ANGLE_DEGREES = 0;
     public static final double SHOOT_TURRET_MAX_ANGLE_DEGREES = 170;
     public static final double SHOOT_TURRET_MIN_ANGLE_DEGREES = -170;
+    public static final double SHOOT_TURRET_FRONT_MAX_ANGLE_DEGREES = 90;
+    public static final double SHOOT_TURRET_FRONT_MIN_ANGLE_DEGREES = -90;
     public static final double SHOOT_TURRET_IS_NEAR_TOLERANCE_DEGREES = 0.5;
     public static final double SHOOT_TURRET_IS_NEAR_VELOCITY_RPM = 1;
     public static final double SHOOT_TURRET_RESET_STATIC_SPEED = 0.05;
@@ -88,9 +91,9 @@ public class RobotMap {
     public static TrapezoidProfile.Constraints SHOOT_TURRET_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(6000, 2000);
 
     //Shooting
-    public static final int MAIN_SHOOTER_MOTOR = 1;
-    public static final int SOOTER_PITCH_MOTOR = 3;
-    public static final int SHOOTER_FEEDER_MOTOR = 4;
+    public static final int MAIN_SHOOTER_MOTOR = 15;
+    public static final int SOOTER_PITCH_MOTOR = 16;
+    public static final int SHOOTER_FEEDER_MOTOR = 17;
     public static final int SHOOTER_LOWER_LIMIT =5;
     public static final int SHOOTER_UPPER_LIMIT =6;
     public static final double SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES =45;
@@ -108,11 +111,12 @@ public class RobotMap {
     public static final int SHOOTER_PITCH_KD = 4;
 
     //Swerve System
+    //angles in 0 to 360
     public static final DCMotor SWERVE_DRIVE_MOTOR = DCMotor.getKrakenX60(1);
     public static final double SWERVE_DRIVE_MAX_SPEED_MPS = Units.radiansToRotations(SWERVE_DRIVE_MOTOR.freeSpeedRadPerSec) / 6.12 * 0.085;
     public static final PathConstraints PATH_CONSTRAINTS = new PathConstraints(2, 2.5, Math.PI, Math.PI);
     public static final PathConstraints PATH_CONSTRAINTS_SLOW = new PathConstraints(1, 2.5, Math.PI, Math.PI);
     public static final PIDConstants SWERVE_PATH_DRIVE_PID = new PIDConstants(5, 0, 0);
     public static final PIDConstants SWERVE_PATH_ROTATE_PID = new PIDConstants(3, 0, 0);
-    public static final double ROBOT_LENGTH_METERS = 0;
+    public static final double ROBOT_LENGTH_METERS = 0.7;
 }
