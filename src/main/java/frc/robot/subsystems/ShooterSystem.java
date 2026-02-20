@@ -3,13 +3,23 @@ package frc.robot.subsystems;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.*;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLimitSwitch;
+import com.revrobotics.spark.SparkLowLevel;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
+import frc.robot.sim.ShooterSim;
 
 public class ShooterSystem extends SubsystemBase {
     private final SparkMax shooterMotor;
@@ -18,12 +28,20 @@ public class ShooterSystem extends SubsystemBase {
     private final RelativeEncoder pitchEncoder;
     private final SparkMax feederMotor;
 
+    private double wheelAngularVelocityrads;
+    private double ballExitVelocityms;
+    private double trajectroryQuadraticA;
+    private double trajectroryQuadraticB;
+    private double trajectroryQuadraticC;
+
+
 
     private final SparkLimitSwitch shooterLowerLimit;
     private final SparkLimitSwitch shooterUpperLimit;
 
+    public final ShooterSim sim;
 
-    public ShooterSystem() {
+    public ShooterSystem(Field2d field) {
         shooterMotor = new SparkMax(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
         pitchMotor = new SparkMax(RobotMap.SOOTER_PITCH_MOTOR, SparkLowLevel.MotorType.kBrushless);
@@ -40,7 +58,6 @@ public class ShooterSystem extends SubsystemBase {
 
         shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
 
 
         configPitch.limitSwitch
@@ -62,6 +79,15 @@ public class ShooterSystem extends SubsystemBase {
         shooterEncoder = shooterMotor.getEncoder();
         pitchEncoder = pitchMotor.getEncoder();
 
+        if (Robot.isSimulation()) {
+            sim = new ShooterSim(field, shooterMotor, pitchMotor);
+        } else {
+            sim = null;
+        }
+    }
+
+    public void launchSimBall(Pose2d robotPose, double turretDirectionAngle) {
+        sim.launchBall(robotPose, turretDirectionAngle);
     }
 
     public void setShootVoltage(double shootVolts) {
@@ -110,6 +136,14 @@ public class ShooterSystem extends SubsystemBase {
         return shooterUpperLimit.isPressed();
     }
 
+    public double calculateRequieredPitchAngleDegrees(double distanceMeters,double desiredRPMDegrees) {
+        wheelAngularVelocityrads= (desiredRPMDegrees*2*Math.PI)/60;
+        ballExitVelocityms=wheelAngularVelocityrads*0.1016;
+        trajectroryQuadraticA=(RobotMap.GRAVITY*Math.pow(distanceMeters, 2))/(2*Math.pow(ballExitVelocityms,2));
+        trajectroryQuadraticB=distanceMeters*-1;
+        trajectroryQuadraticC=trajectroryQuadraticA+RobotMap.RELATIVE_HUB_HEIGHT;
+        return Math.atan((-trajectroryQuadraticB-Math.sqrt(Math.pow(trajectroryQuadraticB,2)-4*trajectroryQuadraticC*trajectroryQuadraticA))/(trajectroryQuadraticA*2));
+    }
 
     @Override
     public void periodic() {
@@ -118,5 +152,10 @@ public class ShooterSystem extends SubsystemBase {
         } else if (getPitchUpperLimit()) {
             setEncoderAngle(RobotMap.SHOOTER_PITCH_UPPER_LIMIT_DEG);
         }
+    }
+
+    @Override
+    public void simulationPeriodic() {
+        sim.update();
     }
 }
