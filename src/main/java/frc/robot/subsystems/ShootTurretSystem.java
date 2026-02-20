@@ -103,6 +103,12 @@ public class ShootTurretSystem extends SubsystemBase {
         double newValue = (encoder.getPosition() * 360) % 360;
         setEncoderAngle(newValue);
         return newValue;
+    } // Range is 0 to 360 degrees
+
+    public double getEncoderAngleInDegreesMinusToPlus() {
+        double newValue = (encoder.getPosition() * 360);
+        setEncoderAngle(newValue);
+        return newValue;
     }
 
     public boolean isAtAngle(double angle) {
