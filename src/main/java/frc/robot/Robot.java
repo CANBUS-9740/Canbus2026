@@ -1,6 +1,5 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -78,14 +77,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        //shooterSystem.launchSimBall(swerveSystem.getPose(), shootTurretSystem.getEncoderAngleInDegrees());
-        double angle = shooterSystem.calculateRequieredPitchAngleDegrees(1, 5100);
-        shooterSystem.sim.ballSim.launchBall(
-                new Translation3d(swerveSystem.getPose().getTranslation()),
-                0,
-                5100,
-                Math.toDegrees(angle)
-        );
+
     }
 
     @Override

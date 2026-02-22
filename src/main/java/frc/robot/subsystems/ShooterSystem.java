@@ -22,19 +22,12 @@ import frc.robot.RobotMap;
 import frc.robot.sim.ShooterSim;
 
 public class ShooterSystem extends SubsystemBase {
+
     private final SparkMax shooterMotor;
     private final RelativeEncoder shooterEncoder;
     private final SparkMax pitchMotor;
     private final RelativeEncoder pitchEncoder;
     private final SparkMax feederMotor;
-
-    private double wheelAngularVelocityrads;
-    private double ballExitVelocityms;
-    private double trajectroryQuadraticA;
-    private double trajectroryQuadraticB;
-    private double trajectroryQuadraticC;
-
-
 
     private final SparkLimitSwitch shooterLowerLimit;
     private final SparkLimitSwitch shooterUpperLimit;
@@ -87,7 +80,9 @@ public class ShooterSystem extends SubsystemBase {
     }
 
     public void launchSimBall(Pose2d robotPose, double turretDirectionAngle) {
-        sim.launchBall(robotPose, turretDirectionAngle);
+        if (Robot.isSimulation()) {
+            sim.launchBall(robotPose, turretDirectionAngle);
+        }
     }
 
     public void setShootVoltage(double shootVolts) {
@@ -97,7 +92,6 @@ public class ShooterSystem extends SubsystemBase {
     public void setFeederVoltage(double feederVolts) {
         feederMotor.setVoltage(feederVolts);
     }
-
 
     public double getPitchAngleDegrees() {
         return pitchEncoder.getPosition() * RobotMap.SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES;
@@ -136,13 +130,37 @@ public class ShooterSystem extends SubsystemBase {
         return shooterUpperLimit.isPressed();
     }
 
-    public double calculateRequieredPitchAngleDegrees(double distanceMeters,double desiredRPMDegrees) {
-        wheelAngularVelocityrads= (desiredRPMDegrees*2*Math.PI)/60;
-        ballExitVelocityms=wheelAngularVelocityrads*0.1016;
-        trajectroryQuadraticA=(RobotMap.GRAVITY*Math.pow(distanceMeters, 2))/(2*Math.pow(ballExitVelocityms,2));
-        trajectroryQuadraticB=distanceMeters*-1;
-        trajectroryQuadraticC=trajectroryQuadraticA+RobotMap.RELATIVE_HUB_HEIGHT;
-        return Math.atan((-trajectroryQuadraticB-Math.sqrt(Math.pow(trajectroryQuadraticB,2)-4*trajectroryQuadraticC*trajectroryQuadraticA))/(trajectroryQuadraticA*2));
+    public double calculateFiringPitchAngleDegrees(double distanceMeters, double firingSpeedRpm, boolean highArc) {
+        double firingSpeedMps = firingSpeedRpm * (2 * Math.PI * RobotMap.SHOOTER_WHEEL_RADIUS_METERS) / 60;
+
+        double a = (RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * Math.pow(distanceMeters, 2)) / (2 * Math.pow(firingSpeedMps, 2));
+        double b = -distanceMeters;
+        double c = (RobotMap.HUB_HEIGHT_METERS - RobotMap.SHOOTER_HEIGHT_METERS) + a;
+
+        double nominatorSqrt = Math.sqrt(Math.pow(b, 2) - (4 * a * c));
+        double denominator = 2 * a;
+
+        double tanAlpha;
+        if (highArc) {
+            tanAlpha = (-b + nominatorSqrt) / denominator;
+        } else {
+            tanAlpha = (-b - nominatorSqrt) / denominator;
+        }
+
+        return Math.toDegrees(Math.atan(tanAlpha));
+    }
+
+    public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
+        double nominator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters;
+
+        double heightDifferance = RobotMap.HUB_HEIGHT_METERS - RobotMap.SHOOTER_HEIGHT_METERS;
+        double firingAngleRad = Math.toRadians(firingAngleDegrees);
+        double cosAngle = Math.cos(firingAngleRad);
+        double tanAngle = Math.tan(firingAngleRad);
+        double denominator = (2 * cosAngle * cosAngle) * ((distanceMeters * tanAngle) - heightDifferance);
+
+        double firingLinearVelocityMps = Math.sqrt(nominator / denominator);
+        return firingLinearVelocityMps / (2 * Math.PI * RobotMap.SHOOTER_WHEEL_RADIUS_METERS) * 60;
     }
 
     @Override
