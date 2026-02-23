@@ -2,14 +2,14 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeCollectorSystem;
-import frc.robot.subsystems.ShooterSystem;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShootTurretSystem;
+import frc.robot.subsystems.ShooterSystem;
 import frc.robot.subsystems.Swerve;
 
 public class Robot extends TimedRobot {
@@ -32,7 +32,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         swerveSystem = new Swerve();
         shootTurretSystem = new ShootTurretSystem();
-        shooterSystem = new ShooterSystem();
+        shooterSystem = new ShooterSystem(swerveSystem.getField());
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
         climbSystem = new ClimbSystem();
@@ -77,7 +77,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-
 
     }
 
