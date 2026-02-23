@@ -3,6 +3,7 @@ package frc.robot;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -25,6 +26,7 @@ public class RobotMap {
 
     // shooter
     public static final Transform3d SHOOTER_POSE_ON_ROBOT = new Transform3d(new Translation3d(0.4, 0, 0.4), Rotation3d.kZero); // TODO:
+    public static final Transform2d SHOOTER_POSE_ON_ROBOT_2D = new Transform2d(SHOOTER_POSE_ON_ROBOT.getX(), SHOOTER_POSE_ON_ROBOT.getY(), SHOOTER_POSE_ON_ROBOT.getRotation().toRotation2d());
 
     // climb
     public static final DCMotor CLIMB_LEFT_ARM_MOTOR = DCMotor.getNEO(1);
@@ -69,6 +71,8 @@ public class RobotMap {
     public static final double SHOOT_TURRET_MIDDLE_ANGLE_DEGREES = 0;
     public static final double SHOOT_TURRET_MAX_ANGLE_DEGREES = 170;
     public static final double SHOOT_TURRET_MIN_ANGLE_DEGREES = -170;
+    public static final double SHOOT_TURRET_FRONT_MIN_ANGLE_DEGREES = -90;
+    public static final double SHOOT_TURRET_FRONT_MAX_ANGLE_DEGREES = 90;
 
     // shooter
     public static final double SHOOTER_WHEEL_RADIUS_METERS = Units.inchesToMeters(4);
