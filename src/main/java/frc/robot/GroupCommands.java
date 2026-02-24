@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
@@ -48,7 +48,6 @@ public class GroupCommands {
         this.controller = controller;
         this.swerve = swerve;
 
-        feedToShooterCommand = new StorageFeedToShooterCommand(storageSystem);
     }
 
     public Command IntakeSimpleCommand (){
@@ -69,23 +68,19 @@ public class GroupCommands {
         );
     }
 
-    public Command ShootHubCommandWithTuning(double targetAngle, double targetPitch){
-        return new SequentialCommandGroup(
-                feedToShooterCommand,
-                new MoveShootTurretCommand(shootTurretSystem,targetAngle), //replace with move all swerve command
-                Commands.deadline(
-                        Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
-                        new ShootCommand(shooterSystem, targetPitch, RobotMap.SHOOTER_MECHANISM_MAX_RPM)
-                )
+    public Command AlignToHubCommand(){
+        return new ParallelCommandGroup(
+                new MoveShootTurretCommand(shootTurretSystem, gameField.getTargetAngleTurretToHub(swerve.getPose(), DriverStation.getAlliance().get())),
+                new SwerveRotateToAngle(swerve, gameField.getTargetAngleSwerveToHub(swerve.getPose(),DriverStation.getAlliance().get()))
         );
     }
 
-    public Command ShootHubCommand(double targetPitch){
+    public Command ShootHubCommandLirazRussoShooter (double targetPitch, double targetRPM){
         return new SequentialCommandGroup(
-                feedToShooterCommand,
+                new StorageFeedToShooterCommand(storageSystem),
                 Commands.deadline(
                         Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
-                        new ShootCommand(shooterSystem,targetPitch, RobotMap.SHOOTER_MECHANISM_MAX_RPM)
+                        new ShootCommand(shooterSystem, targetPitch, targetRPM)
                 )
         );
     }
