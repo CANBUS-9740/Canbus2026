@@ -26,7 +26,7 @@ public class Swerve extends SubsystemBase {
     public final SwerveDrive swerveDrive;
 
     public Swerve() {
-        SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.HIGH;
+        SwerveDriveTelemetry.verbosity = SwerveDriveTelemetry.TelemetryVerbosity.INFO;
         File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(), "swerve");
         try {
             swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(RobotMap.SWERVE_DRIVE_MAX_SPEED_MPS);
@@ -43,6 +43,8 @@ public class Swerve extends SubsystemBase {
         swerveDrive.synchronizeModuleEncoders();
 
         autoBuilderConfiguration();
+
+        SmartDashboard.putData("Field", getField());
     }
 
     public void addVisionMeasurement(LimelightHelpers.PoseEstimate poseEstimate){
@@ -114,5 +116,6 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveDrive.updateOdometry();
+        getField().setRobotPose(getPose());
     }
 }

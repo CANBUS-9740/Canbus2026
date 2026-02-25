@@ -1,13 +1,12 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
-import frc.robot.subsystems.ShooterSystem;
+import frc.robot.subsystems.DynamicShooterSystem;
 
 public class ShootCommand extends Command {
-    private final ShooterSystem shooterSystem;
+    private final DynamicShooterSystem dynamicShooterSystem;
     private final double targetPitch;
     private final double targetRPM;
     private boolean setNewTarget;
@@ -17,12 +16,12 @@ public class ShootCommand extends Command {
     private TrapezoidProfile.State pitchProfileGoal;
     private TrapezoidProfile.State pitchProfileSetPoint;
 
-    public ShootCommand(ShooterSystem shooterSystem, double targetPitch, double targetRPM) {
-        this.shooterSystem = shooterSystem;
+    public ShootCommand(DynamicShooterSystem dynamicShooterSystem, double targetPitch, double targetRPM) {
+        this.dynamicShooterSystem = dynamicShooterSystem;
         this.targetPitch = targetPitch;
         this.targetRPM = targetRPM;
 
-        addRequirements(shooterSystem);
+        addRequirements(dynamicShooterSystem);
     }
 
     @Override
@@ -30,8 +29,8 @@ public class ShootCommand extends Command {
         setNewTarget = true;
         pitchProfile = new TrapezoidProfile(RobotMap.SHOOTER_PITCH_MOTION_PROFILE_CONSTRAINTS);
         pitchProfileGoal = new TrapezoidProfile.State(targetPitch, 0);
-        pitchProfileSetPoint = new TrapezoidProfile.State(shooterSystem.getPitchAngleDegrees(), 0);
-        shooterSystem.setShootVoltage(targetRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
+        pitchProfileSetPoint = new TrapezoidProfile.State(dynamicShooterSystem.getPitchAngleDegrees(), 0);
+        dynamicShooterSystem.setShootVoltage(targetRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
 
     }
 
@@ -39,19 +38,19 @@ public class ShootCommand extends Command {
     public void execute() {
 
 
-        if (shooterSystem.isAtAngle(targetPitch)) {
+        if (dynamicShooterSystem.isAtAngle(targetPitch)) {
 
-            shooterSystem.setPitchPosition(targetPitch);
+            dynamicShooterSystem.setPitchPosition(targetPitch);
             isAtPitch = true;
 
         } else {
             pitchProfileSetPoint = pitchProfile.calculate(0.02, pitchProfileSetPoint, pitchProfileGoal);
-            shooterSystem.setPitchPosition(pitchProfileSetPoint.position);
+            dynamicShooterSystem.setPitchPosition(pitchProfileSetPoint.position);
         }
 
 
-        if (shooterSystem.getShooterVelocityRPM() >= targetRPM - 10 && isAtPitch) {
-            shooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTATNT);
+        if (dynamicShooterSystem.getShooterVelocityRPM() >= targetRPM - 10 && isAtPitch) {
+            dynamicShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTATNT);
         }
     }
 
@@ -62,8 +61,8 @@ public class ShootCommand extends Command {
 
     @Override
     public void end(boolean wasInterrupted) {
-        shooterSystem.stopPitch();
-        shooterSystem.stopShooterAndFeeder();
+        dynamicShooterSystem.stopPitch();
+        dynamicShooterSystem.stopShooterAndFeeder();
     }
 
 
