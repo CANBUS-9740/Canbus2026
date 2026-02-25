@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.DynamicShooterSystem;
 
-public class ShootCommand extends Command {
+public class ShootCommandDynamicPitch extends Command {
     private final DynamicShooterSystem dynamicShooterSystem;
     private final double targetPitch;
     private final double targetRPM;
@@ -16,7 +16,7 @@ public class ShootCommand extends Command {
     private TrapezoidProfile.State pitchProfileGoal;
     private TrapezoidProfile.State pitchProfileSetPoint;
 
-    public ShootCommand(DynamicShooterSystem dynamicShooterSystem, double targetPitch, double targetRPM) {
+    public ShootCommandDynamicPitch(DynamicShooterSystem dynamicShooterSystem, double targetPitch, double targetRPM) {
         this.dynamicShooterSystem = dynamicShooterSystem;
         this.targetPitch = targetPitch;
         this.targetRPM = targetRPM;
