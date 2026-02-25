@@ -28,7 +28,7 @@ public class GroupCommands {
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
 
-    private ShootCommand shootCommand;
+    //private ShootCommand shootCommand;
     private ShootTurretResetCommand shootTurretResetCommand;
     private MoveShootTurretCommand moveShootTurretCommand;
     private ShootTurretSystem shootTurretSystem;
@@ -50,7 +50,7 @@ public class GroupCommands {
 
     }
 
-    public Command
+   // public Command
 
     public Command IntakeSimpleCommand (){
         return new SequentialCommandGroup(
@@ -79,11 +79,11 @@ public class GroupCommands {
     
     public Command ShootHubCommandStaticShooter ( double targetRPM){
         return new SequentialCommandGroup(
-                new StorageFeedToShooterCommand(storageSystem),
-                Commands.deadline(
-                        Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
-                        new ShootCommand(dynamicShooterSystem, targetPitch, targetRPM)
-                )
+//                new StorageFeedToShooterCommand(storageSystem),
+//                Commands.deadline(
+//                        Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
+//                        new ShootCommand(dynamicShooterSystem, targetPitch, targetRPM)
+//                )
         );
     }
 
