@@ -25,6 +25,7 @@ public class RobotMap {
     public static final double ROBOT_LENGTH_METERS = 0;
 
     // shooter
+    public static final int LIMIT_SWITCH = 0;
     public static final Transform3d SHOOTER_POSE_ON_ROBOT = new Transform3d(new Translation3d(0.4, 0, 0.4), Rotation3d.kZero); // TODO:
     public static final Transform2d SHOOTER_POSE_ON_ROBOT_2D = new Transform2d(SHOOTER_POSE_ON_ROBOT.getX(), SHOOTER_POSE_ON_ROBOT.getY(), SHOOTER_POSE_ON_ROBOT.getRotation().toRotation2d());
 

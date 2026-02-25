@@ -32,7 +32,7 @@ public class GroupCommands {
     private ShootTurretResetCommand shootTurretResetCommand;
     private MoveShootTurretCommand moveShootTurretCommand;
     private ShootTurretSystem shootTurretSystem;
-    private ShooterSystem shooterSystem;
+    private DynamicShooterSystem dynamicShooterSystem;
 
     private StorageFeedToShooterCommand feedToShooterCommand;
     private StorageSystem storageSystem;
@@ -49,6 +49,8 @@ public class GroupCommands {
         this.swerve = swerve;
 
     }
+
+    public Command
 
     public Command IntakeSimpleCommand (){
         return new SequentialCommandGroup(
@@ -74,13 +76,13 @@ public class GroupCommands {
                 new SwerveRotateToAngle(swerve, gameField.getTargetAngleSwerveToHub(swerve.getPose(),DriverStation.getAlliance().get()))
         );
     }
-
-    public Command ShootHubCommandLirazRussoShooter (double targetPitch, double targetRPM){
+    
+    public Command ShootHubCommandStaticShooter ( double targetRPM){
         return new SequentialCommandGroup(
                 new StorageFeedToShooterCommand(storageSystem),
                 Commands.deadline(
                         Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
-                        new ShootCommand(shooterSystem, targetPitch, targetRPM)
+                        new ShootCommand(dynamicShooterSystem, targetPitch, targetRPM)
                 )
         );
     }
