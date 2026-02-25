@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,16 +10,14 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SwerveDriveCommand;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.MoveShootTurretCommand;
 import frc.robot.commands.SwerveRotateToAngle;
-import frc.robot.commands.TurretTrackHub;
 import frc.robot.subsystems.ClimbSystem;
 import frc.robot.subsystems.IntakeArmSystem;
 import frc.robot.subsystems.IntakeCollectorSystem;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.ShootTurretSystem;
-import frc.robot.subsystems.ShooterSystem;
+import frc.robot.subsystems.DynamicShooterSystem;
 import frc.robot.subsystems.Swerve;
 
 import java.util.Set;
@@ -29,7 +26,7 @@ public class Robot extends TimedRobot {
 
     private Swerve swerveSystem;
     private ShootTurretSystem shootTurretSystem;
-    private ShooterSystem shooterSystem;
+    private DynamicShooterSystem shooterSystem;
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
     private ClimbSystem climbSystem;
@@ -46,7 +43,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         swerveSystem = new Swerve();
         shootTurretSystem = new ShootTurretSystem();
-        shooterSystem = new ShooterSystem(swerveSystem.getField());
+        shooterSystem = new DynamicShooterSystem(swerveSystem.getField());
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
         climbSystem = new ClimbSystem();
@@ -60,6 +57,11 @@ public class Robot extends TimedRobot {
 
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
         swerveSystem.setDefaultCommand(swerveDriveCommand);
+
+
+        //group commands
+        //intake until full, intake
+        //
     }
 
     @Override
