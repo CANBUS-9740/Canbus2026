@@ -35,8 +35,14 @@ public class IntakeArmSystem extends SubsystemBase {
         encoder = motor.getAbsoluteEncoder();
        relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
-        config.closedLoop.pid(0.7,0.1,0.07)
+        config.inverted(true);
+        config.closedLoop.pid(3,0,0.5)
+                .positionWrappingEnabled(true)
+                .positionWrappingMinInput(0)
+                .positionWrappingMaxInput(1)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+        config.closedLoop.feedForward.kCos(0.3);
+        config.absoluteEncoder.zeroOffset(0.47415367);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         if (RobotBase.isSimulation()) {
@@ -74,7 +80,7 @@ public class IntakeArmSystem extends SubsystemBase {
 
     public boolean IsArmInPositionAndSteady(double targetPosition){
 
-        return MathUtil.isNear(targetPosition, getPositionDegrees(), RobotMap.TOLERANCE_ARM_SPEED)&& Math.abs(relativeEncoder.getVelocity()) < RobotMap.TOLERANCE_ARM_SPEED;
+        return MathUtil.isNear(targetPosition, getPositionDegrees(), RobotMap.TOLERANCE_ARM_POSITION)&& Math.abs(relativeEncoder.getVelocity()) < RobotMap.TOLERANCE_ARM_SPEED;
     }
     public void periodic() {
         SmartDashboard.putNumber("IntakeArmPositionDegrees", getPositionDegrees());

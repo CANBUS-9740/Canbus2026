@@ -9,30 +9,21 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.commands.*;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.MoveShootTurretCommand;
-import frc.robot.commands.SwerveRotateToAngle;
-import frc.robot.commands.TurretTrackHub;
-import frc.robot.subsystems.ClimbSystem;
-import frc.robot.subsystems.IntakeArmSystem;
-import frc.robot.subsystems.IntakeCollectorSystem;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.ShootTurretSystem;
-import frc.robot.subsystems.ShooterSystem;
-import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.*;
 
 import java.util.Set;
 
 public class Robot extends TimedRobot {
 
     private Swerve swerveSystem;
-    private ShootTurretSystem shootTurretSystem;
-    private ShooterSystem shooterSystem;
+    //private ShooterSystem shooterSystem;
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
-    private ClimbSystem climbSystem;
+    private StorageSystem storageSystem;
+    //private ClimbSystem climbSystem;
 
     private Limelight limelight;
     private GameField gameField;
@@ -45,11 +36,11 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        shootTurretSystem = new ShootTurretSystem();
-        shooterSystem = new ShooterSystem(swerveSystem.getField());
+        //shooterSystem = new ShooterSystem(swerveSystem.getField());
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
-        climbSystem = new ClimbSystem();
+        storageSystem = new StorageSystem();
+        //climbSystem = new ClimbSystem();
 
         limelight = new Limelight("limelight-edi");
         gameField = new GameField();
@@ -60,17 +51,22 @@ public class Robot extends TimedRobot {
 
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
         swerveSystem.setDefaultCommand(swerveDriveCommand);
+
+        driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
+        driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
+        driverController.x().onTrue(new IntakeArmDropCommand(intakeArmSystem));
+        driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, 80));
     }
 
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
 
-        Pose2d swervePose = swerveSystem.getPose();
+        /*Pose2d swervePose = swerveSystem.getPose();
         Pose2d turretPose = swervePose
                 .transformBy(RobotMap.SHOOTER_POSE_ON_ROBOT_2D)
                 .transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(shootTurretSystem.getEncoderAngleInDegrees())));
-        swerveSystem.getField().getObject("Turret").setPose(turretPose);
+        swerveSystem.getField().getObject("Turret").setPose(turretPose);*/
     }
 
     @Override
@@ -140,7 +136,7 @@ public class Robot extends TimedRobot {
 
     }
 
-    private Command alignToHub() {
+    /*private Command alignToHub() {
         return Commands.defer(()-> {
             Pose2d swervePose = swerveSystem.getPose();
             double[] angles = gameField.getTargetAngleTurretAndSwerveFrontHub(swervePose, DriverStation.getAlliance().get());
@@ -149,5 +145,5 @@ public class Robot extends TimedRobot {
                     new MoveShootTurretCommand(shootTurretSystem, angles[0])
             );
         }, Set.of(swerveSystem, shootTurretSystem));
-    }
+    }*/
 }
