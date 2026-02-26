@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -19,7 +20,8 @@ import java.util.Set;
 public class Robot extends TimedRobot {
 
     private Swerve swerveSystem;
-    //private ShooterSystem shooterSystem;
+    private ShootTurretSystem shootTurretSystem;
+    private StaticShooterSystem shooterSystem;
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
     private StorageSystem storageSystem;
@@ -36,7 +38,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        //shooterSystem = new ShooterSystem(swerveSystem.getField());
+        shootTurretSystem = new ShootTurretSystem();
+        shooterSystem = new StaticShooterSystem(swerveSystem.getField());
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
         storageSystem = new StorageSystem();
