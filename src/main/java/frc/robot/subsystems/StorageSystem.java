@@ -14,7 +14,6 @@ import frc.robot.sim.StorageSim;
 public class StorageSystem extends SubsystemBase {
 
     private final SparkMax generalRollers;
-    private final SparkMax feedRollers;
     private final DigitalInput irSensor1;
     private final DigitalInput irSensor2;
     private final StorageSim sim;
@@ -23,15 +22,13 @@ public class StorageSystem extends SubsystemBase {
 
     public StorageSystem() {
         generalRollers = new SparkMax(RobotMap.STORAGR_MOTOR1_ID, SparkLowLevel.MotorType.kBrushless);
-        feedRollers = new SparkMax(RobotMap.STORAGE_MOTOR2_ID, SparkLowLevel.MotorType.kBrushless);
         irSensor1 = new DigitalInput(RobotMap.STORAGE_IRSENSOR1_ID);
         irSensor2 = new DigitalInput(RobotMap.STORAGE_IRSENSOR2_ID);
         SparkMaxConfig config = new SparkMaxConfig();
         generalRollers.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        feedRollers.configure(config,ResetMode.kNoResetSafeParameters,PersistMode.kNoPersistParameters);
 
         if (RobotBase.isSimulation()) {
-            sim = new StorageSim(generalRollers,feedRollers);
+            sim = new StorageSim(generalRollers);
         }
         else{
             sim = null;
@@ -50,12 +47,8 @@ public class StorageSystem extends SubsystemBase {
     public void moveGeneralRollers(double speed) {
         generalRollers.set(speed);
     }
-    public void moveFeedRollers(double speed) {
-        feedRollers.set(speed);
-    }
     public void stopMotors() {
         generalRollers.stopMotor();
-        feedRollers.stopMotor();
     }
     public void periodic() {
 

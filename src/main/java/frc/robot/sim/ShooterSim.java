@@ -1,6 +1,8 @@
 package frc.robot.sim;
 
+import com.revrobotics.sim.SparkFlexSim;
 import com.revrobotics.sim.SparkMaxSim;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -15,15 +17,15 @@ import frc.robot.RobotMap;
 
 public class ShooterSim {
 
-    private final SparkMaxSim shooterMotorSim;
+    private final SparkFlexSim shooterMotorSim;
     private final FlywheelSim shooterSim;
     private final SparkMaxSim pitchMotorSim;
     private final DCMotorSim pitchSim;
 
     public final BallSim ballSim;
 
-    public ShooterSim(Field2d field, SparkMax shooterMotor, SparkMax pitchMotor) {
-        shooterMotorSim = new SparkMaxSim(shooterMotor, RobotMap.SHOOTER_MOTOR);
+    public ShooterSim(Field2d field, SparkFlex shooterMotor, SparkMax pitchMotor) {
+        shooterMotorSim = new SparkFlexSim(shooterMotor, RobotMap.SHOOTER_MOTOR);
         shooterSim = new FlywheelSim(
                 LinearSystemId.createFlywheelSystem(RobotMap.SHOOTER_MOTOR, RobotMap.SHOOTER_MOI, RobotMap.SHOOTER_GEAR_RATIO),
                 RobotMap.SHOOTER_MOTOR);

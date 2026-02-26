@@ -4,6 +4,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +21,7 @@ public class IntakeCollectorSystem extends SubsystemBase {
     public IntakeCollectorSystem() {
         motor = new SparkMax(RobotMap.COLLECTOR_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         SparkMaxConfig config = new SparkMaxConfig();
+        config.inverted(true).idleMode(SparkBaseConfig.IdleMode.kCoast);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         if (RobotBase.isSimulation()) {
