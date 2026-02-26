@@ -1,31 +1,18 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.*;
-
-import java.util.Set;
 
 public class Robot extends TimedRobot {
 
     private Swerve swerveSystem;
-    private ShootTurretSystem shootTurretSystem;
     private StaticShooterSystem shooterSystem;
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
     private StorageSystem storageSystem;
-    //private ClimbSystem climbSystem;
 
     private Limelight limelight;
     private GameField gameField;
@@ -38,12 +25,10 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        shootTurretSystem = new ShootTurretSystem();
-        shooterSystem = new StaticShooterSystem(swerveSystem.getField());
+        shooterSystem = new StaticShooterSystem();
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
         storageSystem = new StorageSystem();
-        //climbSystem = new ClimbSystem();
 
         limelight = new Limelight("limelight-edi");
         gameField = new GameField();

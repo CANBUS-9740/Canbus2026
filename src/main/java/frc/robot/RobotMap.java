@@ -119,10 +119,8 @@ public class RobotMap {
     public static final int MAIN_SHOOTER_MOTOR = 56;
     public static final int SOOTER_PITCH_MOTOR = 0;
     public static final int SHOOTER_FEEDER_MOTOR = 15;
-    public static final int MAIN_SHOOTER_MOTOR = 1;
-    public static final int SOOTER_PITCH_MOTOR = 3;
-    public static final int SHOOTER_FEEDER_MOTOR = 4;
-    public static final int SHOOTER_FEEDER_STABLIZER_MOTOR=8;
+    public static final int SHOOTER_FEEDER_STABILIZER_MOTOR = 8;
+    public static final int SHOOTER_FEED_LIMIT_SWITCH = 0;
 
     // ----------------- Operational
 
