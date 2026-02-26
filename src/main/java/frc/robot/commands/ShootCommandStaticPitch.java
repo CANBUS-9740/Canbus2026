@@ -17,12 +17,13 @@ public class ShootCommandStaticPitch extends Command {
 
     @Override
     public void initialize() {
-        staticShooterSystem.setShootVoltage(targetRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
+        staticShooterSystem.setShootSpeed(targetRPM);
     }
     @Override
     public void execute() {
         if(staticShooterSystem.getShooterVelocityRPM() >= targetRPM-10) {
             staticShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTATNT);
+
         }
     }
     @Override

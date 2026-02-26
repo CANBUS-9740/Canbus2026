@@ -76,9 +76,11 @@ public class RobotMap {
     public static final double SHOOT_TURRET_FRONT_MAX_ANGLE_DEGREES = 90;
 
     // shooter
-    public static final double SHOOTER_WHEEL_RADIUS_METERS = Units.inchesToMeters(4);
+    public static final double SHOOTER_WHEEL_RADIUS_METERS = 0.11;
+    public static final double SHOOTER_FEEDER_STABLIZER_WHEEL_RADIUS_METERS = 0.025;
     public static final DCMotor SHOOTER_MOTOR = DCMotor.getNeoVortex(1);
     public static final DCMotor SHOOTER_PITCH_MOTOR = DCMotor.getNEO(1);
+    public static final DCMotor SHOOTER_FEEDER_STABLIZER_MOTOR_Setp = DCMotor.getNEO(1);
     public static final double SHOOTER_MASS_KG = 1;
     public static final double SHOOTER_MOI = 0.5*SHOOTER_MASS_KG*SHOOTER_WHEEL_RADIUS_METERS*SHOOTER_WHEEL_RADIUS_METERS;
     public static final double SHOOTER_PITCH_RADIUS_METERS = Units.inchesToMeters(4);
@@ -120,6 +122,7 @@ public class RobotMap {
     public static final int MAIN_SHOOTER_MOTOR = 1;
     public static final int SOOTER_PITCH_MOTOR = 3;
     public static final int SHOOTER_FEEDER_MOTOR = 4;
+    public static final int SHOOTER_FEEDER_STABLIZER_MOTOR=5;
 
     // ----------------- Operational
 
@@ -158,6 +161,7 @@ public class RobotMap {
     public static TrapezoidProfile.Constraints SHOOTER_PITCH_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(3.5, 8);
     public static final double PITCH_TOLARANCE = 0.02;
     public static final double SHOOTER_MECHANISM_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNeoVortex(1).freeSpeedRadPerSec);
+    public static final double SHOOTER_FEEDER_STABLIZER_MAX_RPM= Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNEO(1).freeSpeedRadPerSec);
     public static final double SHOOTER_FEEDER_CONSTATNT = 3500.0;
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;

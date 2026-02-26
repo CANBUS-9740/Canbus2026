@@ -18,103 +18,85 @@ import frc.robot.sim.ShooterSim;
 
 public class StaticShooterSystem extends SubsystemBase {
 
-    private final SparkMax shooterMotor;
+    private final SparkFlex shooterMotor;
     private final RelativeEncoder shooterEncoder;
-    private final SparkMax pitchMotor;
-    private final RelativeEncoder pitchEncoder;
+    private final SparkMax feederStablizationMotor;
     private final SparkMax feederMotor;
     private DigitalInput limitSwitch;
 
+    private double bigVMetersPerSecond;
+    private double smallWheelRPM;
 
-    public final ShooterSim sim;
+
+    //public final ShooterSim sim;
 
     public StaticShooterSystem(Field2d field) {
-        shooterMotor = new SparkMax(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
+        shooterMotor = new SparkFlex(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
+        feederStablizationMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_STABLIZER_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
-        pitchMotor = new SparkMax(RobotMap.SOOTER_PITCH_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
 
         SparkMaxConfig configLead = new SparkMaxConfig();
         SparkMaxConfig configFeeder = new SparkMaxConfig();
-        SparkMaxConfig configPitch = new SparkMaxConfig();
+        SparkMaxConfig configFeedStablizer = new SparkMaxConfig();
 
-        limitSwitch =new DigitalInput(RobotMap.LIMIT_SWITCH);
+        limitSwitch = new DigitalInput(RobotMap.LIMIT_SWITCH);
 
         shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
 
-        configPitch.limitSwitch
-                .forwardLimitSwitchEnabled(true)
-                .forwardLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen)
-                .reverseLimitSwitchEnabled(true)
-                .reverseLimitSwitchType(LimitSwitchConfig.Type.kNormallyOpen);
-        configPitch.closedLoop
-                .p(RobotMap.SHOOTER_PITCH_KP)
-                .i(RobotMap.SHOOTER_PITCH_KI)
-                .d(RobotMap.SHOOTER_PITCH_KD);
-        configPitch.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-        configPitch.encoder
-                .positionConversionFactor(1 / RobotMap.SHOOTER_PITCH_GEAR_RATIO)
-                .velocityConversionFactor(1 / RobotMap.SHOOTER_PITCH_GEAR_RATIO);
-        configPitch.idleMode(SparkBaseConfig.IdleMode.kBrake);
-        pitchMotor.configure(configPitch, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
         shooterEncoder = shooterMotor.getEncoder();
-        pitchEncoder = pitchMotor.getEncoder();
 
-        if (Robot.isSimulation()) {
-            sim = new ShooterSim(field, shooterMotor, pitchMotor);
-        } else {
-            sim = null;
-        }
+        feederStablizationMotor.setInverted(true);
+        feederStablizationMotor.configure(configFeedStablizer, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+
+//        if (Robot.isSimulation()) {
+//            sim = new ShooterSim(field, shooterMotor, pitchMotor);
+//        } else {
+//            sim = null;
+//        }
     }
 
-    public void launchSimBall(Pose2d robotPose, double turretDirectionAngle) {
-        if (Robot.isSimulation()) {
-            sim.launchBall(robotPose, turretDirectionAngle);
-        }
-    }
+//    public void launchSimBall(Pose2d robotPose, double turretDirectionAngle) {
+//        if (Robot.isSimulation()) {
+//            sim.launchBall(robotPose, turretDirectionAngle);
+//        }
+//    }
 
     public void setShootVoltage(double shootVolts) {
+
         shooterMotor.setVoltage(shootVolts);
     }
 
-    public void setFeederVoltage(double feederVolts) {
-        feederMotor.setVoltage(feederVolts);
+    public void setShootSpeed(double reqRPM) {
+        shooterMotor.setVoltage(reqRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
+        bigVMetersPerSecond = RobotMap.SHOOTER_WHEEL_RADIUS_METERS * (reqRPM * ((2 * Math.PI) / 60));
+        smallWheelRPM = (60 * bigVMetersPerSecond) / (2 * RobotMap.SHOOTER_FEEDER_STABLIZER_WHEEL_RADIUS_METERS);
+        feederStablizationMotor.setVoltage(smallWheelRPM / RobotMap.SHOOTER_FEEDER_STABLIZER_MAX_RPM);
     }
 
-    public double getPitchAngleDegrees() {
-        return pitchEncoder.getPosition() * RobotMap.SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES;
+    public void setFeederVoltage(double feederVolts) {
+
+        feederMotor.setVoltage(feederVolts);
+
     }
+
 
     public double getShooterVelocityRPM() {
         return shooterEncoder.getVelocity();
     }
 
-    public void setPitchPosition(double angleDegrees) {
-        pitchMotor.getClosedLoopController().setSetpoint(angleDegrees / RobotMap.SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0, RobotMap.SHOOTER_PITCH_FF_VOLTAGE, SparkClosedLoopController.ArbFFUnits.kVoltage);
-    }
-
-    public boolean isAtAngle(double targetAngle) {
-        return MathUtil.isNear(targetAngle, getPitchAngleDegrees(), RobotMap.PITCH_TOLARANCE) && Math.abs(pitchEncoder.getVelocity()) < RobotMap.PITCH_RPM_THRESHOLD;
-    }
-
-    public void setEncoderAngle(double angleDeg) {
-        pitchEncoder.setPosition(angleDeg / (RobotMap.SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES));
-    }
 
     public void stopShooterAndFeeder() {
         shooterMotor.stopMotor();
         feederMotor.stopMotor();
     }
 
-    public void stopPitch() {
-        pitchMotor.stopMotor();
-    }
 
-    public boolean isBallInShooter(){
+    public boolean isBallInShooter() {
         return !limitSwitch.get();
     }
 
@@ -155,8 +137,8 @@ public class StaticShooterSystem extends SubsystemBase {
     public void periodic() {
     }
 
-    @Override
-    public void simulationPeriodic() {
-        sim.update();
-    }
+//    @Override
+//    public void simulationPeriodic() {
+//        sim.update();
+//    }
 }
