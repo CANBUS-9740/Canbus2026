@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.LEDPattern;
 
 public class RobotMap {
 
@@ -168,4 +169,11 @@ public class RobotMap {
     public static final PathConstraints PATH_CONSTRAINTS_SLOW = new PathConstraints(1, 2.5, Math.PI, Math.PI);
     public static final PIDConstants SWERVE_PATH_DRIVE_PID = new PIDConstants(5, 0, 0);
     public static final PIDConstants SWERVE_PATH_ROTATE_PID = new PIDConstants(3, 0, 0);
+
+    //Leds
+    public static final int LEDS_PORT = 0;
+    public static final int LEDS_LENGTH = 60;
+    public static final int[] LEDS_RIGHT_SIDE_INDEX = {0, 0};
+    public static final int[] LEDS_LEFT_SIDE_INDEX = {0, 0};
+    public static final LEDPattern ON_SHOOTING = LEDPattern.
 }
