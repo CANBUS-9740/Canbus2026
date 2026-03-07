@@ -43,9 +43,9 @@ public class RobotMap {
     public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
     public static final double INTAKE_ARM_MOI = 1/3.0*INTAKE_ARM_MASS_KG*INTAKE_ARM_LENGTH_METERS*INTAKE_ARM_LENGTH_METERS;
-    public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
-    public static final double INTAKE_ARM_MAX_ANGLE_RAD = 0.5*Math.PI;
-    public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_RAD;
+    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 333; //TODO: change when there is bumPer
+    public static final double INTAKE_ARM_MAX_ANGLE_DEG = 97;
+    public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
 
     // intake collector
     public static final DCMotor COLLECTOR_MOTOR = DCMotor.getNEO(1);
@@ -117,6 +117,7 @@ public class RobotMap {
 
     // shooter
     public static final int MAIN_SHOOTER_MOTOR = 56;
+    public static final int SMALL_SHOOTER_MOTOR = 56;
     public static final int SOOTER_PITCH_MOTOR = 0;
     public static final int SHOOTER_FEEDER_MOTOR = 15;
     public static final int SHOOTER_FEEDER_STABILIZER_MOTOR = 8;
