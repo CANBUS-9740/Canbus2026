@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
@@ -26,10 +27,11 @@ public class StaticShooterSystem extends SubsystemBase {
         limitSwitch = new DigitalInput(RobotMap.SHOOTER_FEED_LIMIT_SWITCH);
 
         SparkMaxConfig configLead = new SparkMaxConfig();
+        configLead.closedLoop.pid(0.01, 0, 0);
         shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         SparkMaxConfig configFeeder = new SparkMaxConfig();
-        configFeeder.inverted(true);
+        configFeeder.inverted(false);
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         SparkMaxConfig configFeedStabilizer = new SparkMaxConfig();
@@ -43,14 +45,15 @@ public class StaticShooterSystem extends SubsystemBase {
     }
 
     public void setShootSpeed(double reqRPM) {
-        shooterMotor.setVoltage(reqRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
+        //shooterMotor.setVoltage(reqRPM/RobotMap.SHOOTER_MECHANISM_MAX_RPM);
+        shooterMotor.getClosedLoopController().setSetpoint(reqRPM, SparkBase.ControlType.kVelocity);
         double bigVMetersPerSecond = RobotMap.SHOOTER_WHEEL_RADIUS_METERS * (reqRPM * ((2 * Math.PI) / 60));
         double smallWheelRPM = (60 * bigVMetersPerSecond) / (2 * RobotMap.SHOOTER_FEEDER_STABLIZER_WHEEL_RADIUS_METERS);
-        feederStabilisationMotor.setVoltage(smallWheelRPM / RobotMap.SHOOTER_FEEDER_STABLIZER_MAX_RPM);
+        //feederStabilisationMotor.setVoltage(smallWheelRPM / RobotMap.SHOOTER_FEEDER_STABLIZER_MAX_RPM);
     }
 
     public void setFeederVoltage(double feederVolts) {
-        feederMotor.setVoltage(feederVolts);
+        feederMotor.set(0.9);
     }
 
     public double getShooterVelocityRPM() {

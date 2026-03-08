@@ -1,13 +1,14 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
-import frc.robot.subsystems.DynamicShooterSystem;
 import frc.robot.subsystems.StaticShooterSystem;
 
 public class ShootCommandStaticPitch extends Command {
     private final StaticShooterSystem staticShooterSystem;
     private final double targetRPM;
+
 
     public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem, double targetRPM) {
         this.staticShooterSystem = staticShooterSystem;
@@ -25,6 +26,7 @@ public class ShootCommandStaticPitch extends Command {
             staticShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTATNT);
 
         }
+
     }
     @Override
     public boolean isFinished() {

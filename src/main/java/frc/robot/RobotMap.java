@@ -46,6 +46,10 @@ public class RobotMap {
     public static final double INTAKE_ARM_MIN_ANGLE_DEG = 333; //TODO: change when there is bumPer
     public static final double INTAKE_ARM_MAX_ANGLE_DEG = 97;
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
+    public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
+    public static final double INTAKE_ARM_MAX_ANGLE_RAD = 0; // last 2 lines are for compiling only
+
+
 
     // intake collector
     public static final DCMotor COLLECTOR_MOTOR = DCMotor.getNEO(1);
@@ -133,7 +137,7 @@ public class RobotMap {
 
     // collector
     public static final double COLLECTOR_SPEED = 0.5;
-    public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.5;
+    public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.8  ;
     public static final double STORAGE_GENERAL_ROLLERS_BACKWARDS_LOW_SPEED = -0.2;
 
 
@@ -158,7 +162,7 @@ public class RobotMap {
     public static final double PITCH_TOLARANCE = 0.02;
     public static final double SHOOTER_MECHANISM_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNeoVortex(1).freeSpeedRadPerSec);
     public static final double SHOOTER_FEEDER_STABLIZER_MAX_RPM= Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNEO(1).freeSpeedRadPerSec);
-    public static final double SHOOTER_FEEDER_CONSTATNT = 3500.0;
+    public static final double SHOOTER_FEEDER_CONSTATNT = 0.5;
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;

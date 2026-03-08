@@ -41,7 +41,7 @@ public class DynamicShooterSystem extends SubsystemBase {
         SparkMaxConfig configFeeder = new SparkMaxConfig();
         SparkMaxConfig configPitch = new SparkMaxConfig();
 
-        limitSwitch =new DigitalInput(RobotMap.LIMIT_SWITCH);
+        //limitSwitch =new DigitalInput(RobotMap.LIMIT_SWITCH);
 
         shooterLowerLimit = pitchMotor.getReverseLimitSwitch();
         shooterUpperLimit = pitchMotor.getForwardLimitSwitch();
