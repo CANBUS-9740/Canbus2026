@@ -175,5 +175,4 @@ public class RobotMap {
     public static final int LEDS_LENGTH = 60;
     public static final int[] LEDS_RIGHT_SIDE_INDEX = {0, 0};
     public static final int[] LEDS_LEFT_SIDE_INDEX = {0, 0};
-    public static final LEDPattern ON_SHOOTING = LEDPattern.
 }
