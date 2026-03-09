@@ -1,8 +1,13 @@
 package frc.robot;
 
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -23,6 +28,8 @@ public class Robot extends TimedRobot {
     private CommandXboxController driverController;
     private CommandXboxController operationController;
     private SwerveDriveCommand swerveDriveCommand;
+
+    private SparkMaxConfig config;
 
     @Override
     public void robotInit() {
@@ -47,6 +54,11 @@ public class Robot extends TimedRobot {
         driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
         driverController.x().onTrue(new IntakeArmDropCommand(intakeArmSystem));
         driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, 80));
+
+        SmartDashboard.putNumber("ShooterP", 0);
+        SmartDashboard.putNumber("ShooterI", 0);
+        SmartDashboard.putNumber("ShooterD", 0);
+        SmartDashboard.putNumber("ShooterSetPoint", 0);
     }
 
     @Override
@@ -93,12 +105,25 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
-        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 3000));
+        //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 3000));
 
     }
 
     @Override
     public void teleopPeriodic() {
+        config = new SparkMaxConfig();
+
+        double setPoint = SmartDashboard.getNumber("ShooterSetPoint", 0);
+        if (setPoint != staticShooterSystem.getSetPoint()) {
+            staticShooterSystem.setSetPoint(setPoint);
+        }
+
+        double p = SmartDashboard.getNumber("ShooterP", 0);
+        double i = SmartDashboard.getNumber("ShooterI", 0);
+        double d = SmartDashboard.getNumber("ShooterD", 0);
+
+        config.closedLoop.pid(p, i, d);
+        staticShooterSystem.setPID(config);
     }
 
     @Override

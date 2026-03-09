@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
@@ -7,8 +8,10 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -16,6 +19,7 @@ public class StaticShooterSystem extends SubsystemBase {
 
     private final SparkFlex shooterMotor;
     private final RelativeEncoder shooterEncoder;
+    private final RelativeEncoder shooterStabilisationEncoder;
     private final SparkMax feederStabilisationMotor;
     private final SparkMax feederMotor;
     private final DigitalInput limitSwitch;
@@ -38,6 +42,7 @@ public class StaticShooterSystem extends SubsystemBase {
         feederStabilisationMotor.configure(configFeedStabilizer, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         shooterEncoder = shooterMotor.getEncoder();
+        shooterStabilisationEncoder = feederStabilisationMotor.getEncoder();
     }
 
     public void setShootVoltage(double shootVolts) {
@@ -58,6 +63,10 @@ public class StaticShooterSystem extends SubsystemBase {
 
     public double getShooterVelocityRPM() {
         return shooterEncoder.getVelocity();
+    }
+
+    public double getShooterStabilisationVelocityRPM() {
+        return shooterStabilisationEncoder.getVelocity();
     }
 
     public void stopShooterAndFeeder() {
@@ -83,7 +92,20 @@ public class StaticShooterSystem extends SubsystemBase {
         return firingLinearVelocityMps / (2 * Math.PI * RobotMap.SHOOTER_WHEEL_RADIUS_METERS) * 60;
     }
 
+    public void setPID(SparkMaxConfig config) {
+        feederStabilisationMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    }
+
+    public double getSetPoint() {
+        return feederStabilisationMotor.getClosedLoopController().getSetpoint();
+    }
+
+    public void setSetPoint(double setPoint) {
+        feederStabilisationMotor.getClosedLoopController().setSetpoint(setPoint, SparkBase.ControlType.kVelocity);
+    }
+
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("shooterStabilisationVelocityRPM", getShooterStabilisationVelocityRPM());
     }
 }
