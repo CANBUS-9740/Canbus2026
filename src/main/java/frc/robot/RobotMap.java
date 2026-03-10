@@ -42,7 +42,7 @@ public class RobotMap {
     public static final double INTAKE_ARM_GEAR_RATIO = 32.41 / 1;
     public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
-    public static final double INTAKE_ARM_MOI = 1/3.0*INTAKE_ARM_MASS_KG*INTAKE_ARM_LENGTH_METERS*INTAKE_ARM_LENGTH_METERS;
+    public static final double INTAKE_ARM_MOI = 1 / 3.0 * INTAKE_ARM_MASS_KG * INTAKE_ARM_LENGTH_METERS * INTAKE_ARM_LENGTH_METERS;
     public static final double INTAKE_ARM_MIN_ANGLE_DEG = 350;
     public static final double INTAKE_ARM_MAX_ANGLE_DEG = 97;
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
@@ -51,12 +51,11 @@ public class RobotMap {
     public static final TrapezoidProfile.Constraints INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(1000, 500);
 
 
-
     // intake collector
     public static final DCMotor COLLECTOR_MOTOR = DCMotor.getNEO(1);
     public static final double COLLECTOR_MASS_KG = 1;
     public static final double COLLECTOR_RADIUS_M = Units.inchesToMeters(4);
-    public static final double COLLECTOR_MOI = 0.5*COLLECTOR_MASS_KG*COLLECTOR_RADIUS_M*COLLECTOR_RADIUS_M;
+    public static final double COLLECTOR_MOI = 0.5 * COLLECTOR_MASS_KG * COLLECTOR_RADIUS_M * COLLECTOR_RADIUS_M;
     public static final double COLLECTOR_GEAR_RATIO = 1;
 
     // storage
@@ -80,19 +79,19 @@ public class RobotMap {
 
     // shooter
     public static final double SHOOTER_WHEEL_RADIUS_METERS = 0.11;
-    public static final double SHOOTER_FEEDER_STABLIZER_WHEEL_RADIUS_METERS = 0.025;
+    public static final double SHOOTER_FEEDER_STABILIZER_WHEEL_RADIUS_METERS = 0.025;
     public static final DCMotor SHOOTER_MOTOR = DCMotor.getNeoVortex(1);
-    public static final DCMotor SHOOTER_PITCH_MOTOR = DCMotor.getNEO(1);
+    public static final DCMotor SHOOTER_PITCH_MOTOR_SIM = DCMotor.getNEO(1);
     public static final DCMotor SHOOTER_FEEDER_STABLIZER_MOTOR_Setp = DCMotor.getNEO(1);
     public static final double SHOOTER_MASS_KG = 1;
-    public static final double SHOOTER_MOI = 0.5*SHOOTER_MASS_KG*SHOOTER_WHEEL_RADIUS_METERS*SHOOTER_WHEEL_RADIUS_METERS;
+    public static final double SHOOTER_MOI = 0.5 * SHOOTER_MASS_KG * SHOOTER_WHEEL_RADIUS_METERS * SHOOTER_WHEEL_RADIUS_METERS;
     public static final double SHOOTER_PITCH_RADIUS_METERS = Units.inchesToMeters(4);
     public static final double SHOOTER_PITCH_MASS_KG = 1;
-    public static final double SHOOTER_PITCH_MOI = 0.5*SHOOTER_PITCH_MASS_KG*SHOOTER_PITCH_RADIUS_METERS*SHOOTER_PITCH_RADIUS_METERS;
+    public static final double SHOOTER_PITCH_MOI = 0.5 * SHOOTER_PITCH_MASS_KG * SHOOTER_PITCH_RADIUS_METERS * SHOOTER_PITCH_RADIUS_METERS;
     public static final double SHOOTER_GEAR_RATIO = 1;
-    public static final double SHOOTER_PITCH_LOWER_LIMIT_DEG= 11;
-    public static final double SHOOTER_PITCH_UPPER_LIMIT_DEG= 47;
-    public static final double SHOOTER_PITCH_GEAR_RATIO =2.0;
+    public static final double SHOOTER_PITCH_LOWER_LIMIT_DEG = 11;
+    public static final double SHOOTER_PITCH_UPPER_LIMIT_DEG = 47;
+    public static final double SHOOTER_PITCH_GEAR_RATIO = 2.0;
 
     // swerve
     public static final DCMotor SWERVE_DRIVE_MOTOR = DCMotor.getKrakenX60(1);
@@ -112,9 +111,9 @@ public class RobotMap {
     public static final int COLLECTOR_MOTOR_ID = 39;
 
     // storage
-    public static final int STORAGR_MOTOR1_ID = 20;
-    public static final int STORAGE_IRSENSOR1_ID = 2;
-    public static final int STORAGE_IRSENSOR2_ID = 3;
+    public static final int STORAGE_MOTOR1_ID = 20;
+    public static final int STORAGE_IR_SENSOR1_ID = 2;
+    public static final int STORAGE_IR_SENSOR2_ID = 3;
 
     // turret
     public static final int SHOOT_TURRET_MOTOR_ID = 0;
@@ -123,7 +122,7 @@ public class RobotMap {
     // shooter
     public static final int MAIN_SHOOTER_MOTOR = 56;
     public static final int SMALL_SHOOTER_MOTOR = 56;
-    public static final int SOOTER_PITCH_MOTOR = 0;
+    public static final int SHOOTER_PITCH_MOTOR = 0;
     public static final int SHOOTER_FEEDER_MOTOR = 15;
     public static final int SHOOTER_FEEDER_STABILIZER_MOTOR = 8;
     public static final int SHOOTER_FEED_LIMIT_SWITCH = 0;
@@ -138,7 +137,7 @@ public class RobotMap {
 
     // collector
     public static final double COLLECTOR_SPEED = 0.5;
-    public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.8  ;
+    public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.8;
     public static final double STORAGE_GENERAL_ROLLERS_BACKWARDS_LOW_SPEED = -0.2;
 
 
@@ -156,14 +155,14 @@ public class RobotMap {
 
     // shoot
     public static final double SHOOTER_HEIGHT_METERS = SHOOTER_POSE_ON_ROBOT.getZ();
-    public static final double SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES =45;
-    public static final double SHOOTER_PITCH_FF_VOLTAGE =0.5;
-    public static final double PITCH_RPM_THRESHOLD=1500;
+    public static final double SHOOTER_PITCH_ANGLE_ROTATIONS_TO_DEGREES = 45;
+    public static final double SHOOTER_PITCH_FF_VOLTAGE = 0.5;
+    public static final double PITCH_RPM_THRESHOLD = 1500;
     public static TrapezoidProfile.Constraints SHOOTER_PITCH_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(3.5, 8);
-    public static final double PITCH_TOLARANCE = 0.02;
+    public static final double PITCH_TOLERANCE = 0.02;
     public static final double SHOOTER_MECHANISM_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNeoVortex(1).freeSpeedRadPerSec);
-    public static final double SHOOTER_FEEDER_STABLIZER_MAX_RPM= Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNEO(1).freeSpeedRadPerSec);
-    public static final double SHOOTER_FEEDER_CONSTATNT = 0.5;
+    public static final double SHOOTER_FEEDER_STABILIZER_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNEO(1).freeSpeedRadPerSec);
+    public static final double SHOOTER_FEEDER_CONSTANT = 0.5;
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;

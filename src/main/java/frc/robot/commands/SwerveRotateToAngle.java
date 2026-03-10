@@ -8,7 +8,6 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.Swerve;
 
 public class SwerveRotateToAngle extends Command {
-
     private final Swerve swerve;
     private final double targetAngleDegrees;
 
@@ -18,7 +17,7 @@ public class SwerveRotateToAngle extends Command {
         this.swerve = swerve;
         this.targetAngleDegrees = targetAngleDegrees;
 
-        pidController = new PIDController(RobotMap.SWERVE_PATH_ROTATE_PID.kP, 0,0);
+        pidController = new PIDController(RobotMap.SWERVE_PATH_ROTATE_PID.kP, 0, 0);
         pidController.setTolerance(0.5, 0.1);
         pidController.enableContinuousInput(-Math.PI, Math.PI);
 

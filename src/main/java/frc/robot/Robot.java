@@ -1,19 +1,13 @@
 package frc.robot;
 
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
-
     private Swerve swerveSystem;
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
@@ -27,10 +21,6 @@ public class Robot extends TimedRobot {
     private CommandXboxController driverController;
     private CommandXboxController operationController;
     private SwerveDriveCommand swerveDriveCommand;
-
-    private double p;
-    private double i;
-    private double d;
 
     @Override
     public void robotInit() {
@@ -71,6 +61,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void simulationInit() {
+
     }
 
     @Override
@@ -98,7 +89,6 @@ public class Robot extends TimedRobot {
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
-
     }
 
     @Override

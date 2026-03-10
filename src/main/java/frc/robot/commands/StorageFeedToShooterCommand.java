@@ -11,6 +11,7 @@ public class StorageFeedToShooterCommand extends Command {
         this.storageSystem = storageSystem;
         addRequirements(storageSystem);
     }
+
     @Override
     public void initialize() {
         storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED); //feed and storage

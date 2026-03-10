@@ -22,7 +22,6 @@ import frc.robot.RobotMap;
 import frc.robot.sim.ClimbSim;
 
 public class ClimbSystem extends SubsystemBase {
-
     private final SparkMax leftMotor;
     private final SparkMax rightMotor;
     private final DigitalInput bottomSwitchLeft;
@@ -35,7 +34,6 @@ public class ClimbSystem extends SubsystemBase {
     private final MechanismLigament2d leftLigament;
     private final MechanismLigament2d rightLigament;
 
-
     public ClimbSystem() {
         leftMotor = new SparkMax(RobotMap.CLIMB_LEFT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         rightMotor = new SparkMax(RobotMap.CLIMB_RIGHT_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
@@ -46,26 +44,26 @@ public class ClimbSystem extends SubsystemBase {
         bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
 
         SparkMaxConfig config = new SparkMaxConfig();
-        config.closedLoop.pid(0.5,0,0)
+        config.closedLoop.pid(0.5, 0, 0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         config = new SparkMaxConfig();
-        config.closedLoop.pid(0.5,0,0)
+        config.closedLoop.pid(0.5, 0, 0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         if (RobotBase.isSimulation()) {
-            sim = new ClimbSim(leftMotor,rightMotor);
+            sim = new ClimbSim(leftMotor, rightMotor);
         } else {
             sim = null;
         }
 
-        mechanism = new Mechanism2d(5,5);
-        MechanismRoot2d leftRoot = mechanism.getRoot("leftArm",2,2);
-        MechanismRoot2d rightRoot = mechanism.getRoot("rightArm",3,2);
-        leftLigament = leftRoot.append(new MechanismLigament2d("leftArm",0,90,5,new Color8Bit(Color.kRed)));
-        rightLigament = rightRoot.append(new MechanismLigament2d("rightArm",0,90,5,new Color8Bit(Color.kRed)));
+        mechanism = new Mechanism2d(5, 5);
+        MechanismRoot2d leftRoot = mechanism.getRoot("leftArm", 2, 2);
+        MechanismRoot2d rightRoot = mechanism.getRoot("rightArm", 3, 2);
+        leftLigament = leftRoot.append(new MechanismLigament2d("leftArm", 0, 90, 5, new Color8Bit(Color.kRed)));
+        rightLigament = rightRoot.append(new MechanismLigament2d("rightArm", 0, 90, 5, new Color8Bit(Color.kRed)));
         SmartDashboard.putData("climb", mechanism);
     }
 
@@ -91,16 +89,16 @@ public class ClimbSystem extends SubsystemBase {
     }
 
     public void setTargetPosition(double positionMeters) {
-        leftMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
-        rightMotor.getClosedLoopController().setSetpoint(positionMeters/RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
+        leftMotor.getClosedLoopController().setSetpoint(positionMeters / RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
+        rightMotor.getClosedLoopController().setSetpoint(positionMeters / RobotMap.CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS, SparkBase.ControlType.kPosition);
     }
 
     public boolean isAtLeftTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getLeftPositionMeters(), RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderLeft.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
+        return MathUtil.isNear(targetPosition, getLeftPositionMeters(), RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderLeft.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
 
     public boolean isAtRightTarget(double targetPosition) {
-        return MathUtil.isNear(targetPosition,getRightPositionMeters(), RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderRight.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
+        return MathUtil.isNear(targetPosition, getRightPositionMeters(), RobotMap.CLIMB_ARMS_TARGET_TOLERANCE) && Math.abs(encoderRight.getVelocity()) < RobotMap.CLIMB_ARMS_TARGET_RPM_TOLERANCE;
     }
 
     public boolean isBottomSwitchLeftPressed() {

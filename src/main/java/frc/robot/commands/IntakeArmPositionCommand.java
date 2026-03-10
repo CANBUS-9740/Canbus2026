@@ -14,14 +14,16 @@ public class IntakeArmPositionCommand extends Command {
     private TrapezoidProfile.State motionProfileSetPoint;
 
     public IntakeArmPositionCommand(IntakeArmSystem intakeArmSystem, double targetPositionDegrees) {
-        this.intakeArmSystem= intakeArmSystem;
+        this.intakeArmSystem = intakeArmSystem;
         this.targetPositionDegrees = targetPositionDegrees;
         addRequirements(intakeArmSystem);
     }
+
     @Override
     public void initialize() {
         intakeArmSystem.setTargetPosition(targetPositionDegrees);
     }
+
     @Override
     public void execute() {
         motionProfile = new TrapezoidProfile(RobotMap.INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS);
@@ -41,9 +43,4 @@ public class IntakeArmPositionCommand extends Command {
     public boolean isFinished() {
         return intakeArmSystem.IsArmInPositionAndSteady(targetPositionDegrees);
     }
-
-
-
 }
-
-

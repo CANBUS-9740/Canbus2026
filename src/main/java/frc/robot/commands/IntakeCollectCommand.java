@@ -6,6 +6,7 @@ import frc.robot.subsystems.IntakeCollectorSystem;
 
 public class IntakeCollectCommand extends Command {
     private final IntakeCollectorSystem intakeCollectorSystem;
+
     public IntakeCollectCommand(IntakeCollectorSystem intakeCollectorSystem) {
         this.intakeCollectorSystem = intakeCollectorSystem;
         addRequirements(intakeCollectorSystem);
@@ -30,6 +31,4 @@ public class IntakeCollectCommand extends Command {
     public boolean isFinished() {
         return false;
     }
-
-
 }

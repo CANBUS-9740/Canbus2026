@@ -5,13 +5,12 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.ClimbSystem;
 
 public class ClimbCloseArmsCommand extends Command {
-
     private final ClimbSystem climbSystem;
 
     private boolean leftDone;
     private boolean rightDone;
 
-    public ClimbCloseArmsCommand(ClimbSystem climbSystem){
+    public ClimbCloseArmsCommand(ClimbSystem climbSystem) {
         this.climbSystem = climbSystem;
         addRequirements(climbSystem);
     }

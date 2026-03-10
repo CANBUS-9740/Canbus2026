@@ -1,12 +1,9 @@
 package frc.robot.subsystems;
 
-import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.*;
-import com.revrobotics.spark.config.SparkBaseConfig;
-import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class StaticShooterSystem extends SubsystemBase {
-
     private final SparkFlex shooterMotor;
     private final RelativeEncoder shooterEncoder;
     private final RelativeEncoder shooterStabilisationEncoder;
@@ -54,7 +50,7 @@ public class StaticShooterSystem extends SubsystemBase {
     public void setShootSpeed(double reqRPM) {
         // TODO: We might want to make the big wheels' velocity match the small wheels' velocity, as the RPM gets scaled by 4.4, and for large enough values, the motor on the small wheels cannot reach it
         shooterMotor.getClosedLoopController().setSetpoint(reqRPM, SparkBase.ControlType.kVelocity);
-        feederStabilisationMotor.getClosedLoopController().setSetpoint(reqRPM * (RobotMap.SHOOTER_WHEEL_RADIUS_METERS / RobotMap.SHOOTER_FEEDER_STABLIZER_WHEEL_RADIUS_METERS), SparkBase.ControlType.kVelocity);
+        feederStabilisationMotor.getClosedLoopController().setSetpoint(reqRPM * (RobotMap.SHOOTER_WHEEL_RADIUS_METERS / RobotMap.SHOOTER_FEEDER_STABILIZER_WHEEL_RADIUS_METERS), SparkBase.ControlType.kVelocity);
     }
 
     public void setFeederVoltage(double feederVolts) {
@@ -74,13 +70,12 @@ public class StaticShooterSystem extends SubsystemBase {
         feederMotor.stopMotor();
     }
 
-
     public boolean isBallInShooter() {
         return !limitSwitch.get();
     }
 
     public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
-        double nominator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters;
+        double numerator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters;
 
         double heightDifferance = RobotMap.HUB_HEIGHT_METERS - RobotMap.SHOOTER_HEIGHT_METERS;
         double firingAngleRad = Math.toRadians(firingAngleDegrees);
@@ -88,7 +83,7 @@ public class StaticShooterSystem extends SubsystemBase {
         double tanAngle = Math.tan(firingAngleRad);
         double denominator = (2 * cosAngle * cosAngle) * ((distanceMeters * tanAngle) - heightDifferance);
 
-        double firingLinearVelocityMps = Math.sqrt(nominator / denominator);
+        double firingLinearVelocityMps = Math.sqrt(numerator / denominator);
         return firingLinearVelocityMps / (2 * Math.PI * RobotMap.SHOOTER_WHEEL_RADIUS_METERS) * 60;
     }
 
