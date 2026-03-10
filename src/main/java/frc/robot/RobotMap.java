@@ -48,6 +48,7 @@ public class RobotMap {
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
     public static final double INTAKE_ARM_MAX_ANGLE_RAD = 0; // last 2 lines are for compiling only
+    public static final TrapezoidProfile.Constraints INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(1000, 500);
 
 
 

@@ -50,15 +50,13 @@ public class Robot extends TimedRobot {
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
         swerveSystem.setDefaultCommand(swerveDriveCommand);
 
-        driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
-        driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
-        driverController.x().onTrue(new IntakeArmDropCommand(intakeArmSystem));
+        driverController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, 20));
         driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, 80));
 
-        SmartDashboard.putNumber("ShooterP", 0);
-        SmartDashboard.putNumber("ShooterI", 0);
-        SmartDashboard.putNumber("ShooterD", 0);
-        SmartDashboard.putNumber("ShooterSetPoint", 0);
+//        SmartDashboard.putNumber("ShooterP", 0);
+//        SmartDashboard.putNumber("ShooterI", 0);
+//        SmartDashboard.putNumber("ShooterD", 0);
+//        SmartDashboard.putNumber("ShooterSetPoint", 0);
     }
 
     @Override
@@ -111,19 +109,19 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        config = new SparkMaxConfig();
-
-        double setPoint = SmartDashboard.getNumber("ShooterSetPoint", 0);
-        if (setPoint != staticShooterSystem.getSetPoint()) {
-            staticShooterSystem.setSetPoint(setPoint);
-        }
-
-        double p = SmartDashboard.getNumber("ShooterP", 0);
-        double i = SmartDashboard.getNumber("ShooterI", 0);
-        double d = SmartDashboard.getNumber("ShooterD", 0);
-
-        config.closedLoop.pid(p, i, d);
-        staticShooterSystem.setPID(config);
+//        config = new SparkMaxConfig();
+//
+//        double setPoint = SmartDashboard.getNumber("ShooterSetPoint", 0);
+//        if (setPoint != staticShooterSystem.getSetPoint()) {
+//            staticShooterSystem.setSetPoint(setPoint);
+//        }
+//
+//        double p = SmartDashboard.getNumber("ShooterP", 0);
+//        double i = SmartDashboard.getNumber("ShooterI", 0);
+//        double d = SmartDashboard.getNumber("ShooterD", 0);
+//
+//        config.closedLoop.pid(p, i, d);
+//        staticShooterSystem.setPID(config);
     }
 
     @Override

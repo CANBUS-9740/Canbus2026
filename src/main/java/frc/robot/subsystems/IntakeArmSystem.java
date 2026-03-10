@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.swerve.utility.WheelForceCalculator;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -36,13 +37,16 @@ public class IntakeArmSystem extends SubsystemBase {
        relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
         config.inverted(true);
-        config.closedLoop.pid(3,0,0.5)
+        config.closedLoop.pid(0.0082,0.000000002,0.0000004)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
-                .positionWrappingMaxInput(1)
+                .positionWrappingMaxInput(360)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-        config.closedLoop.feedForward.kCos(0.3);
+        config.closedLoop.feedForward.kCos(0.4);
         config.absoluteEncoder.zeroOffset(0.47415367);
+        config.closedLoop
+                .maxOutput(0.4)
+                .minOutput(-0.4);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         if (RobotBase.isSimulation()) {
@@ -50,6 +54,10 @@ public class IntakeArmSystem extends SubsystemBase {
         }
         else{
             sim = null;
+            //0.007
+            //0.00000005
+            //0.0000001
+            //offset 0.479
         }
 
         mechanism = new Mechanism2d(5,5);

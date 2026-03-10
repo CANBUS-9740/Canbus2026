@@ -31,7 +31,10 @@ public class StaticShooterSystem extends SubsystemBase {
         limitSwitch = new DigitalInput(RobotMap.SHOOTER_FEED_LIMIT_SWITCH);
 
         SparkMaxConfig configLead = new SparkMaxConfig();
-        configLead.closedLoop.pid(0.01, 0, 0);
+        configLead.closedLoop
+                .pid(0.0023, 0.00001, 0.1)
+                .iZone(100);
+        configLead.closedLoop.feedForward.kV(0.001);
         shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         SparkMaxConfig configFeeder = new SparkMaxConfig();
