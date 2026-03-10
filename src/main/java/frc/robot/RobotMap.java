@@ -168,9 +168,15 @@ public class RobotMap {
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;
 
-    public static final double SHOOTER_SMALL_WHEELS_P = 0;
-    public static final double SHOOTER_SMALL_WHEELS_I = 0;
-    public static final double SHOOTER_SMALL_WHEELS_D = 0;
+    public static final double SHOOTER_BIG_WHEELS_P = 0.0023;
+    public static final double SHOOTER_BIG_WHEELS_I = 0.00001;
+    public static final double SHOOTER_BIG_WHEELS_D = 0.1;
+    public static final double SHOOTER_BIG_WHEELS_IZONE = 100;
+    public static final double SHOOTER_BIG_WHEELS_FEEDFORWARDS_KV = 0.001;
+
+    public static final double SHOOTER_SMALL_WHEELS_P = 0.00005;
+    public static final double SHOOTER_SMALL_WHEELS_I = 0.000001;
+    public static final double SHOOTER_SMALL_WHEELS_D = 0.000008;
 
     //Swerve System
     public static final double SWERVE_DRIVE_MAX_SPEED_MPS = Units.radiansToRotations(SWERVE_DRIVE_MOTOR.freeSpeedRadPerSec) / 6.12 * 0.085;

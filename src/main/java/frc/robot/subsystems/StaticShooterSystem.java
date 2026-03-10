@@ -4,10 +4,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -33,9 +30,9 @@ public class StaticShooterSystem extends SubsystemBase {
 
         SparkMaxConfig configLead = new SparkMaxConfig();
         configLead.closedLoop
-                .pid(0.0023, 0.00001, 0.1)
-                .iZone(100);
-        configLead.closedLoop.feedForward.kV(0.001);
+                .pid(RobotMap.SHOOTER_BIG_WHEELS_P, RobotMap.SHOOTER_BIG_WHEELS_I, RobotMap.SHOOTER_BIG_WHEELS_D)
+                .iZone(RobotMap.SHOOTER_BIG_WHEELS_IZONE);
+        configLead.closedLoop.feedForward.kV(RobotMap.SHOOTER_BIG_WHEELS_FEEDFORWARDS_KV);
         shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         SparkMaxConfig configFeeder = new SparkMaxConfig();
@@ -43,6 +40,7 @@ public class StaticShooterSystem extends SubsystemBase {
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         SparkMaxConfig configFeedStabilizer = new SparkMaxConfig();
+        configFeedStabilizer.closedLoop.pid(RobotMap.SHOOTER_SMALL_WHEELS_P, RobotMap.SHOOTER_SMALL_WHEELS_I, RobotMap.SHOOTER_SMALL_WHEELS_D);
         feederStabilisationMotor.configure(configFeedStabilizer, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         shooterEncoder = shooterMotor.getEncoder();
@@ -54,11 +52,9 @@ public class StaticShooterSystem extends SubsystemBase {
     }
 
     public void setShootSpeed(double reqRPM) {
-        //shooterMotor.setVoltage(reqRPM/RobotMap.SHOOTER_MECHANISM_MAX_RPM);
+        // TODO: We might want to make the big wheels' velocity match the small wheels' velocity, as the RPM gets scaled by 4.4, and for large enough values, the motor on the small wheels cannot reach it
         shooterMotor.getClosedLoopController().setSetpoint(reqRPM, SparkBase.ControlType.kVelocity);
-        double bigVMetersPerSecond = RobotMap.SHOOTER_WHEEL_RADIUS_METERS * (reqRPM * ((2 * Math.PI) / 60));
-        double smallWheelRPM = (60 * bigVMetersPerSecond) / (2 * RobotMap.SHOOTER_FEEDER_STABLIZER_WHEEL_RADIUS_METERS);
-        //feederStabilisationMotor.setVoltage(smallWheelRPM / RobotMap.SHOOTER_FEEDER_STABLIZER_MAX_RPM);
+        feederStabilisationMotor.getClosedLoopController().setSetpoint(reqRPM * (RobotMap.SHOOTER_WHEEL_RADIUS_METERS / RobotMap.SHOOTER_FEEDER_STABLIZER_WHEEL_RADIUS_METERS), SparkBase.ControlType.kVelocity);
     }
 
     public void setFeederVoltage(double feederVolts) {
@@ -100,6 +96,10 @@ public class StaticShooterSystem extends SubsystemBase {
         feederStabilisationMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    public ClosedLoopSlot getSlot() {
+        return feederStabilisationMotor.getClosedLoopController().getSelectedSlot();
+    }
+
     public double getSetPoint() {
         return feederStabilisationMotor.getClosedLoopController().getSetpoint();
     }
@@ -110,6 +110,7 @@ public class StaticShooterSystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("shooterMainVelocityRPM", getShooterVelocityRPM());
         SmartDashboard.putNumber("shooterStabilisationVelocityRPM", getShooterStabilisationVelocityRPM());
     }
 }
