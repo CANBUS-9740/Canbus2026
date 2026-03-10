@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -92,7 +93,7 @@ public class StaticShooterSystem extends SubsystemBase {
         return firingLinearVelocityMps / (2 * Math.PI * RobotMap.SHOOTER_WHEEL_RADIUS_METERS) * 60;
     }
 
-    public void setPID(SparkMaxConfig config) {
+    public void setConfig(SparkMaxConfig config) {
         feederStabilisationMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
