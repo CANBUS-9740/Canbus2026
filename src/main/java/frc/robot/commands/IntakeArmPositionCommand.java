@@ -28,7 +28,7 @@ public class IntakeArmPositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return intakeArmSystem.IsArmInPositionAndSteady(targetPositionDegrees);
     }
 
 

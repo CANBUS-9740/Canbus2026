@@ -3,39 +3,35 @@ package frc.robot.subsystems;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLimitSwitch;
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.LimitSwitchConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 import frc.robot.sim.ShooterSim;
 
-public class ShooterSystem extends SubsystemBase {
+public class DynamicShooterSystem extends SubsystemBase {
 
-    private final SparkMax shooterMotor;
+    private final SparkFlex shooterMotor;
     private final RelativeEncoder shooterEncoder;
     private final SparkMax pitchMotor;
     private final RelativeEncoder pitchEncoder;
     private final SparkMax feederMotor;
+    private DigitalInput limitSwitch;
 
     private final SparkLimitSwitch shooterLowerLimit;
     private final SparkLimitSwitch shooterUpperLimit;
 
     public final ShooterSim sim;
 
-    public ShooterSystem(Field2d field) {
-        shooterMotor = new SparkMax(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
+    public DynamicShooterSystem(Field2d field) {
+        shooterMotor = new SparkFlex(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
         pitchMotor = new SparkMax(RobotMap.SOOTER_PITCH_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_MOTOR, SparkLowLevel.MotorType.kBrushless);
@@ -45,6 +41,7 @@ public class ShooterSystem extends SubsystemBase {
         SparkMaxConfig configFeeder = new SparkMaxConfig();
         SparkMaxConfig configPitch = new SparkMaxConfig();
 
+        limitSwitch =new DigitalInput(RobotMap.LIMIT_SWITCH);
 
         shooterLowerLimit = pitchMotor.getReverseLimitSwitch();
         shooterUpperLimit = pitchMotor.getForwardLimitSwitch();
@@ -128,6 +125,10 @@ public class ShooterSystem extends SubsystemBase {
 
     public boolean getPitchUpperLimit() {
         return shooterUpperLimit.isPressed();
+    }
+
+    public boolean isBallInShooter(){
+        return !limitSwitch.get();
     }
 
     public double calculateFiringPitchAngleDegrees(double distanceMeters, double firingSpeedRpm, boolean highArc) {

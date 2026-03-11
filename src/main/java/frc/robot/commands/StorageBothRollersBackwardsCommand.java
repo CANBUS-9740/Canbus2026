@@ -15,7 +15,6 @@ public class StorageBothRollersBackwardsCommand extends Command {
 
     public void initialize() {
         storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_BACKWARDS_LOW_SPEED);
-        storageSystem.moveFeedRollers(RobotMap.STORAGE_FEED_ROLLERS_BACKWARDS_LOW_SPEED);
     }
 
     @Override
