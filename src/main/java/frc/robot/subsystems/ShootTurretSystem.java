@@ -21,7 +21,6 @@ import frc.robot.RobotMap;
 import frc.robot.sim.ShootTurretSim;
 
 public class ShootTurretSystem extends SubsystemBase {
-
     private final SparkMax motor;
     private final RelativeEncoder encoder;
     private final SparkLimitSwitch forwardLimitSwitch;

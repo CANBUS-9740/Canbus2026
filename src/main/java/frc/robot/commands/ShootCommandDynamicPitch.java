@@ -31,13 +31,10 @@ public class ShootCommandDynamicPitch extends Command {
         pitchProfileGoal = new TrapezoidProfile.State(targetPitch, 0);
         pitchProfileSetPoint = new TrapezoidProfile.State(dynamicShooterSystem.getPitchAngleDegrees(), 0);
         dynamicShooterSystem.setShootVoltage(targetRPM / RobotMap.SHOOTER_MECHANISM_MAX_RPM);
-
     }
 
     @Override
     public void execute() {
-
-
         if (dynamicShooterSystem.isAtAngle(targetPitch)) {
 
             dynamicShooterSystem.setPitchPosition(targetPitch);
@@ -48,9 +45,8 @@ public class ShootCommandDynamicPitch extends Command {
             dynamicShooterSystem.setPitchPosition(pitchProfileSetPoint.position);
         }
 
-
         if (dynamicShooterSystem.getShooterVelocityRPM() >= targetRPM - 10 && isAtPitch) {
-            dynamicShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTATNT);
+            dynamicShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTANT);
         }
     }
 
@@ -64,7 +60,4 @@ public class ShootCommandDynamicPitch extends Command {
         dynamicShooterSystem.stopPitch();
         dynamicShooterSystem.stopShooterAndFeeder();
     }
-
-
-
 }

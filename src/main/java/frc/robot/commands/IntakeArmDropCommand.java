@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeArmSystem;
 
 public class IntakeArmDropCommand extends Command {
-
     private static final double TARGET_DROP_POSITION = 70;
 
     private final IntakeArmSystem system;

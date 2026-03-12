@@ -17,7 +17,6 @@ import frc.robot.RobotMap;
 import frc.robot.sim.ShooterSim;
 
 public class DynamicShooterSystem extends SubsystemBase {
-
     private final SparkFlex shooterMotor;
     private final RelativeEncoder shooterEncoder;
     private final SparkMax pitchMotor;
@@ -33,22 +32,20 @@ public class DynamicShooterSystem extends SubsystemBase {
     public DynamicShooterSystem(Field2d field) {
         shooterMotor = new SparkFlex(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
 
-        pitchMotor = new SparkMax(RobotMap.SOOTER_PITCH_MOTOR, SparkLowLevel.MotorType.kBrushless);
+        pitchMotor = new SparkMax(RobotMap.SHOOTER_PITCH_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_MOTOR, SparkLowLevel.MotorType.kBrushless);
-
 
         SparkMaxConfig configLead = new SparkMaxConfig();
         SparkMaxConfig configFeeder = new SparkMaxConfig();
         SparkMaxConfig configPitch = new SparkMaxConfig();
 
-        limitSwitch =new DigitalInput(RobotMap.LIMIT_SWITCH);
+        //limitSwitch =new DigitalInput(RobotMap.LIMIT_SWITCH);
 
         shooterLowerLimit = pitchMotor.getReverseLimitSwitch();
         shooterUpperLimit = pitchMotor.getForwardLimitSwitch();
 
         shooterMotor.configure(configLead, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         feederMotor.configure(configFeeder, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
 
         configPitch.limitSwitch
                 .forwardLimitSwitchEnabled(true)
@@ -103,7 +100,7 @@ public class DynamicShooterSystem extends SubsystemBase {
     }
 
     public boolean isAtAngle(double targetAngle) {
-        return MathUtil.isNear(targetAngle, getPitchAngleDegrees(), RobotMap.PITCH_TOLARANCE) && Math.abs(pitchEncoder.getVelocity()) < RobotMap.PITCH_RPM_THRESHOLD;
+        return MathUtil.isNear(targetAngle, getPitchAngleDegrees(), RobotMap.PITCH_TOLERANCE) && Math.abs(pitchEncoder.getVelocity()) < RobotMap.PITCH_RPM_THRESHOLD;
     }
 
     public void setEncoderAngle(double angleDeg) {
@@ -127,7 +124,7 @@ public class DynamicShooterSystem extends SubsystemBase {
         return shooterUpperLimit.isPressed();
     }
 
-    public boolean isBallInShooter(){
+    public boolean isBallInShooter() {
         return !limitSwitch.get();
     }
 

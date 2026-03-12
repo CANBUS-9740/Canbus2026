@@ -1,18 +1,18 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
-
     private Swerve swerveSystem;
-    private StaticShooterSystem shooterSystem;
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
     private StorageSystem storageSystem;
+    private StaticShooterSystem staticShooterSystem;
 
     private Limelight limelight;
     private GameField gameField;
@@ -25,10 +25,10 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        shooterSystem = new StaticShooterSystem();
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
         storageSystem = new StorageSystem();
+        staticShooterSystem = new StaticShooterSystem();
 
         limelight = new Limelight("limelight-edi");
         gameField = new GameField();
@@ -55,10 +55,13 @@ public class Robot extends TimedRobot {
                 .transformBy(RobotMap.SHOOTER_POSE_ON_ROBOT_2D)
                 .transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(shootTurretSystem.getEncoderAngleInDegrees())));
         swerveSystem.getField().getObject("Turret").setPose(turretPose);*/
+
+        SmartDashboard.updateValues();
     }
 
     @Override
     public void simulationInit() {
+
     }
 
     @Override
@@ -83,11 +86,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-
+        //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
+        //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
+        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
     }
 
     @Override
     public void teleopPeriodic() {
+
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,7 +14,6 @@ import frc.robot.LimelightHelpers;
 import frc.robot.RobotMap;
 import org.json.simple.parser.ParseException;
 import swervelib.SwerveDrive;
-import swervelib.SwerveModule;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
@@ -47,7 +45,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData("Field", getField());
     }
 
-    public void addVisionMeasurement(LimelightHelpers.PoseEstimate poseEstimate){
+    public void addVisionMeasurement(LimelightHelpers.PoseEstimate poseEstimate) {
         swerveDrive.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
     }
 
@@ -61,7 +59,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds chassisSpeeds) {
-        swerveDrive.drive(chassisSpeeds, new Translation2d(0 , 0));
+        swerveDrive.drive(chassisSpeeds, new Translation2d(0, 0));
     }
 
     public Field2d getField() {

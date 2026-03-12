@@ -26,8 +26,7 @@ public class IntakeCollectorSystem extends SubsystemBase {
 
         if (RobotBase.isSimulation()) {
             sim = new IntakeCollectorSim(motor);
-        }
-        else{
+        } else {
             sim = null;
         }
     }
@@ -35,6 +34,7 @@ public class IntakeCollectorSystem extends SubsystemBase {
     public void move(double speed) {
         motor.set(speed);
     }
+
     public void stop() {
         motor.stopMotor();
     }

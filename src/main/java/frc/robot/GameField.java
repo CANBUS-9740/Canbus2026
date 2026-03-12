@@ -30,7 +30,7 @@ public class GameField {
         Optional<Pose3d> tagOptional = layout.getTagPose(id);
         if (tagOptional.isPresent()) {
             Pose2d tagPose = tagOptional.get().toPose2d();
-            return new Pose2d(tagPose.getX() + 0.3969 , tagPose.getY() + 0.5969, tagPose.getRotation());
+            return new Pose2d(tagPose.getX() + 0.3969, tagPose.getY() + 0.5969, tagPose.getRotation());
         } else {
             throw new IllegalStateException((String.format(Locale.ENGLISH, "AprilTag %d not found in layout", id)));
         }
@@ -43,7 +43,7 @@ public class GameField {
         if (tagOptional.isPresent()) {
             Pose2d tagPose = tagOptional.get().toPose2d();
             // if blue add if red subtract
-            double offsetX = alliance == DriverStation.Alliance.Red ? - 1.105- RobotMap.ROBOT_LENGTH_METERS/2 : 1.105 + RobotMap.ROBOT_LENGTH_METERS/2;
+            double offsetX = alliance == DriverStation.Alliance.Red ? -1.105 - RobotMap.ROBOT_LENGTH_METERS / 2 : 1.105 + RobotMap.ROBOT_LENGTH_METERS / 2;
             return new Pose2d(tagPose.getX() + offsetX,
                     tagPose.getY(),
                     Rotation2d.fromRadians((tagPose.getRotation().getRadians() + Math.PI) % (2 * Math.PI)));
@@ -63,7 +63,7 @@ public class GameField {
         return MathUtil.inputModulus(angle, -180, 180);
     }
 
-    public double[] getTargetAngleTurretAndSwerveFrontHub(Pose2d swervePose, DriverStation.Alliance alliance){
+    public double[] getTargetAngleTurretAndSwerveFrontHub(Pose2d swervePose, DriverStation.Alliance alliance) {
         double minAngleFront = Math.max(RobotMap.SHOOT_TURRET_FRONT_MIN_ANGLE_DEGREES, RobotMap.SHOOT_TURRET_MIN_ANGLE_DEGREES);
         double maxAngleFront = Math.min(RobotMap.SHOOT_TURRET_FRONT_MAX_ANGLE_DEGREES, RobotMap.SHOOT_TURRET_MAX_ANGLE_DEGREES);
         boolean isTurretCapable;
@@ -76,14 +76,14 @@ public class GameField {
             isTurretCapable = true;
         }
 
-        if(isTurretCapable){
-            return (new double[] {turretTargetAngleBotCentric, swervePose.getRotation().getDegrees()});
+        if (isTurretCapable) {
+            return (new double[]{turretTargetAngleBotCentric, swervePose.getRotation().getDegrees()});
         }
 
-        if(turretTargetAngleBotCentric < 0){
-            return (new double[] {minAngleFront, swervePose.getRotation().getDegrees() - (minAngleFront - turretTargetAngleBotCentric)});
+        if (turretTargetAngleBotCentric < 0) {
+            return (new double[]{minAngleFront, swervePose.getRotation().getDegrees() - (minAngleFront - turretTargetAngleBotCentric)});
         } else {
-            return (new double[] {maxAngleFront, swervePose.getRotation().getDegrees() + (maxAngleFront - turretTargetAngleBotCentric)});
+            return (new double[]{maxAngleFront, swervePose.getRotation().getDegrees() + (maxAngleFront - turretTargetAngleBotCentric)});
         }
     }
 
