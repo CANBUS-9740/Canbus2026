@@ -44,12 +44,12 @@ public class ClimbSystem extends SubsystemBase {
         bottomSwitchRight = new DigitalInput(RobotMap.CLIMB_BOTTOM_SWITCH_RIGHT_SENSOR_ID);
 
         SparkMaxConfig config = new SparkMaxConfig();
-        config.closedLoop.pid(0.5, 0, 0)
+        config.closedLoop.pid(RobotMap.CLIMB_LEFT_MOTOR_PID.kP, RobotMap.CLIMB_LEFT_MOTOR_PID.kI, RobotMap.CLIMB_LEFT_MOTOR_PID.kD)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         leftMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         config = new SparkMaxConfig();
-        config.closedLoop.pid(0.5, 0, 0)
+        config.closedLoop.pid(RobotMap.CLIMB_RIGHT_MOTOR_PID.kP, RobotMap.CLIMB_RIGHT_MOTOR_PID.kI, RobotMap.CLIMB_RIGHT_MOTOR_PID.kD)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         rightMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
@@ -59,7 +59,7 @@ public class ClimbSystem extends SubsystemBase {
             sim = null;
         }
 
-        mechanism = new Mechanism2d(5, 5);
+        mechanism = new Mechanism2d(RobotMap.CLIMB_WIDTH_M, RobotMap.CLIMB_HEIGHT_M);
         MechanismRoot2d leftRoot = mechanism.getRoot("leftArm", 2, 2);
         MechanismRoot2d rightRoot = mechanism.getRoot("rightArm", 3, 2);
         leftLigament = leftRoot.append(new MechanismLigament2d("leftArm", 0, 90, 5, new Color8Bit(Color.kRed)));

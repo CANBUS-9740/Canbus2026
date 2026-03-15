@@ -36,13 +36,13 @@ public class IntakeArmSystem extends SubsystemBase {
         relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
         config.inverted(true);
-        config.closedLoop.pid(0.0082, 0.000000002, 0.0000004)
+        config.closedLoop.pid(RobotMap.ARM_PID.kP, RobotMap.ARM_PID.kI, RobotMap.ARM_PID.kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
                 .positionWrappingMaxInput(360)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-        config.closedLoop.feedForward.kCos(0.4);
-        config.absoluteEncoder.zeroOffset(0.47415367);
+        config.closedLoop.feedForward.kCos(RobotMap.ARM_COS);
+        config.absoluteEncoder.zeroOffset(RobotMap.ARM_ENCODER_OFFSET);
         config.closedLoop
                 .maxOutput(0.4)
                 .minOutput(-0.4);
@@ -52,9 +52,9 @@ public class IntakeArmSystem extends SubsystemBase {
             sim = new IntakeArmSim(motor);
         } else {
             sim = null;
-            //0.007
-            //0.00000005
-            //0.0000001
+            //p 0.007
+            //i 0.00000005
+            //d 0.0000001
             //offset 0.479
         }
 
