@@ -1,11 +1,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotMap;
 import frc.robot.subsystems.ClimbSystem;
 
 public class ClimbOpenArmsCommand extends Command {
-
     private final ClimbSystem climbSystem;
     private final double targetPositionMeters;
 

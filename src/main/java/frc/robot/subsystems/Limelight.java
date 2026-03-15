@@ -7,17 +7,16 @@ import frc.robot.LimelightHelpers;
 import java.util.Optional;
 
 public class Limelight extends SubsystemBase {
-
     private static final double MAX_DISTANCE_FOR_POSE = 3;
 
     private final String name;
 
-    public Limelight(String name){
+    public Limelight(String name) {
         this.name = name;
     }
 
-    public Optional<LimelightHelpers.PoseEstimate> getPose(){
-        if(!LimelightHelpers.getTV(name)){
+    public Optional<LimelightHelpers.PoseEstimate> getPose() {
+        if (!LimelightHelpers.getTV(name)) {
             SmartDashboard.putBoolean("hasAprilTag", false);
             SmartDashboard.putString("HasAprilTagReason", "No Fiducial");
             return Optional.empty();

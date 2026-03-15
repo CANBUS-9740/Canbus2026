@@ -30,10 +30,10 @@ public class ShooterSim {
                 LinearSystemId.createFlywheelSystem(RobotMap.SHOOTER_MOTOR, RobotMap.SHOOTER_MOI, RobotMap.SHOOTER_GEAR_RATIO),
                 RobotMap.SHOOTER_MOTOR);
 
-        pitchMotorSim = new SparkMaxSim(pitchMotor, RobotMap.SHOOTER_PITCH_MOTOR);
+        pitchMotorSim = new SparkMaxSim(pitchMotor, RobotMap.SHOOTER_PITCH_MOTOR_SIM);
         pitchSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(RobotMap.SHOOTER_PITCH_MOTOR, RobotMap.SHOOTER_PITCH_MOI, RobotMap.SHOOTER_PITCH_GEAR_RATIO),
-                RobotMap.SHOOTER_PITCH_MOTOR);
+                LinearSystemId.createDCMotorSystem(RobotMap.SHOOTER_PITCH_MOTOR_SIM, RobotMap.SHOOTER_PITCH_MOI, RobotMap.SHOOTER_PITCH_GEAR_RATIO),
+                RobotMap.SHOOTER_PITCH_MOTOR_SIM);
 
         ballSim = new BallSim(field);
     }

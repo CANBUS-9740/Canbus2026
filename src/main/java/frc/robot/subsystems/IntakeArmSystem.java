@@ -25,40 +25,43 @@ public class IntakeArmSystem extends SubsystemBase {
     private final SparkMax motor;
     private final AbsoluteEncoder encoder;
     private final RelativeEncoder relativeEncoder;
-     private final SparkMaxConfig config;
-     private final IntakeArmSim sim;
-     private final Mechanism2d mechanism;
-     private final MechanismLigament2d ligament;
+    private final SparkMaxConfig config;
+    private final IntakeArmSim sim;
+    private final Mechanism2d mechanism;
+    private final MechanismLigament2d ligament;
 
     public IntakeArmSystem() {
         motor = new SparkMax(RobotMap.INTAKE_ARM_MOTOR_ID, SparkLowLevel.MotorType.kBrushless);
         encoder = motor.getAbsoluteEncoder();
-       relativeEncoder = motor.getEncoder();
+        relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
         config.inverted(true);
-        config.closedLoop.pid(3,0,0.5)
+        config.closedLoop.pid(0.0082, 0.000000002, 0.0000004)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
-                .positionWrappingMaxInput(1)
+                .positionWrappingMaxInput(360)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-        config.closedLoop.feedForward.kCos(0.3);
+        config.closedLoop.feedForward.kCos(0.4);
         config.absoluteEncoder.zeroOffset(0.47415367);
+        config.closedLoop
+                .maxOutput(0.4)
+                .minOutput(-0.4);
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
         if (RobotBase.isSimulation()) {
             sim = new IntakeArmSim(motor);
-        }
-        else{
+        } else {
             sim = null;
+            //0.007
+            //0.00000005
+            //0.0000001
+            //offset 0.479
         }
 
-        mechanism = new Mechanism2d(5,5);
-        MechanismRoot2d root = mechanism.getRoot("arm",2.5,2);
-        ligament = root.append(new MechanismLigament2d("arm",2,0,1,new Color8Bit(Color.kRed)));
-        SmartDashboard.putData("arm",mechanism);
-
-
-
+        mechanism = new Mechanism2d(5, 5);
+        MechanismRoot2d root = mechanism.getRoot("arm", 2.5, 2);
+        ligament = root.append(new MechanismLigament2d("arm", 2, 0, 1, new Color8Bit(Color.kRed)));
+        SmartDashboard.putData("arm", mechanism);
     }
 
     public double getPositionDegrees() {
@@ -69,24 +72,22 @@ public class IntakeArmSystem extends SubsystemBase {
         motor.set(speed);
     }
 
-    public void setTargetPosition(double positionDegrees){
-        motor.getClosedLoopController().setSetpoint(positionDegrees/360, SparkBase.ControlType.kPosition);
-
+    public void setTargetPosition(double positionDegrees) {
+        motor.getClosedLoopController().setSetpoint(positionDegrees / 360, SparkBase.ControlType.kPosition);
     }
 
     public void stop() {
         motor.stopMotor();
     }
 
-    public boolean IsArmInPositionAndSteady(double targetPosition){
-
-        return MathUtil.isNear(targetPosition, getPositionDegrees(), RobotMap.TOLERANCE_ARM_POSITION)&& Math.abs(relativeEncoder.getVelocity()) < RobotMap.TOLERANCE_ARM_SPEED;
+    public boolean IsArmInPositionAndSteady(double targetPosition) {
+        return MathUtil.isNear(targetPosition, getPositionDegrees(), RobotMap.TOLERANCE_ARM_POSITION) && Math.abs(relativeEncoder.getVelocity()) < RobotMap.TOLERANCE_ARM_SPEED;
     }
+
     public void periodic() {
         SmartDashboard.putNumber("IntakeArmPositionDegrees", getPositionDegrees());
         ligament.setAngle(getPositionDegrees());
     }
-
 
     @Override
     public void simulationPeriodic() {

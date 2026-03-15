@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -11,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.Optional;
 
 public class LimeLightBallDetection extends SubsystemBase {
-
-
     private static final double CAM_HEIGHT = 0;
     private static final double CAMERA_PITCH = 0;
     private static final double Y_CAM_OFFSET = 0;
@@ -32,7 +29,7 @@ public class LimeLightBallDetection extends SubsystemBase {
         return BallDetected;
     }
 
-    public Optional<Pose2d> getBallLocation(Pose2d botPos){
+    public Optional<Pose2d> getBallLocation(Pose2d botPos) {
         double tx = Math.toRadians(table.getEntry("tx").getDouble(0.0));
         double ty = Math.toRadians(table.getEntry("ty").getDouble(0.0));
 
@@ -49,11 +46,8 @@ public class LimeLightBallDetection extends SubsystemBase {
 
         double[] pos = {xBall, yBall};
 
-        SmartDashboard.putNumberArray("BallPos: ", pos );
+        SmartDashboard.putNumberArray("BallPos: ", pos);
 
         return Optional.of(new Pose2d(xBall, yBall, new Rotation2d(0)));
-
     }
-
 }
-

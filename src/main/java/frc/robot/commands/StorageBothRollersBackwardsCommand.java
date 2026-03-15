@@ -5,7 +5,6 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.StorageSystem;
 
 public class StorageBothRollersBackwardsCommand extends Command {
-
     private final StorageSystem storageSystem;
 
     public StorageBothRollersBackwardsCommand(StorageSystem storageSystem) {
@@ -32,5 +31,3 @@ public class StorageBothRollersBackwardsCommand extends Command {
         return false;
     }
 }
-
-

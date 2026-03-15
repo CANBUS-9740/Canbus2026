@@ -60,7 +60,6 @@ public class Pathplanner {
     public Command followPath(String pathName) {
         try {
             PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-
             return AutoBuilder.followPath(path);
         } catch (Exception e) {
             DriverStation.reportError("cant run the path: " + e.getMessage(), e.getStackTrace());
@@ -68,9 +67,7 @@ public class Pathplanner {
         }
     }
 
-
     public void update() {
 
     }
 }
-
