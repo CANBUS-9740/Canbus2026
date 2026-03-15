@@ -48,6 +48,7 @@ public class RobotMap {
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
     public static final double INTAKE_ARM_MAX_ANGLE_RAD = 0; // last 2 lines are for compiling only
+    private static final double TARGET_DROP_POSITION_DEG = 70;
     public static final TrapezoidProfile.Constraints INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(1000, 500);
 
 
@@ -134,6 +135,10 @@ public class RobotMap {
     public static final double CLIMB_ARMS_TARGET_TOLERANCE = 0;
     public static final double CLIMB_ARMS_TARGET_RPM_TOLERANCE = 0;
     public static final double CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS = (2 * Math.PI * CLIMB_ARM_DRUM_RADIUS_METERS) / CLIMB_MOTOR_TO_DRUM_GEAR_RATIO;
+    public static final PIDConstants CLIMB_RIGHT_MOTOR_PID = new PIDConstants(0.5, 0, 0); //TODO: tune
+    public static final PIDConstants CLIMB_LEFT_MOTOR_PID = new PIDConstants(0.5, 0, 0); //TODO: tune
+    public static final double CLIMB_HEIGHT_M = 2; //not correct
+    public static final double CLIMB_WIDTH_M = 0.1; //not correct
 
     // collector
     public static final double COLLECTOR_SPEED = 0.5;
@@ -143,12 +148,14 @@ public class RobotMap {
 
     public static final double TOLERANCE_ARM_POSITION = 1;
     public static final double TOLERANCE_ARM_SPEED = 20;
-
+    public static final PIDConstants ARM_PID = new PIDConstants(0.0082, 0.000000002, 0.0000004);
+    public static final double ARM_COS = 0.4;
+    public static final double ARM_ENCODER_OFFSET = 0.47415367;
     // turret
     public static final double SHOOT_TURRET_IS_NEAR_TOLERANCE_DEGREES = 0.5;
     public static final double SHOOT_TURRET_IS_NEAR_VELOCITY_RPM = 1;
     public static final double SHOOT_TURRET_RESET_STATIC_SPEED = 0.05;
-    public static final double SHOOT_TURRET_PID_P = 10;
+    public static final double SHOOT_TURRET_PID_P = 10 ;
     public static final double SHOOT_TURRET_PID_I = 0;
     public static final double SHOOT_TURRET_PID_D = 0;
     public static TrapezoidProfile.Constraints SHOOT_TURRET_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(6000, 2000);

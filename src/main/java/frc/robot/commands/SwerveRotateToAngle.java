@@ -17,7 +17,7 @@ public class SwerveRotateToAngle extends Command {
         this.swerve = swerve;
         this.targetAngleDegrees = targetAngleDegrees;
 
-        pidController = new PIDController(RobotMap.SWERVE_PATH_ROTATE_PID.kP, 0, 0);
+        pidController = new PIDController(RobotMap.SWERVE_PATH_ROTATE_PID.kP, RobotMap.SWERVE_PATH_ROTATE_PID.kI, RobotMap.SWERVE_PATH_ROTATE_PID.kD);
         pidController.setTolerance(0.5, 0.1);
         pidController.enableContinuousInput(-Math.PI, Math.PI);
 
