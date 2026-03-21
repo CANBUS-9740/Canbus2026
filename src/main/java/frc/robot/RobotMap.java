@@ -31,11 +31,17 @@ public class RobotMap {
     // climb
     public static final DCMotor CLIMB_LEFT_ARM_MOTOR = DCMotor.getNEO(1);
     public static final DCMotor CLIMB_RIGHT_ARM_MOTOR = DCMotor.getNEO(1);
-    public static final double CLIMB_MOTOR_TO_DRUM_GEAR_RATIO = 4.0 / 1.0;
+    public static final double CLIMB_MOTOR_GEARBOX = 1.0 / 27.0;
+    public static final double CLIMB_GEAR_RATIO_MOTOR_TO_ARM = 16.0 / 24.0;
+    public static final double CLIMB_ARM_RAISE_PER_SPIN_METERS = 0.012;
+
+
+
+    public static final double CLIMB_MOTOR_TO_DRUM_GEAR_RATIO = 1.0 / 27.0;
     public static final double CLIMB_ARM_MASS_KG = 1;
     public static final double CLIMB_ARM_DRUM_RADIUS_METERS = 0.05;
     public static final double CLIMB_ARM_MIN_HEIGHT = 0;
-    public static final double CLIMB_ARM_MAX_HEIGHT = 1;
+    public static final double CLIMB_ARM_MAX_HEIGHT = Units.inchesToMeters(12);
 
     // intake arm
     public static final DCMotor INTAKE_ARM_MOTOR = DCMotor.getNEO(1);
@@ -134,7 +140,7 @@ public class RobotMap {
     public static final double CLIMB_MOTOR_BACKWARD_SPEED = -0.4;
     public static final double CLIMB_ARMS_TARGET_TOLERANCE = 0;
     public static final double CLIMB_ARMS_TARGET_RPM_TOLERANCE = 0;
-    public static final double CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS = (2 * Math.PI * CLIMB_ARM_DRUM_RADIUS_METERS) / CLIMB_MOTOR_TO_DRUM_GEAR_RATIO;
+    public static final double CLIMB_MOTOR_ROTATIONS_TO_LENGTH_METERS = CLIMB_MOTOR_GEARBOX * CLIMB_GEAR_RATIO_MOTOR_TO_ARM * CLIMB_ARM_RAISE_PER_SPIN_METERS;
     public static final PIDConstants CLIMB_RIGHT_MOTOR_PID = new PIDConstants(0.5, 0, 0); //TODO: tune
     public static final PIDConstants CLIMB_LEFT_MOTOR_PID = new PIDConstants(0.5, 0, 0); //TODO: tune
     public static final double CLIMB_HEIGHT_M = 2; //not correct
