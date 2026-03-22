@@ -98,6 +98,7 @@ public class RobotMap {
     public static final double SHOOTER_GEAR_RATIO = 1;
     public static final double SHOOTER_PITCH_LOWER_LIMIT_DEG = 11;
     public static final double SHOOTER_PITCH_UPPER_LIMIT_DEG = 47;
+    public static final double SHOOTER_PITCH_TARGET_DEG = 70;
     public static final double SHOOTER_PITCH_GEAR_RATIO = 2.0;
 
     // swerve
