@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+import java.util.Optional;
+
 public class Robot extends TimedRobot {
     private Swerve swerveSystem;
     private IntakeArmSystem intakeArmSystem;
@@ -80,7 +82,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        if(!limelightAprilTag.getPose().isEmpty()) {
+        if(limelightAprilTag.getPose().isPresent()) {
             LimelightHelpers.PoseEstimate posCam = limelightAprilTag.getPose().get();
             swerveSystem.addVisionMeasurement(posCam);
         }
