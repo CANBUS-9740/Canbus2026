@@ -82,10 +82,14 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        if(limelightAprilTag.getPose().isPresent()) {
-            LimelightHelpers.PoseEstimate posCam = limelightAprilTag.getPose().get();
-            swerveSystem.addVisionMeasurement(posCam);
+        if (limelightAprilTag.getPose().isPresent()) {
+            LimelightHelpers.PoseEstimate posCam = limelightAprilTag.getPose().orElse(new LimelightHelpers.PoseEstimate());
+
+            if (!posCam.equals(new LimelightHelpers.PoseEstimate())) {
+                swerveSystem.addVisionMeasurement(posCam);
+            }
         }
+
         Pose2d pose2d = swerveSystem.getPose();
 //        Pose2d turretPose = swervePose
 //                .transformBy(RobotMap.SHOOTER_POSE_ON_ROBOT_2D)
