@@ -171,8 +171,8 @@ public class RobotMap {
     public static final PIDConstants SWERVE_PATH_ROTATE_PID = new PIDConstants(3, 0, 0);
 
     //Leds
-    public static final int LEDS_PORT = 0;
-    public static final int LEDS_LENGTH = 60;
-    public static final int[] LEDS_RIGHT_SIDE_INDEX = {0, 0};
-    public static final int[] LEDS_LEFT_SIDE_INDEX = {0, 0};
+    public static final int LEDS_PORT = 1;
+    public static final int LEDS_LENGTH = 58;
+    public static final int[] LEDS_RIGHT_SIDE_INDEX = {0, 28};
+    public static final int[] LEDS_LEFT_SIDE_INDEX = {29, 57};
 }

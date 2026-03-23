@@ -33,6 +33,8 @@ public class Leds {
                 RobotMap.LEDS_LEFT_SIDE_INDEX[0],
                 RobotMap.LEDS_LEFT_SIDE_INDEX[1]).reversed();
 
+
+        leds.setData(ledsBuffer);
         leds.start();
     }
 
@@ -42,6 +44,11 @@ public class Leds {
 
     private void setLeftSideLeds(LEDPattern ledPattern) {
         ledPattern.applyTo(ledsBufferViewLeft);
+    }
+
+    public void setLedsss(){
+        LEDPattern pattern = LEDPattern.solid(Color.kRed);
+        pattern.applyTo(ledsBuffer);
     }
 
     private Command setBothPattern(LEDPattern pattern) {
