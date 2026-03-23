@@ -8,6 +8,7 @@ import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -36,6 +37,7 @@ public class IntakeArmSystem extends SubsystemBase {
         relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
         config.inverted(true);
+        config.idleMode(SparkBaseConfig.IdleMode.kBrake);
         config.closedLoop.pid(RobotMap.ARM_PID.kP, RobotMap.ARM_PID.kI, RobotMap.ARM_PID.kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
