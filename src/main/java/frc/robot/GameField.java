@@ -5,6 +5,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.subsystems.Swerve;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -34,6 +35,13 @@ public class GameField {
         } else {
             throw new IllegalStateException((String.format(Locale.ENGLISH, "AprilTag %d not found in layout", id)));
         }
+    }
+
+    public double getDistanceFromHubMeters(DriverStation.Alliance alliance, Swerve swerve){
+        Pose2d hubPose = getHubPose(alliance);
+        double distanceX = Math.pow(hubPose.getX(), 2);
+        double distanceY = Math.pow(hubPose.getY(), 2);
+        return Math.sqrt(distanceY + distanceX);
     }
 
     public Pose2d getTowerMiddleBotPose(DriverStation.Alliance alliance) {
