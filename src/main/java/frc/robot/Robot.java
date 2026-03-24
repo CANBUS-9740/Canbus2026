@@ -129,6 +129,8 @@ public class Robot extends TimedRobot {
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
+        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,
+                staticShooterSystem.calculateFiringSpeedRpm(7, 70)));
     }
 
     @Override

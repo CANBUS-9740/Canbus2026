@@ -1,6 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.StaticShooterSystem;
 
 public class ShootCommandStaticPitch extends Command {
@@ -20,7 +23,11 @@ public class ShootCommandStaticPitch extends Command {
 
     @Override
     public void execute() {
+        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
+            staticShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTANT);
+        }
 
+        SmartDashboard.putBoolean("if", MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5));
     }
 
     @Override
