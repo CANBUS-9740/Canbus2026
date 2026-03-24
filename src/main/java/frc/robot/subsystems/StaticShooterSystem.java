@@ -75,13 +75,14 @@ public class StaticShooterSystem extends SubsystemBase {
     }
 
     public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
-        double numerator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters;
+
 
         double heightDifferance = RobotMap.HUB_HEIGHT_METERS - RobotMap.SHOOTER_HEIGHT_METERS;
         double firingAngleRad = Math.toRadians(firingAngleDegrees);
         double cosAngle = Math.cos(firingAngleRad);
         double tanAngle = Math.tan(firingAngleRad);
-        double denominator = (2 * cosAngle * cosAngle) * ((distanceMeters * tanAngle) - heightDifferance);
+        double numerator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters -heightDifferance+(distanceMeters * tanAngle) ;
+        double denominator = (2 * cosAngle * cosAngle);
 
         double firingLinearVelocityMps = Math.sqrt(numerator / denominator);
         return firingLinearVelocityMps / (2 * Math.PI * RobotMap.SHOOTER_WHEEL_RADIUS_METERS) * 60;
