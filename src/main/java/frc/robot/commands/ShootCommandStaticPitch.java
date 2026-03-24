@@ -19,6 +19,7 @@ public class ShootCommandStaticPitch extends Command {
     @Override
     public void initialize() {
         staticShooterSystem.setShootSpeed(targetRPM);
+        SmartDashboard.putNumber("ShooterTarget", targetRPM);
     }
 
     @Override

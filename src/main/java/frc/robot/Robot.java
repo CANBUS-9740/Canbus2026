@@ -7,9 +7,11 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -37,21 +39,21 @@ public class Robot extends TimedRobot {
     private PositionDutyCycle positionControl;
     private NeutralOut neutralControl;
 
-
+    private double shooterOffset = 2.7;
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
         //intakeArmSystem = new IntakeArmSystem();
         //intakeCollectorSystem = new IntakeCollectorSystem();
-        //storageSystem = new StorageSystem();
-        //staticShooterSystem = new StaticShooterSystem();
+        storageSystem = new StorageSystem();
+        staticShooterSystem = new StaticShooterSystem();
 
         limelightAprilTag = new LimelightAprilTag("limelight-aprilta");
-        //gameField = new GameField();
+        gameField = new GameField();
         //pathplanner = new Pathplanner(swerveSystem);
 
         driverController = new CommandXboxController(0);
-        //operationController = new CommandXboxController(1);
+        operationController = new CommandXboxController(1);
 
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
         swerveSystem.setDefaultCommand(swerveDriveCommand);
@@ -77,10 +79,13 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("ProcessVariable", 0);
         */
 
+        SmartDashboard.putNumber("shooterOffset", shooterOffset);
     }
 
     @Override
     public void robotPeriodic() {
+        shooterOffset = SmartDashboard.getNumber("shooterOffset", shooterOffset);
+
         CommandScheduler.getInstance().run();
         if (limelightAprilTag.getPose().isPresent()) {
             LimelightHelpers.PoseEstimate posCam = limelightAprilTag.getPose().orElse(new LimelightHelpers.PoseEstimate());
@@ -129,13 +134,12 @@ public class Robot extends TimedRobot {
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
-        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,
-                staticShooterSystem.calculateFiringSpeedRpm(7, 70)));
+
     }
 
     @Override
     public void teleopPeriodic() {
-
+        SmartDashboard.putNumber("distanceHub", gameField.getDistanceFromHubMeters(DriverStation.Alliance.Blue, swerveSystem));
     }
 
     @Override
@@ -145,6 +149,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        CommandScheduler.getInstance().schedule(new ParallelCommandGroup(new ShootCommandStaticPitch(staticShooterSystem,
+                        staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(DriverStation.Alliance.Blue, swerveSystem) * shooterOffset, 70))),
+                new StorageFeedToShooterCommand(storageSystem));
     }
 
     @Override

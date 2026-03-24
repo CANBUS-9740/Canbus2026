@@ -75,8 +75,6 @@ public class StaticShooterSystem extends SubsystemBase {
     }
 
     public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
-
-
         double heightDifferance = RobotMap.HUB_HEIGHT_METERS - RobotMap.SHOOTER_HEIGHT_METERS;
         double firingAngleRad = Math.toRadians(firingAngleDegrees);
         double cosAngle = Math.cos(firingAngleRad);
