@@ -39,9 +39,9 @@ public class GameField {
 
     public double getDistanceFromHubMeters(DriverStation.Alliance alliance, Swerve swerve){
         Pose2d hubPose = getHubPose(alliance);
-        double distanceSin = (hubPose.getY() - swerve.getPose().getY()) / Math.sin(swerve.getPose().getRotation().getDegrees());
-        double distanceCos = (hubPose.getX() - swerve.getPose().getX()) / Math.cos(swerve.getPose().getRotation().getDegrees());
-        return (distanceSin + distanceCos) /2;
+        double distanceX = Math.pow(hubPose.getX(), 2);
+        double distanceY = Math.pow(hubPose.getY(), 2);
+        return Math.sqrt(distanceY + distanceX);
     }
 
     public Pose2d getTowerMiddleBotPose(DriverStation.Alliance alliance) {

@@ -42,6 +42,7 @@ public class RobotMap {
     public static final double CLIMB_ARM_DRUM_RADIUS_METERS = 0.05;
     public static final double CLIMB_ARM_MIN_HEIGHT = 0;
     public static final double CLIMB_ARM_MAX_HEIGHT = Units.inchesToMeters(12);
+    public static final double CLIMB_ARM_HANGING_HEIGHT_M = 0;
 
     // intake arm
     public static final DCMotor INTAKE_ARM_MOTOR = DCMotor.getNEO(1);
@@ -98,8 +99,9 @@ public class RobotMap {
     public static final double SHOOTER_GEAR_RATIO = 1;
     public static final double SHOOTER_PITCH_LOWER_LIMIT_DEG = 11;
     public static final double SHOOTER_PITCH_UPPER_LIMIT_DEG = 47;
-    public static final double SHOOTER_PITCH_TARGET_DEG = 70;
+    public static final double SHOOTER_PITCH_DEFAULT_DEG = 70;
     public static final double SHOOTER_PITCH_GEAR_RATIO = 2.0;
+    public static final double SHOOTER_TARGET_ANGLE = 0;
 
     // swerve
     public static final DCMotor SWERVE_DRIVE_MOTOR = DCMotor.getKrakenX60(1);
