@@ -121,6 +121,7 @@ public class StaticShooterSystem extends SubsystemBase {
     }
 
     public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
+
         double nominator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters;
 
         double heightDifferance = RobotMap.HUB_HEIGHT_METERS - RobotMap.SHOOTER_HEIGHT_METERS;

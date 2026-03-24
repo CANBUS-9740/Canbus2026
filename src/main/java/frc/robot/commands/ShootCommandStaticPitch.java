@@ -4,19 +4,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.DynamicShooterSystem;
 import frc.robot.subsystems.StaticShooterSystem;
+import frc.robot.subsystems.StorageSystem;
 
 public class ShootCommandStaticPitch extends Command {
     private final StaticShooterSystem staticShooterSystem;
+    private final StorageSystem storageSystem;
     private final double targetRPM;
 
-    public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem, double targetRPM) {
+    public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem,StorageSystem storageSystem, double targetRPM) {
         this.staticShooterSystem = staticShooterSystem;
+        this.storageSystem = storageSystem;
         this.targetRPM = targetRPM;
          addRequirements(staticShooterSystem);
     }
 
     @Override
     public void initialize() {
+
         staticShooterSystem.setShootSpeed(targetRPM);
     }
     @Override
@@ -28,7 +32,7 @@ public class ShootCommandStaticPitch extends Command {
     }
     @Override
     public boolean isFinished() {
-        return false;
+        return storageSystem.atLeast1Ball();
     }
     @Override
     public void end(boolean interrupted) {

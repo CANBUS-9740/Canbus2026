@@ -20,6 +20,7 @@ public class Robot extends TimedRobot {
     private Swerve swerveSystem;
     private ShootTurretSystem shootTurretSystem;
     private StaticShooterSystem shooterSystem;
+    private StorageSystem storageSystem;
     private IntakeArmSystem intakeArmSystem;
     private IntakeCollectorSystem intakeCollectorSystem;
     private ClimbSystem climbSystem;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
         swerveSystem = new Swerve();
         shootTurretSystem = new ShootTurretSystem();
         shooterSystem = new StaticShooterSystem(swerveSystem.getField());
+        storageSystem = new StorageSystem();
         intakeArmSystem = new IntakeArmSystem();
         intakeCollectorSystem = new IntakeCollectorSystem();
         climbSystem = new ClimbSystem();
@@ -68,6 +70,7 @@ public class Robot extends TimedRobot {
                 .transformBy(RobotMap.SHOOTER_POSE_ON_ROBOT_2D)
                 .transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(shootTurretSystem.getEncoderAngleInDegrees())));
         swerveSystem.getField().getObject("Turret").setPose(turretPose);
+        ShootCommandStaticPitch(shooterSystem,storageSystem,shooterSystem.calculateFiringSpeedRpm(1,20));
     }
 
     @Override
@@ -81,10 +84,10 @@ public class Robot extends TimedRobot {
             tim=0;
         }
         if(tim<=1000){
-            new ShootCommandStaticPitch(shooterSystem, shooterSystem.calculateFiringSpeedRpm(1,20));
+            new ShootCommandStaticPitch(shooterSystem,storageSystem, shooterSystem.calculateFiringSpeedRpm(1,20));
         }
         if(tim >1000){
-            new ShootCommandStaticPitch(shooterSystem, shooterSystem.calculateFiringSpeedRpm(0.5,20));
+            new ShootCommandStaticPitch(shooterSystem,storageSystem, shooterSystem.calculateFiringSpeedRpm(0.5,20));
         }
 
 
