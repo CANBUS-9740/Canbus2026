@@ -73,13 +73,18 @@ public class StaticShooterSystem extends SubsystemBase {
         feederMotor.stopMotor();
     }
 
-    public double getDistanceFromSensor() {
-        double us = counter.getPeriod() * 1e6;
-        return (3 / 4) * (us - 1000);
+    public double getDistanceFromSensorMM() {
+        double p = counter.getPeriod();
+        if(p >= 0.002){
+            return -1.0;
+        }
+        double us = p * 1e6; //microseconds
+        return (3.0 / 4.0) * (us - 1000);
     }
 
     public boolean isBallInShooter() {
-        return getDistanceFromSensor() <= RobotMap.SHOOTER_DISTANCE_BALL_DETECTION_MM;
+        double d = getDistanceFromSensorMM();
+        return d <= RobotMap.SHOOTER_DISTANCE_BALL_DETECTION_MM && d > 0 ;
     }
 
     public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
