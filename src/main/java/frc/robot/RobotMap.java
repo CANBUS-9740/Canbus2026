@@ -135,7 +135,7 @@ public class RobotMap {
     public static final int SHOOTER_PITCH_MOTOR = 0;
     public static final int SHOOTER_FEEDER_MOTOR = 15;
     public static final int SHOOTER_FEEDER_STABILIZER_MOTOR = 8;
-    public static final int SHOOTER_FEED_LIMIT_SWITCH = 0;
+    public static final int SHOOTER_SENSOR_PORT = 0;
 
     // ----------------- Operational
 
@@ -182,6 +182,7 @@ public class RobotMap {
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;
+    public static final double SHOOTER_DISTANCE_BALL_DETECTION_MM = 50;
 
     public static final double SHOOTER_BIG_WHEELS_P = 0.0023;
     public static final double SHOOTER_BIG_WHEELS_I = 0.00001;

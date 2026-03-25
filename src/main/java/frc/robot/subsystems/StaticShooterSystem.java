@@ -5,10 +5,13 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.*;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.wpilibj.Counter;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
+
+import java.time.Period;
 
 public class StaticShooterSystem extends SubsystemBase {
     private final SparkFlex shooterMotor;
@@ -16,14 +19,14 @@ public class StaticShooterSystem extends SubsystemBase {
     private final RelativeEncoder shooterStabilisationEncoder;
     private final SparkMax feederStabilisationMotor;
     private final SparkMax feederMotor;
-    private final DigitalInput limitSwitch;
+    private final Counter counter;
 
     public StaticShooterSystem() {
         shooterMotor = new SparkFlex(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederStabilisationMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_STABILIZER_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_MOTOR, SparkLowLevel.MotorType.kBrushless);
-        limitSwitch = new DigitalInput(RobotMap.SHOOTER_FEED_LIMIT_SWITCH);
-
+        counter = new Counter(Counter.Mode.kSemiperiod);
+        counter.setUpSource(RobotMap.SHOOTER_SENSOR_PORT);
         SparkMaxConfig configLead = new SparkMaxConfig();
         configLead.closedLoop
                 .pid(RobotMap.SHOOTER_BIG_WHEELS_P, RobotMap.SHOOTER_BIG_WHEELS_I, RobotMap.SHOOTER_BIG_WHEELS_D)
@@ -70,8 +73,18 @@ public class StaticShooterSystem extends SubsystemBase {
         feederMotor.stopMotor();
     }
 
+    public double getDistanceFromSensorMM() {
+        double p = counter.getPeriod();
+        if(p >= 0.002){
+            return -1.0;
+        }
+        double us = p * 1e6; //microseconds
+        return (3.0 / 4.0) * (us - 1000);
+    }
+
     public boolean isBallInShooter() {
-        return !limitSwitch.get();
+        double d = getDistanceFromSensorMM();
+        return d <= RobotMap.SHOOTER_DISTANCE_BALL_DETECTION_MM && d > 0 ;
     }
 
     public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
