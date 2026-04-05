@@ -171,7 +171,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 90);
+        IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 20);
         CommandScheduler.getInstance().schedule(command);
         //CommandScheduler.getInstance().schedule(new GroupCommands().IntakeUntilFullCommand(intakeArmSystem, intakeCollectorSystem, storageSystem));
     }

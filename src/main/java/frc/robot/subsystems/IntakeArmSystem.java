@@ -41,7 +41,7 @@ public class IntakeArmSystem extends SubsystemBase {
         config.closedLoop.pid(RobotMap.ARM_PID.kP, RobotMap.ARM_PID.kI, RobotMap.ARM_PID.kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
-                .positionWrappingMaxInput(360)
+                .positionWrappingMaxInput(1)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         config.closedLoop.feedForward.kCos(RobotMap.ARM_COS);
         config.encoder
