@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.*;
+import frc.robot.commands.IntakeArmDropCommand;
+import frc.robot.commands.IntakeArmPositionCommand;
+import frc.robot.commands.IntakeCollectCommand;
+import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.subsystems.*;
-
-import java.util.Optional;
 
 public class Robot extends TimedRobot {
     private Swerve swerveSystem;
@@ -33,18 +34,20 @@ public class Robot extends TimedRobot {
     private CommandXboxController operationController;
     private SwerveDriveCommand swerveDriveCommand;
 
-
     private SparkMax motor;
     private StatusSignal<Angle> position;
     private PositionDutyCycle positionControl;
     private NeutralOut neutralControl;
 
+    private GroupCommands groupCommands;
+
     private double shooterOffset = 2.7;
+
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        //intakeArmSystem = new IntakeArmSystem();
-        //intakeCollectorSystem = new IntakeCollectorSystem();
+        intakeArmSystem = new IntakeArmSystem();
+        intakeCollectorSystem = new IntakeCollectorSystem();
         storageSystem = new StorageSystem();
         staticShooterSystem = new StaticShooterSystem();
 
@@ -58,11 +61,13 @@ public class Robot extends TimedRobot {
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
         swerveSystem.setDefaultCommand(swerveDriveCommand);
 
-        //driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
+        groupCommands = new GroupCommands();
+
+        driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
         //driverController.x().onTrue(new IntakeArmDropCommand(intakeArmSystem));
-        //driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, 80));
-
+        //driverController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
+        driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
 
 //        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
 //        SparkMaxConfig config = new SparkMaxConSfig();
@@ -84,6 +89,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotPeriodic() {
+        SmartDashboard.putNumber("distanceShooter", staticShooterSystem.getDistanceFromSensorMM());
         shooterOffset = SmartDashboard.getNumber("shooterOffset", shooterOffset);
 
         CommandScheduler.getInstance().run();
@@ -134,7 +140,6 @@ public class Robot extends TimedRobot {
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
-
     }
 
     @Override
@@ -149,9 +154,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        CommandScheduler.getInstance().schedule(new ParallelCommandGroup(new ShootCommandStaticPitch(staticShooterSystem,
-                        staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(DriverStation.Alliance.Blue, swerveSystem) * shooterOffset, 70))),
-                new StorageFeedToShooterCommand(storageSystem));
+//        CommandScheduler.getInstance().schedule(new ParallelCommandGroup(new ShootCommandStaticPitch(staticShooterSystem,
+//                        staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(DriverStation.Alliance.Blue, swerveSystem) * shooterOffset, 70))),
+//                new StorageFeedToShooterCommand(storageSystem));
     }
 
     @Override
@@ -166,13 +171,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-
+        IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 90);
+        CommandScheduler.getInstance().schedule(command);
+        //CommandScheduler.getInstance().schedule(new GroupCommands().IntakeUntilFullCommand(intakeArmSystem, intakeCollectorSystem, storageSystem));
     }
 
     @Override
     public void testPeriodic() {
-        position.refresh();
-        SmartDashboard.putNumber("ProcessVariable", position.getValue().in(Units.Rotations));
+        System.out.println(intakeArmSystem.getPositionRaw());
+        //intakeArmSystem.move(0.2);
+        //position.refresh();
+        //SmartDashboard.putNumber("ProcessVariable", position.getValue().in(Units.Rotations));
+
 /*
         double setPoint = SmartDashboard.getNumber("SetPoint", 0);
         if (setPoint != positionControl.Position) {
@@ -202,7 +212,6 @@ public class Robot extends TimedRobot {
             motor.getConfigurator().apply(pidConfig);
         }
 */
-
     }
 
     @Override

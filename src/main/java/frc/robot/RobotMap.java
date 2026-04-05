@@ -46,15 +46,15 @@ public class RobotMap {
 
     // intake arm
     public static final DCMotor INTAKE_ARM_MOTOR = DCMotor.getNEO(1);
-    public static final double INTAKE_ARM_GEAR_RATIO = 32.41 / 1;
+    public static final double INTAKE_ARM_GEAR_RATIO = 1.0 / 80.0;
     public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
     public static final double INTAKE_ARM_MOI = 1 / 3.0 * INTAKE_ARM_MASS_KG * INTAKE_ARM_LENGTH_METERS * INTAKE_ARM_LENGTH_METERS;
-    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 350;
+    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 0;
     public static final double INTAKE_ARM_MAX_ANGLE_DEG = 97;
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
-    public static final double INTAKE_ARM_MAX_ANGLE_RAD = 0; // last 2 lines are for compiling only
+    public static final double INTAKE_ARM_MAX_ANGLE_RAD = 92.5; // last 2 lines are for compiling only
     private static final double TARGET_DROP_POSITION_DEG = 70;
     public static final TrapezoidProfile.Constraints INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(1000, 500);
 
@@ -150,15 +150,15 @@ public class RobotMap {
     public static final double CLIMB_WIDTH_M = 0.1; //not correct
 
     // collector
-    public static final double COLLECTOR_SPEED = 0.5;
+    public static final double COLLECTOR_SPEED = 0.85;
     public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.8;
     public static final double STORAGE_GENERAL_ROLLERS_BACKWARDS_LOW_SPEED = -0.2;
 
 
     public static final double TOLERANCE_ARM_POSITION = 1;
     public static final double TOLERANCE_ARM_SPEED = 20;
-    public static final PIDConstants ARM_PID = new PIDConstants(0.0082, 0.000000002, 0.0000004);
-    public static final double ARM_COS = 0.4;
+    public static final double ARM_COS = 0.04;
+    public static final PIDConstants ARM_PID = new PIDConstants(0.007, 0.00000005, 0.0000001);
     public static final double ARM_ENCODER_OFFSET = 0.47415367;
     // turret
     public static final double SHOOT_TURRET_IS_NEAR_TOLERANCE_DEGREES = 0.5;
@@ -182,13 +182,14 @@ public class RobotMap {
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;
-    public static final double SHOOTER_DISTANCE_BALL_DETECTION_MM = 50;
+    public static final double SHOOTER_DISTANCE_BALL_DETECTION_MM = 270;
 
     public static final double SHOOTER_BIG_WHEELS_P = 0.0023;
     public static final double SHOOTER_BIG_WHEELS_I = 0.00001;
     public static final double SHOOTER_BIG_WHEELS_D = 0.1;
     public static final double SHOOTER_BIG_WHEELS_IZONE = 100;
     public static final double SHOOTER_BIG_WHEELS_FEEDFORWARDS_KV = 0.001;
+
 
     public static final double SHOOTER_SMALL_WHEELS_P = 0.00005;
     public static final double SHOOTER_SMALL_WHEELS_I = 0.000001;

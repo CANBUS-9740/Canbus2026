@@ -16,13 +16,13 @@ public class IntakeArmDropCommand extends Command {
 
     @Override
     public void initialize() {
-        system.setTargetPosition(RobotMap.INTAKE_ARM_MAX_ANGLE_DEG);
+        system.setTargetPosition(RobotMap.INTAKE_ARM_MIN_ANGLE_DEG);
         isHolding = true;
     }
 
     @Override
     public void execute() {
-        if (isHolding && system.IsArmInPositionAndSteady(RobotMap.INTAKE_ARM_MAX_ANGLE_DEG)) {
+        if (isHolding && system.IsArmInPositionAndSteady(RobotMap.INTAKE_ARM_MIN_ANGLE_DEG)) {
             isHolding = false;
             system.stop();
         }
@@ -35,6 +35,6 @@ public class IntakeArmDropCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return system.IsArmInPositionAndSteady(RobotMap.INTAKE_ARM_MAX_ANGLE_DEG);
+        return system.IsArmInPositionAndSteady(RobotMap.INTAKE_ARM_MIN_ANGLE_DEG);
     }
 }

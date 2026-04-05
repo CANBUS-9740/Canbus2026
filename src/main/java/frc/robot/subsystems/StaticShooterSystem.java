@@ -75,7 +75,7 @@ public class StaticShooterSystem extends SubsystemBase {
 
     public double getDistanceFromSensorMM() {
         double p = counter.getPeriod();
-        if(p >= 0.002){
+        if(p >= 0.0019){
             return -1.0;
         }
         double us = p * 1e6; //microseconds
@@ -119,5 +119,6 @@ public class StaticShooterSystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("shooterMainVelocityRPM", getShooterVelocityRPM());
         SmartDashboard.putNumber("shooterStabilisationVelocityRPM", getShooterStabilisationVelocityRPM());
+        SmartDashboard.putNumber("shooterPeriod", counter.getPeriod());
     }
 }
