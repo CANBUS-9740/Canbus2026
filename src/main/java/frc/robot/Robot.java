@@ -13,10 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.IntakeArmDropCommand;
-import frc.robot.commands.IntakeArmPositionCommand;
-import frc.robot.commands.IntakeCollectCommand;
-import frc.robot.commands.SwerveDriveCommand;
+import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 public class Robot extends TimedRobot {
@@ -42,6 +39,7 @@ public class Robot extends TimedRobot {
     private GroupCommands groupCommands;
 
     private double shooterOffset = 2.7;
+    private double shooterDistance=2;
 
     @Override
     public void robotInit() {
@@ -85,11 +83,15 @@ public class Robot extends TimedRobot {
         */
 
         SmartDashboard.putNumber("shooterOffset", shooterOffset);
+        SmartDashboard.putNumber("shooterDistance", shooterDistance);
     }
 
     @Override
     public void robotPeriodic() {
+        SmartDashboard.updateValues();
+
         SmartDashboard.putNumber("distanceShooter", staticShooterSystem.getDistanceFromSensorMM());
+        shooterDistance = SmartDashboard.getNumber("shooterDistance", shooterDistance);
         shooterOffset = SmartDashboard.getNumber("shooterOffset", shooterOffset);
 
         CommandScheduler.getInstance().run();
@@ -106,8 +108,6 @@ public class Robot extends TimedRobot {
 //                .transformBy(RobotMap.SHOOTER_POSE_ON_ROBOT_2D)
 //                .transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(shootTurretSystem.getEncoderAngleInDegrees())));
 //        swerveSystem.getField().getObject("Turret").setPose(turretPose);*/
-
-        SmartDashboard.updateValues();
     }
 
     @Override
@@ -137,6 +137,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,staticShooterSystem.calculateFiringSpeedRpm(shooterDistance *   shooterOffset,70)));
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
@@ -161,7 +162,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-
+        staticShooterSystem.setPower(0.5);
     }
 
     @Override

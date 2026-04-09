@@ -115,6 +115,12 @@ public class StaticShooterSystem extends SubsystemBase {
         feederStabilisationMotor.getClosedLoopController().setSetpoint(setPoint, SparkBase.ControlType.kVelocity);
     }
 
+    public void setPower(double power) {
+        feederStabilisationMotor.set(power);
+        shooterMotor.set(power);
+        feederMotor.
+    }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("shooterMainVelocityRPM", getShooterVelocityRPM());
