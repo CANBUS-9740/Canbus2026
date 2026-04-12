@@ -21,6 +21,33 @@ public class StaticShooterSystem extends SubsystemBase {
     private final SparkMax feederMotor;
     private final Counter counter;
 
+    //travel time calc variables
+    private double a = -9.81;
+    private double b = 0;
+    private double c = 0;
+    private double discriminant = 0;
+    private double root1 = 0;
+    private double root2 = 0;
+    private double Xtag = 0;
+    private double Ytag = 0;
+    private double arcLen = 0;
+
+
+    //drag calc variables
+    private double travelTimeSeconds;
+    private double dragCoefficient=0.6;
+    private double airDensity=1.225;
+    private double ballSurfaceArea=7.07;
+    private double dragStart;
+    private double dragEnd;
+    private double totalDrag;
+
+    //drag compensation variables
+    private double ballMassKG=0.227;
+    private double totalVelocityLoss;
+
+    public double ballVelocityrpm;
+
     public StaticShooterSystem() {
         shooterMotor = new SparkFlex(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
         feederStabilisationMotor = new SparkMax(RobotMap.SHOOTER_FEEDER_STABILIZER_MOTOR, SparkLowLevel.MotorType.kBrushless);
@@ -75,7 +102,7 @@ public class StaticShooterSystem extends SubsystemBase {
 
     public double getDistanceFromSensorMM() {
         double p = counter.getPeriod();
-        if(p >= 0.0019){
+        if (p >= 0.0019) {
             return -1.0;
         }
         double us = p * 1e6; //microseconds
@@ -84,7 +111,7 @@ public class StaticShooterSystem extends SubsystemBase {
 
     public boolean isBallInShooter() {
         double d = getDistanceFromSensorMM();
-        return d <= RobotMap.SHOOTER_DISTANCE_BALL_DETECTION_MM && d > 0 ;
+        return d <= RobotMap.SHOOTER_DISTANCE_BALL_DETECTION_MM && d > 0;
     }
 
     public double calculateFiringSpeedRpm(double distanceMeters, double firingAngleDegrees) {
@@ -92,11 +119,18 @@ public class StaticShooterSystem extends SubsystemBase {
         double firingAngleRad = Math.toRadians(firingAngleDegrees);
         double cosAngle = Math.cos(firingAngleRad);
         double tanAngle = Math.tan(firingAngleRad);
-        double numerator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters ;
-        double denominator = (2 * cosAngle * cosAngle) * ((distanceMeters * tanAngle) - heightDifferance) ;
+        double numerator = RobotMap.GRAVITATIONAL_ACCELERATION_MPSS * distanceMeters * distanceMeters;
+        double denominator = (2 * cosAngle * cosAngle) * ((distanceMeters * tanAngle) - heightDifferance);
 
         double firingLinearVelocityMps = Math.sqrt(numerator / denominator);
         return firingLinearVelocityMps / (2 * Math.PI * RobotMap.SHOOTER_WHEEL_RADIUS_METERS) * 60;
+    }
+
+    public double RPMToMS(double rpm) {
+        return (Math.PI*2*RobotMap.SHOOTER_WHEEL_RADIUS_METERS*rpm)/60;
+    }
+    public double MSToRPM(double velocityMS) {
+        return (velocityMS*60)/(2*Math.PI*RobotMap.SHOOTER_WHEEL_RADIUS_METERS);
     }
 
     public void setConfig(SparkMaxConfig config) {
@@ -118,7 +152,46 @@ public class StaticShooterSystem extends SubsystemBase {
     public void setPower(double power) {
         feederStabilisationMotor.set(power);
         shooterMotor.set(power);
-        feederMotor.
+        feederMotor.set(RobotMap.SHOOTER_FEEDER_CONSTANT);
+    }
+
+    public double travelTimeCalcSeconds(double velocityMetersPerSecond, double distanceMeters) {
+        a = -9.81;
+        b = 4.585528914848 * Math.pow(velocityMetersPerSecond, 2);
+        c = Math.pow(0.23395555688 * Math.pow(velocityMetersPerSecond, 2), 2);
+        discriminant = Math.pow(b, 2) - (4 * a * c);
+        root1 = (-b + Math.sqrt(discriminant));
+        root2 = (-b - Math.sqrt(discriminant));
+        if (root1 < root2) {
+            Xtag = root2;
+        } else {
+            Xtag = root1;
+        }
+
+        Ytag = Xtag * Math.sin(70) - ((9.81 * Math.pow(Xtag, 2)) / (0.23395555688 * Math.pow(velocityMetersPerSecond, 2)));
+
+        arcLen = 0.5 * Math.sqrt(Math.pow(distanceMeters, 2) + 16 * Math.pow(Ytag, 2)) + (Math.pow(distanceMeters, 2) / (8 * Ytag)) * Math.log((4 * Ytag + Math.sqrt(Math.pow(distanceMeters, 2) + 16 * Math.pow(Ytag, 2))) / distanceMeters);
+
+        return arcLen / velocityMetersPerSecond;
+
+    }
+
+    public double dragCalc(double velocityMetersPerSecond, double distanceMeters){
+        travelTimeSeconds=travelTimeCalcSeconds(velocityMetersPerSecond, distanceMeters);
+
+        dragStart=dragCoefficient*airDensity*(Math.pow(velocityMetersPerSecond, 2)/2)*ballSurfaceArea*Math.pow(0,2);
+        dragEnd=dragCoefficient*airDensity*(Math.pow(velocityMetersPerSecond, 2)/2)*ballSurfaceArea*Math.pow(travelTimeSeconds,2);
+        return dragEnd-dragStart;
+
+    }
+
+    public double dragCompensationRPM(double ballVelocityRPM, double distanceMeters){
+        totalDrag=dragCalc(ballVelocityRPM, distanceMeters);
+        double ballVelocityrpm=ballVelocityRPM;
+        SmartDashboard.putNumber("tgtrpm",ballVelocityRPM);
+        SmartDashboard.putNumber("projected velocity",RPMToMS(ballVelocityRPM));
+        totalVelocityLoss=totalDrag/ballMassKG;
+        return MSToRPM(totalVelocityLoss);
     }
 
     @Override
@@ -126,5 +199,12 @@ public class StaticShooterSystem extends SubsystemBase {
         SmartDashboard.putNumber("shooterMainVelocityRPM", getShooterVelocityRPM());
         SmartDashboard.putNumber("shooterStabilisationVelocityRPM", getShooterStabilisationVelocityRPM());
         SmartDashboard.putNumber("shooterPeriod", counter.getPeriod());
+        SmartDashboard.putNumber("shooterdragcomp",MSToRPM(totalVelocityLoss));
+        SmartDashboard.putNumber("projected time",MSToRPM(totalVelocityLoss));
+        SmartDashboard.putNumber("projected drag",dragEnd-dragStart);
+        SmartDashboard.putNumber("arclen",arcLen);
+        SmartDashboard.putNumber("tgtrpm",ballVelocityrpm);
+        SmartDashboard.putNumber("projected velocity",RPMToMS(ballVelocityrpm));
+
     }
 }

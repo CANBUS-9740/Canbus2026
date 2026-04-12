@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,staticShooterSystem.calculateFiringSpeedRpm(shooterDistance *   shooterOffset,70)));
+        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,shooterDistance*shooterOffset));
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
