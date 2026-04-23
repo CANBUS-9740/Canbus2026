@@ -4,10 +4,8 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase;
-import com.revrobotics.spark.SparkLowLevel;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.*;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -36,13 +34,19 @@ public class IntakeArmSystem extends SubsystemBase {
         relativeEncoder = motor.getEncoder();
         config = new SparkMaxConfig();
         config.inverted(true);
+        config.idleMode(SparkBaseConfig.IdleMode.kBrake);
+        config.absoluteEncoder
+                .zeroOffset(RobotMap.ARM_ENCODER_OFFSET)
+                .positionConversionFactor(1);
         config.closedLoop.pid(RobotMap.ARM_PID.kP, RobotMap.ARM_PID.kI, RobotMap.ARM_PID.kD)
                 .positionWrappingEnabled(true)
                 .positionWrappingMinInput(0)
-                .positionWrappingMaxInput(360)
+                .positionWrappingMaxInput(1)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         config.closedLoop.feedForward.kCos(RobotMap.ARM_COS);
-        config.absoluteEncoder.zeroOffset(RobotMap.ARM_ENCODER_OFFSET);
+        config.encoder
+                .positionConversionFactor(4)
+                .velocityConversionFactor(4);
         config.closedLoop
                 .maxOutput(0.4)
                 .minOutput(-0.4);
@@ -68,24 +72,43 @@ public class IntakeArmSystem extends SubsystemBase {
         return encoder.getPosition() * 360;
     }
 
+    public double getPositionRaw() {
+        return encoder.getPosition();
+    }
+
+    public void setPositionRaw(boolean bottom) {
+        if (bottom) {
+            motor.getClosedLoopController().setSetpoint(0.03, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        } else {
+            motor.getClosedLoopController().setSetpoint(0.25, SparkBase.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        }
+    }
+
     public void move(double speed) {
         motor.set(speed);
     }
 
     public void setTargetPosition(double positionDegrees) {
-        motor.getClosedLoopController().setSetpoint(positionDegrees / 360, SparkBase.ControlType.kPosition);
+        motor.getClosedLoopController().setSetpoint(22, SparkBase.ControlType.kPosition);
+        //motor.getClosedLoopController().setSetpoint(positionDegrees / 360, SparkBase.ControlType.kPosition);
     }
 
     public void stop() {
         motor.stopMotor();
     }
 
+    public double getVelocity() {
+        return relativeEncoder.getVelocity();
+    }
+
     public boolean IsArmInPositionAndSteady(double targetPosition) {
-        return MathUtil.isNear(targetPosition, getPositionDegrees(), RobotMap.TOLERANCE_ARM_POSITION) && Math.abs(relativeEncoder.getVelocity()) < RobotMap.TOLERANCE_ARM_SPEED;
+        return MathUtil.isNear(targetPosition, getPositionDegrees(), RobotMap.TOLERANCE_ARM_POSITION) && Math.abs(getVelocity()) < RobotMap.TOLERANCE_ARM_SPEED;
     }
 
     public void periodic() {
         SmartDashboard.putNumber("IntakeArmPositionDegrees", getPositionDegrees());
+        SmartDashboard.putNumber("IntakeArmPositionMotor", motor.getEncoder().getPosition());
+        SmartDashboard.putNumber("IntakeOutput", motor.getAppliedOutput());
         ligament.setAngle(getPositionDegrees());
     }
 

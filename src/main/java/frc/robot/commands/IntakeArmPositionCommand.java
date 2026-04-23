@@ -16,27 +16,38 @@ public class IntakeArmPositionCommand extends Command {
     public IntakeArmPositionCommand(IntakeArmSystem intakeArmSystem, double targetPositionDegrees) {
         this.intakeArmSystem = intakeArmSystem;
         this.targetPositionDegrees = targetPositionDegrees;
+
         addRequirements(intakeArmSystem);
     }
 
     @Override
     public void initialize() {
-        intakeArmSystem.setTargetPosition(targetPositionDegrees);
+        System.out.println("123");
+
+        motionProfile = new TrapezoidProfile(RobotMap.INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS);
+        motionProfileGoal = new TrapezoidProfile.State(targetPositionDegrees, 0);
+        motionProfileSetPoint = new TrapezoidProfile.State(intakeArmSystem.getPositionDegrees(), 0);
     }
 
     @Override
     public void execute() {
-        motionProfile = new TrapezoidProfile(RobotMap.INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS);
-        motionProfileGoal = new TrapezoidProfile.State(targetPositionDegrees, 0);
-        motionProfileSetPoint = new TrapezoidProfile.State(intakeArmSystem.getPositionDegrees(), 0);
-        motionProfileSetPoint = motionProfile.calculate(0.02, motionProfileSetPoint, motionProfileGoal);
+        motionProfileSetPoint = motionProfile.calculate(
+                0.02,
+                motionProfileSetPoint,
+                motionProfileGoal
+        );
 
         intakeArmSystem.setTargetPosition(motionProfileSetPoint.position);
+        System.out.println("Profile position: " + motionProfileSetPoint.position);
+        System.out.println("Arm position: " + intakeArmSystem.getPositionDegrees());
+        System.out.println("Goal position: " + motionProfileGoal.position);
     }
 
     @Override
     public void end(boolean interrupted) {
         intakeArmSystem.stop();
+        System.out.println("nn");
+        System.out.println( " pose " + intakeArmSystem.getPositionDegrees() );
     }
 
     @Override

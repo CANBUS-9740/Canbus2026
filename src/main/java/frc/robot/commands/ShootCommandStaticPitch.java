@@ -1,26 +1,41 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotMap;
 import frc.robot.subsystems.StaticShooterSystem;
 
 public class ShootCommandStaticPitch extends Command {
     private final StaticShooterSystem staticShooterSystem;
-    private final double targetRPM;
+    private double targetRPM;
+    private double dragCompensation;
+    private double shooterDistance;
+    private double shooterDistanceOffset;
 
-    public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem, double targetRPM) {
+    public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem,double shooterDistance) {
         this.staticShooterSystem = staticShooterSystem;
-        this.targetRPM = targetRPM;
+        this.shooterDistance = shooterDistance;
         addRequirements(staticShooterSystem);
     }
 
     @Override
     public void initialize() {
-        staticShooterSystem.setShootSpeed(targetRPM);
+        shooterDistanceOffset=0.2*Math.pow(shooterDistance,2)-1.83*shooterDistance+6.675;
+        shooterDistance=shooterDistance*shooterDistanceOffset;
+        targetRPM= staticShooterSystem.calculateFiringSpeedRpm(shooterDistance ,70);
+        dragCompensation=staticShooterSystem.dragCompensationRPM(staticShooterSystem.RPMToMS(targetRPM),shooterDistance);
+       staticShooterSystem.setShootSpeed(targetRPM);
+        SmartDashboard.putNumber("ShooterTarget", targetRPM);
     }
 
     @Override
     public void execute() {
+       if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
+            staticShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTANT);
+        }
 
+        SmartDashboard.putBoolean("if", MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5));
     }
 
     @Override
