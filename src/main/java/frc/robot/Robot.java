@@ -44,28 +44,28 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        intakeArmSystem = new IntakeArmSystem();
-        intakeCollectorSystem = new IntakeCollectorSystem();
-        storageSystem = new StorageSystem();
+        //intakeArmSystem = new IntakeArmSystem();
+        //intakeCollectorSystem = new IntakeCollectorSystem();
+        //storageSystem = new StorageSystem();
         staticShooterSystem = new StaticShooterSystem();
 
         limelightAprilTag = new LimelightAprilTag("limelight-aprilta");
         gameField = new GameField();
         //pathplanner = new Pathplanner(swerveSystem);
 
-        driverController = new CommandXboxController(0);
-        operationController = new CommandXboxController(1);
+        //driverController = new CommandXboxController(0);
+        //operationController = new CommandXboxController(1);
 
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
-        swerveSystem.setDefaultCommand(swerveDriveCommand);
+        //swerveSystem.setDefaultCommand(swerveDriveCommand);
 
-        groupCommands = new GroupCommands();
+        //groupCommands = new GroupCommands();
 
-        driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
+        //driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
         //driverController.x().onTrue(new IntakeArmDropCommand(intakeArmSystem));
         //driverController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
-        driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
+        //driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
 
 //        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
 //        SparkMaxConfig config = new SparkMaxConSfig();
@@ -137,7 +137,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,shooterDistance*shooterOffset));
+        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,shooterDistance));
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));

@@ -10,7 +10,8 @@ public class ShootCommandStaticPitch extends Command {
     private final StaticShooterSystem staticShooterSystem;
     private double targetRPM;
     private double dragCompensation;
-    private final double shooterDistance;
+    private double shooterDistance;
+    private double shooterDistanceOffset;
 
     public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem,double shooterDistance) {
         this.staticShooterSystem = staticShooterSystem;
@@ -21,18 +22,19 @@ public class ShootCommandStaticPitch extends Command {
 
     @Override
     public void initialize() {
-
+        shooterDistanceOffset=0.2*Math.pow(shooterDistance,2)-1.83*shooterDistance+6.675;
+        shooterDistance=shooterDistance*shooterDistanceOffset;
         targetRPM= staticShooterSystem.calculateFiringSpeedRpm(shooterDistance ,70);
         dragCompensation=staticShooterSystem.dragCompensationRPM(staticShooterSystem.RPMToMS(targetRPM),shooterDistance);
-       // staticShooterSystem.setShootSpeed(targetRPM+dragCompensation);
+       staticShooterSystem.setShootSpeed(targetRPM);
         SmartDashboard.putNumber("ShooterTarget", targetRPM);
     }
 
     @Override
     public void execute() {
-//        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
-//            staticShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTANT);
-//        }
+       if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
+            staticShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTANT);
+        }
 
         SmartDashboard.putBoolean("if", MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5));
     }
