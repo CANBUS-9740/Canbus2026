@@ -15,7 +15,6 @@ public class ShootCommandStaticPitch extends Command {
 
     public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem,double shooterDistance) {
         this.staticShooterSystem = staticShooterSystem;
-
         this.shooterDistance = shooterDistance;
         addRequirements(staticShooterSystem);
     }
