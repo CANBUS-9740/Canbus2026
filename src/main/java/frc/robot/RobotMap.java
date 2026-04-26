@@ -50,7 +50,7 @@ public class RobotMap {
     public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
     public static final double INTAKE_ARM_MOI = 1 / 3.0 * INTAKE_ARM_MASS_KG * INTAKE_ARM_LENGTH_METERS * INTAKE_ARM_LENGTH_METERS;
-    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 0;
+    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 15;
     public static final double INTAKE_ARM_MAX_ANGLE_DEG = 97;
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
@@ -158,7 +158,7 @@ public class RobotMap {
     public static final double TOLERANCE_ARM_POSITION = 1;
     public static final double TOLERANCE_ARM_SPEED = 20;
     public static final double ARM_COS = 0.04;
-    public static final PIDConstants ARM_PID = new PIDConstants(0.007, 0.00000005, 0.0000001);
+    public static final PIDConstants ARM_PID = new PIDConstants(3, 0.05, 0.0001);
     public static final double ARM_ENCODER_OFFSET = 0.47415367;
     // turret
     public static final double SHOOT_TURRET_IS_NEAR_TOLERANCE_DEGREES = 0.5;

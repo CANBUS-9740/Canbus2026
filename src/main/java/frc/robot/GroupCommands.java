@@ -31,20 +31,18 @@ public class GroupCommands {
 
 
     public Command IntakeSimpleCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem) {
-        return new SequentialCommandGroup(
-
-                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_RAD),
-                new IntakeCollectCommand(intakeCollectorSystem),
-                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_RAD)
+        return new ParallelCommandGroup(
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG),
+                new IntakeCollectCommand(intakeCollectorSystem)
         );
     }
 
     public Command IntakeUntilFullCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem) {
         return new SequentialCommandGroup(
-                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_RAD),
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_RAD),
                 new IntakeCollectCommand(intakeCollectorSystem),
                 Commands.waitUntil(storageSystem::isFull),
-                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_RAD)
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_RAD)
         );
     }
 
@@ -67,7 +65,7 @@ public class GroupCommands {
                         new ShootCommandStaticPitch(staticShooterSystem,
                                 staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(alliance, swerve),
                                         RobotMap.SHOOTER_PITCH_DEFAULT_DEG))
-                        )
+                )
         );
     }
 

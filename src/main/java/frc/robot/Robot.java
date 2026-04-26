@@ -140,6 +140,9 @@ public class Robot extends TimedRobot {
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
+        operationController.y().onTrue(groupCommands.IntakeSimpleCommand(intakeArmSystem, intakeCollectorSystem));
+        operationController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
+
     }
 
     @Override
@@ -171,8 +174,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 20);
-        CommandScheduler.getInstance().schedule(command);
+
+        CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
+        //IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 22);
+        //CommandScheduler.getInstance().schedule(command);
         //CommandScheduler.getInstance().schedule(new GroupCommands().IntakeUntilFullCommand(intakeArmSystem, intakeCollectorSystem, storageSystem));
     }
 

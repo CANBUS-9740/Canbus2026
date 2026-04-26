@@ -89,8 +89,7 @@ public class IntakeArmSystem extends SubsystemBase {
     }
 
     public void setTargetPosition(double positionDegrees) {
-        motor.getClosedLoopController().setSetpoint(22, SparkBase.ControlType.kPosition);
-        //motor.getClosedLoopController().setSetpoint(positionDegrees / 360, SparkBase.ControlType.kPosition);
+        motor.getClosedLoopController().setSetpoint(positionDegrees / 360, SparkBase.ControlType.kPosition);
     }
 
     public void stop() {

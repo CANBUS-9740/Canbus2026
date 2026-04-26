@@ -52,6 +52,7 @@ public class IntakeArmPositionCommand extends Command {
 
     @Override
     public boolean isFinished() {
+        System.out.println("is finished"+ intakeArmSystem.IsArmInPositionAndSteady(targetPositionDegrees));
         return intakeArmSystem.IsArmInPositionAndSteady(targetPositionDegrees);
     }
 }
