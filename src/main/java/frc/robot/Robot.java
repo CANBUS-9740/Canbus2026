@@ -31,11 +31,6 @@ public class Robot extends TimedRobot {
     private CommandXboxController operationController;
     private SwerveDriveCommand swerveDriveCommand;
 
-    private SparkMax motor;
-    private StatusSignal<Angle> position;
-    private PositionDutyCycle positionControl;
-    private NeutralOut neutralControl;
-
     private GroupCommands groupCommands;
 
     private double shooterOffset = 2.7;
@@ -44,28 +39,51 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        //intakeArmSystem = new IntakeArmSystem();
-        //intakeCollectorSystem = new IntakeCollectorSystem();
-        //storageSystem = new StorageSystem();
+        intakeArmSystem = new IntakeArmSystem();
+        intakeCollectorSystem = new IntakeCollectorSystem();
+        storageSystem = new StorageSystem();
         staticShooterSystem = new StaticShooterSystem();
 
         limelightAprilTag = new LimelightAprilTag("limelight-aprilta");
         gameField = new GameField();
-        //pathplanner = new Pathplanner(swerveSystem);
+        pathplanner = new Pathplanner(swerveSystem);
 
-        //driverController = new CommandXboxController(0);
-        //operationController = new CommandXboxController(1);
+        driverController = new CommandXboxController(0);
+        operationController = new CommandXboxController(1);
 
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
-        //swerveSystem.setDefaultCommand(swerveDriveCommand);
 
-        //groupCommands = new GroupCommands();
+        swerveSystem.setDefaultCommand(swerveDriveCommand);
+
+        groupCommands = new GroupCommands();
 
         //driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
         //driverController.x().onTrue(new IntakeArmDropCommand(intakeArmSystem));
         //driverController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
         //driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
+
+        //new StorageFeedToShooterCommand(storageSystem)
+
+        CommandScheduler.getInstance().onCommandInitialize((command)-> {
+            System.out.printf("CMD INIT %s %s\n", command.getName(), command.getClass().getName());
+        });
+        CommandScheduler.getInstance().onCommandInterrupt((command, opt)-> {
+            System.out.printf("CMD INT %s %s\n", command.getName(), command.getClass().getName());
+        });
+        CommandScheduler.getInstance().onCommandFinish((command)-> {
+            System.out.printf("CMD FIN %s %s\n", command.getName(), command.getClass().getName());
+        });
+
+        operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
+        operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
+        //operationController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
+        //operationController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
+        //operationController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
+        //operationController.rightBumper().whileTrue(new ShootCommandStaticPitch(staticShooterSystem, 2000));
+        operationController.x().onTrue(groupCommands.IntakeSimpleCommand(intakeArmSystem, intakeCollectorSystem));
+        operationController.b().onTrue(groupCommands.shootHub(storageSystem, staticShooterSystem));
+
 
 //        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
 //        SparkMaxConfig config = new SparkMaxConSfig();
@@ -75,11 +93,7 @@ public class Robot extends TimedRobot {
 //        positionControl = new PositionDutyCycle(0);
 //        neutralControl = new NeutralOut();
 /*
-        SmartDashboard.putNumber("kP", pidConfig.kP);
-        SmartDashboard.putNumber("kI", pidConfig.kI);
-        SmartDashboard.putNumber("kD", pidConfig.kD);
-        SmartDashboard.putNumber("SetPoint", 0);
-        SmartDashboard.putNumber("ProcessVariable", 0);
+
         */
 
         SmartDashboard.putNumber("shooterOffset", shooterOffset);
@@ -90,7 +104,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SmartDashboard.updateValues();
 
-        SmartDashboard.putNumber("distanceShooter", staticShooterSystem.getDistanceFromSensorMM());
+        SmartDashboard.putNumber("FeedSensor", staticShooterSystem.getDistanceFromSensorMM());
         shooterDistance = SmartDashboard.getNumber("shooterDistance", shooterDistance);
         shooterOffset = SmartDashboard.getNumber("shooterOffset", shooterOffset);
 
@@ -137,12 +151,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,shooterDistance));
+        //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,shooterDistance));
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
-        operationController.y().onTrue(groupCommands.IntakeSimpleCommand(intakeArmSystem, intakeCollectorSystem));
-        operationController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
+
+
 
     }
 
@@ -175,8 +189,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-
-        CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
+        //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand3(intakeArmSystem));
+        //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
         //IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 22);
         //CommandScheduler.getInstance().schedule(command);
         //CommandScheduler.getInstance().schedule(new GroupCommands().IntakeUntilFullCommand(intakeArmSystem, intakeCollectorSystem, storageSystem));
@@ -184,40 +198,12 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testPeriodic() {
-        System.out.println(intakeArmSystem.getPositionRaw());
         //intakeArmSystem.move(0.2);
         //position.refresh();
         //SmartDashboard.putNumber("ProcessVariable", position.getValue().in(Units.Rotations));
 
-/*
-        double setPoint = SmartDashboard.getNumber("SetPoint", 0);
-        if (setPoint != positionControl.Position) {
-            positionControl.Position = setPoint;
-            motor.setControl(positionControl);
-        }
 
-        boolean configChanged = false;
 
-        double kp = SmartDashboard.getNumber("kP", 0);
-        if (kp != pidConfig.kP) {
-            pidConfig.kP = kp;
-            configChanged = true;
-        }
-        double ki = SmartDashboard.getNumber("kI", 0);
-        if (ki != pidConfig.kI) {
-            pidConfig.kI = ki;
-            configChanged = true;
-        }
-        double kd = SmartDashboard.getNumber("kD", 0);
-        if (kd != pidConfig.kD) {
-            pidConfig.kD = kd;
-            configChanged = true;
-        }
-
-        if (configChanged) {
-            motor.getConfigurator().apply(pidConfig);
-        }
-*/
     }
 
     @Override

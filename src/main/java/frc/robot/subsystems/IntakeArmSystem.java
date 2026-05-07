@@ -20,10 +20,10 @@ import frc.robot.RobotMap;
 import frc.robot.sim.IntakeArmSim;
 
 public class IntakeArmSystem extends SubsystemBase {
-    private final SparkMax motor;
+    public final SparkMax motor;
     private final AbsoluteEncoder encoder;
     private final RelativeEncoder relativeEncoder;
-    private final SparkMaxConfig config;
+    public final SparkMaxConfig config;
     private final IntakeArmSim sim;
     private final Mechanism2d mechanism;
     private final MechanismLigament2d ligament;
@@ -114,5 +114,9 @@ public class IntakeArmSystem extends SubsystemBase {
     @Override
     public void simulationPeriodic() {
         sim.update();
+    }
+
+    public void set(double p) {
+        motor.set(p);
     }
 }

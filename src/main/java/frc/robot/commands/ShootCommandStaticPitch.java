@@ -8,8 +8,9 @@ import frc.robot.subsystems.StaticShooterSystem;
 
 public class ShootCommandStaticPitch extends Command {
     private final StaticShooterSystem staticShooterSystem;
+    //private final double targetDistance
+
     private double targetRPM;
-    private double dragCompensation;
     private double shooterDistance;
     private double shooterDistanceOffset;
 
@@ -21,11 +22,11 @@ public class ShootCommandStaticPitch extends Command {
 
     @Override
     public void initialize() {
-        shooterDistanceOffset=0.2*Math.pow(shooterDistance,2)-1.83*shooterDistance+6.675;
-        shooterDistance=shooterDistance*shooterDistanceOffset;
-        targetRPM= staticShooterSystem.calculateFiringSpeedRpm(shooterDistance ,70);
-        dragCompensation=staticShooterSystem.dragCompensationRPM(staticShooterSystem.RPMToMS(targetRPM),shooterDistance);
-       staticShooterSystem.setShootSpeed(targetRPM);
+        shooterDistanceOffset = 0.2*Math.pow(shooterDistance,2)-1.83*shooterDistance+6.675;
+        shooterDistance = shooterDistance*shooterDistanceOffset;
+        targetRPM = staticShooterSystem.calculateFiringSpeedRpm(shooterDistance ,70);
+        //dragCompensation = staticShooterSystem.dragCompensationRPM(staticShooterSystem.RPMToMS(targetRPM),shooterDistance);
+        staticShooterSystem.setShootSpeed(targetRPM);
         SmartDashboard.putNumber("ShooterTarget", targetRPM);
     }
 

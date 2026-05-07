@@ -98,6 +98,13 @@ public class StaticShooterSystem extends SubsystemBase {
     public void stopShooterAndFeeder() {
         shooterMotor.stopMotor();
         feederMotor.stopMotor();
+        feederStabilisationMotor.stopMotor();
+    }
+
+    public void stopFeeder() {
+        shooterMotor.stopMotor();
+        feederMotor.stopMotor();
+        feederStabilisationMotor.stopMotor();
     }
 
     public double getDistanceFromSensorMM() {

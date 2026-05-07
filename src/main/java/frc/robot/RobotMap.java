@@ -50,7 +50,7 @@ public class RobotMap {
     public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
     public static final double INTAKE_ARM_MOI = 1 / 3.0 * INTAKE_ARM_MASS_KG * INTAKE_ARM_LENGTH_METERS * INTAKE_ARM_LENGTH_METERS;
-    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 15;
+    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 1;
     public static final double INTAKE_ARM_MAX_ANGLE_DEG = 97;
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
@@ -158,7 +158,7 @@ public class RobotMap {
     public static final double TOLERANCE_ARM_POSITION = 1;
     public static final double TOLERANCE_ARM_SPEED = 20;
     public static final double ARM_COS = 0.04;
-    public static final PIDConstants ARM_PID = new PIDConstants(3, 0.05, 0.0001);
+    public static final PIDConstants ARM_PID = new PIDConstants(2.5, 0, 0);
     public static final double ARM_ENCODER_OFFSET = 0.47415367;
     // turret
     public static final double SHOOT_TURRET_IS_NEAR_TOLERANCE_DEGREES = 0.5;
@@ -182,7 +182,7 @@ public class RobotMap {
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;
-    public static final double SHOOTER_DISTANCE_BALL_DETECTION_MM = 270;
+    public static final double SHOOTER_DISTANCE_BALL_DETECTION_MM = 150;
 
     public static final double SHOOTER_BIG_WHEELS_P = 0.0023;
     public static final double SHOOTER_BIG_WHEELS_I = 0.00001;

@@ -32,27 +32,26 @@ public class GroupCommands {
 
     public Command IntakeSimpleCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem) {
         return new ParallelCommandGroup(
-                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG),
+                new IntakeArmDownSyndrome(intakeArmSystem),
                 new IntakeCollectCommand(intakeCollectorSystem)
         );
     }
 
-    public Command IntakeUntilFullCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem) {
+    /*public Command IntakeUntilFullCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem) {
         return new SequentialCommandGroup(
-                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_RAD),
+                new IntakeArmDownSyndrome(intakeArmSystem),
                 new IntakeCollectCommand(intakeCollectorSystem),
                 Commands.waitUntil(storageSystem::isFull),
-                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_RAD)
+                new IntakeArmUpSchizophrenia(intakeArmSystem)
         );
-    }
+    }*/
 
-    public Command AlignToHubCommand(ShootTurretSystem shootTurretSystem, GameField gameField, Swerve swerve) {
+    /*public Command AlignToHubCommand(ShootTurretSystem shootTurretSystem, GameField gameField, Swerve swerve) {
         return new ParallelCommandGroup(
                 new MoveShootTurretCommand(shootTurretSystem, gameField.getTargetAngleTurretToHub(swerve.getPose(), DriverStation.getAlliance().get())),
                 new SwerveRotateToAngle(swerve, gameField.getTargetAngleSwerveToHub(swerve.getPose(), DriverStation.getAlliance().get()))
         );
-    }
-
+    }*/
 
     public Command ShootHubCommandStaticShooterPreRotate(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, GameField gameField, DriverStation.Alliance alliance, Swerve swerve) {
         return new SequentialCommandGroup(
@@ -70,39 +69,40 @@ public class GroupCommands {
     }
 
 
-    public Command ShootHubCommandStaticShooter(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, GameField gameField, DriverStation.Alliance alliance, Swerve swerve) {
+    public Command shootHub(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem) {
         return new SequentialCommandGroup(
-                new StorageFeedToShooterCommand(storageSystem),
-                Commands.deadline(
-                        Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
-                        new ShootCommandStaticPitch(staticShooterSystem,
-                                staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(alliance, swerve),
-                                        RobotMap.SHOOTER_PITCH_DEFAULT_DEG))
+                Commands.parallel(
+                        //Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
+                        new ShootCommandStaticPitch(staticShooterSystem, 3.46),
+                        Commands.sequence(
+                                Commands.waitSeconds(5),
+                                new StorageFeedToShooterCommand(storageSystem)
+                        )
                 )
         );
-    }
+    } // staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(alliance, swerve), RobotMap.SHOOTER_PITCH_DEFAULT_DEG)
 
 
 
 
 
 
-    public Command alignAndShootHubCommand(ShootTurretSystem shootTurretSystem,StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, GameField gameField, Swerve swerve, DriverStation.Alliance alliance){
+    /*public Command alignAndShootHubCommand(ShootTurretSystem shootTurretSystem,StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, GameField gameField, Swerve swerve, DriverStation.Alliance alliance){
         return  new SequentialCommandGroup(
                 AlignToHubCommand(shootTurretSystem, gameField, swerve),
                 ShootHubCommandStaticShooter(storageSystem, staticShooterSystem, gameField, alliance, swerve)
         );
-    }
+    }*/
 
 
 
-    public Command ClimbCommand(ClimbSystem climbSystem, GameField gameField, Pathplanner pathplanner) {
+    /*public Command ClimbCommand(ClimbSystem climbSystem, GameField gameField, Pathplanner pathplanner) {
         return new SequentialCommandGroup(
                 new ClimbOpenArmsCommand(climbSystem, RobotMap.CLIMB_ARM_HANGING_HEIGHT_M),
                 pathplanner.goToPose(gameField.getTowerMiddleBotPose(DriverStation.getAlliance().get()), RobotMap.PATH_CONSTRAINTS),
                 new ClimbCloseArmsCommand(climbSystem)
         );
-    }
+    }*/
 
     public Command ClimbDownCommand(ClimbSystem climbSystem) {
         return new SequentialCommandGroup(

@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 import frc.robot.sim.StorageSim;
@@ -49,7 +50,7 @@ public class StorageSystem extends SubsystemBase {
     }
 
     public void periodic() {
-
+        SmartDashboard.putNumber("StorageMotorOutput", generalRollers.getAppliedOutput());
     }
 
     @Override
