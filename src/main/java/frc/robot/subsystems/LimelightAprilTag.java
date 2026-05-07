@@ -6,12 +6,12 @@ import frc.robot.LimelightHelpers;
 
 import java.util.Optional;
 
-public class Limelight extends SubsystemBase {
+public class LimelightAprilTag extends SubsystemBase {
     private static final double MAX_DISTANCE_FOR_POSE = 3;
 
     private final String name;
 
-    public Limelight(String name) {
+    public LimelightAprilTag(String name) {
         this.name = name;
     }
 

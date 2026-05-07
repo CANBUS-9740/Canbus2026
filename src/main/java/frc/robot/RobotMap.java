@@ -42,18 +42,19 @@ public class RobotMap {
     public static final double CLIMB_ARM_DRUM_RADIUS_METERS = 0.05;
     public static final double CLIMB_ARM_MIN_HEIGHT = 0;
     public static final double CLIMB_ARM_MAX_HEIGHT = Units.inchesToMeters(12);
+    public static final double CLIMB_ARM_HANGING_HEIGHT_M = 0;
 
     // intake arm
     public static final DCMotor INTAKE_ARM_MOTOR = DCMotor.getNEO(1);
-    public static final double INTAKE_ARM_GEAR_RATIO = 32.41 / 1;
+    public static final double INTAKE_ARM_GEAR_RATIO = 1.0 / 80.0;
     public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
     public static final double INTAKE_ARM_MOI = 1 / 3.0 * INTAKE_ARM_MASS_KG * INTAKE_ARM_LENGTH_METERS * INTAKE_ARM_LENGTH_METERS;
-    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 350;
+    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 0;
     public static final double INTAKE_ARM_MAX_ANGLE_DEG = 97;
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
-    public static final double INTAKE_ARM_MAX_ANGLE_RAD = 0; // last 2 lines are for compiling only
+    public static final double INTAKE_ARM_MAX_ANGLE_RAD = 92.5; // last 2 lines are for compiling only
     private static final double TARGET_DROP_POSITION_DEG = 70;
     public static final TrapezoidProfile.Constraints INTAKE_ARM_MOTION_PROFILE_CONSTRAINTS = new TrapezoidProfile.Constraints(1000, 500);
 
@@ -98,7 +99,9 @@ public class RobotMap {
     public static final double SHOOTER_GEAR_RATIO = 1;
     public static final double SHOOTER_PITCH_LOWER_LIMIT_DEG = 11;
     public static final double SHOOTER_PITCH_UPPER_LIMIT_DEG = 47;
+    public static final double SHOOTER_PITCH_DEFAULT_DEG = 70;
     public static final double SHOOTER_PITCH_GEAR_RATIO = 2.0;
+    public static final double SHOOTER_TARGET_ANGLE = 0;
 
     // swerve
     public static final DCMotor SWERVE_DRIVE_MOTOR = DCMotor.getKrakenX60(1);
@@ -147,15 +150,15 @@ public class RobotMap {
     public static final double CLIMB_WIDTH_M = 0.1; //not correct
 
     // collector
-    public static final double COLLECTOR_SPEED = 0.5;
+    public static final double COLLECTOR_SPEED = 0.85;
     public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.8;
     public static final double STORAGE_GENERAL_ROLLERS_BACKWARDS_LOW_SPEED = -0.2;
 
 
     public static final double TOLERANCE_ARM_POSITION = 1;
     public static final double TOLERANCE_ARM_SPEED = 20;
-    public static final PIDConstants ARM_PID = new PIDConstants(0.0082, 0.000000002, 0.0000004);
-    public static final double ARM_COS = 0.4;
+    public static final double ARM_COS = 0.04;
+    public static final PIDConstants ARM_PID = new PIDConstants(0.007, 0.00000005, 0.0000001);
     public static final double ARM_ENCODER_OFFSET = 0.47415367;
     // turret
     public static final double SHOOT_TURRET_IS_NEAR_TOLERANCE_DEGREES = 0.5;
@@ -175,17 +178,18 @@ public class RobotMap {
     public static final double PITCH_TOLERANCE = 0.02;
     public static final double SHOOTER_MECHANISM_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNeoVortex(1).freeSpeedRadPerSec);
     public static final double SHOOTER_FEEDER_STABILIZER_MAX_RPM = Units.radiansPerSecondToRotationsPerMinute(DCMotor.getNEO(1).freeSpeedRadPerSec);
-    public static final double SHOOTER_FEEDER_CONSTANT = 0.5;
+    public static final double SHOOTER_FEEDER_CONSTANT = 0.7;
     public static final int SHOOTER_PITCH_KP = 4;
     public static final int SHOOTER_PITCH_KI = 4;
     public static final int SHOOTER_PITCH_KD = 4;
-    public static final double SHOOTER_DISTANCE_BALL_DETECTION_MM = 50;
+    public static final double SHOOTER_DISTANCE_BALL_DETECTION_MM = 270;
 
     public static final double SHOOTER_BIG_WHEELS_P = 0.0023;
     public static final double SHOOTER_BIG_WHEELS_I = 0.00001;
     public static final double SHOOTER_BIG_WHEELS_D = 0.1;
     public static final double SHOOTER_BIG_WHEELS_IZONE = 100;
     public static final double SHOOTER_BIG_WHEELS_FEEDFORWARDS_KV = 0.001;
+
 
     public static final double SHOOTER_SMALL_WHEELS_P = 0.00005;
     public static final double SHOOTER_SMALL_WHEELS_I = 0.000001;
