@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.StaticShooterSystem;
+import frc.robot.subsystems.StorageSystem;
 
 public class ShootCommandStaticPitch extends Command {
+    private final StorageSystem storageSystem;
     private final StaticShooterSystem staticShooterSystem;
     //private final double targetDistance
 
@@ -14,10 +16,11 @@ public class ShootCommandStaticPitch extends Command {
     private double shooterDistance;
     private double shooterDistanceOffset;
 
-    public ShootCommandStaticPitch(StaticShooterSystem staticShooterSystem,double shooterDistance) {
+    public ShootCommandStaticPitch(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, double shooterDistance) {
+        this.storageSystem = storageSystem;
         this.staticShooterSystem = staticShooterSystem;
         this.shooterDistance = shooterDistance;
-        addRequirements(staticShooterSystem);
+        addRequirements(staticShooterSystem, storageSystem);
     }
 
     @Override
@@ -34,6 +37,7 @@ public class ShootCommandStaticPitch extends Command {
     public void execute() {
        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
             staticShooterSystem.setFeederVoltage(RobotMap.SHOOTER_FEEDER_CONSTANT);
+            storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED);
         }
 
         SmartDashboard.putBoolean("if", MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5));
@@ -47,5 +51,6 @@ public class ShootCommandStaticPitch extends Command {
     @Override
     public void end(boolean interrupted) {
         staticShooterSystem.stopShooterAndFeeder();
+        storageSystem.stopMotors();
     }
 }

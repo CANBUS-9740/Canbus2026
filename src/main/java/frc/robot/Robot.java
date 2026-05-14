@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+import java.util.Optional;
+
 public class Robot extends TimedRobot {
     private Swerve swerveSystem;
     private IntakeArmSystem intakeArmSystem;
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
     private SwerveDriveCommand swerveDriveCommand;
 
     private GroupCommands groupCommands;
+    private EdiBoard ediBoard;
 
     private double shooterOffset = 2.7;
     private double shooterDistance=2;
@@ -55,7 +58,7 @@ public class Robot extends TimedRobot {
 
         swerveSystem.setDefaultCommand(swerveDriveCommand);
 
-        groupCommands = new GroupCommands();
+        groupCommands = new GroupCommands(swerveSystem, intakeArmSystem, intakeCollectorSystem, storageSystem, staticShooterSystem, gameField);
 
         //driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
@@ -75,15 +78,16 @@ public class Robot extends TimedRobot {
             System.out.printf("CMD FIN %s %s\n", command.getName(), command.getClass().getName());
         });
 
-        operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
-        operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
         //operationController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
         //operationController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
         //operationController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //operationController.rightBumper().whileTrue(new ShootCommandStaticPitch(staticShooterSystem, 2000));
-        operationController.x().onTrue(groupCommands.IntakeSimpleCommand(intakeArmSystem, intakeCollectorSystem));
-        operationController.b().onTrue(groupCommands.shootHub(storageSystem, staticShooterSystem));
+        operationController.y().onTrue(groupCommands.IntakeFetusCommand());
+        operationController.a().onTrue(groupCommands.IntakeRetardCommand());
+        operationController.b().onTrue(groupCommands.shootHub());
 
+
+        ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
 
 //        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
 //        SparkMaxConfig config = new SparkMaxConSfig();
@@ -103,19 +107,23 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         SmartDashboard.updateValues();
+        CommandScheduler.getInstance().run();
 
         SmartDashboard.putNumber("FeedSensor", staticShooterSystem.getDistanceFromSensorMM());
-        shooterDistance = SmartDashboard.getNumber("shooterDistance", shooterDistance);
-        shooterOffset = SmartDashboard.getNumber("shooterOffset", shooterOffset);
 
-        CommandScheduler.getInstance().run();
-        if (limelightAprilTag.getPose().isPresent()) {
-            LimelightHelpers.PoseEstimate posCam = limelightAprilTag.getPose().orElse(new LimelightHelpers.PoseEstimate());
 
-            if (!posCam.equals(new LimelightHelpers.PoseEstimate())) {
-                swerveSystem.addVisionMeasurement(posCam);
-            }
+
+        Optional<LimelightHelpers.PoseEstimate> poseOpt = limelightAprilTag.getPose();
+        if (poseOpt.isPresent()) {
+            LimelightHelpers.PoseEstimate posCam = poseOpt.get();
+            swerveSystem.addVisionMeasurement(posCam);
         }
+
+        Pose2d hubPose = gameField.getHubPose(DriverStation.Alliance.Red);
+        swerveSystem.getField().getObject("HubPose").setPose(hubPose);
+
+        double distance = gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
+        SmartDashboard.putNumber("DistanceToAllianceHub", distance);
 
         Pose2d pose2d = swerveSystem.getPose();
 //        Pose2d turretPose = swervePose

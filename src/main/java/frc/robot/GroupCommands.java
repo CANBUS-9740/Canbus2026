@@ -1,12 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
+import java.util.Set;
 
 public class GroupCommands {
 
@@ -21,20 +20,46 @@ public class GroupCommands {
     climb-
     lift arms, move forward, climb
     * */
+    private final Swerve swerveSystem;
+    private final IntakeArmSystem intakeArmSystem;
+    private final IntakeCollectorSystem intakeCollectorSystem;
+    private final StorageSystem storageSystem;
+    private final StaticShooterSystem staticShooterSystem;
+    private final GameField gameField;
 
+    public GroupCommands(Swerve swerveSystem, IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, GameField gameField) {
 
-    public GroupCommands() {
-
+        this.swerveSystem = swerveSystem;
+        this.intakeArmSystem = intakeArmSystem;
+        this.intakeCollectorSystem = intakeCollectorSystem;
+        this.storageSystem = storageSystem;
+        this.staticShooterSystem = staticShooterSystem;
+        this.gameField = gameField;
     }
 
     // public Command
 
 
-    public Command IntakeSimpleCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem) {
+    public Command IntakeRetardCommand() {
         return new ParallelCommandGroup(
                 new IntakeArmDownSyndrome(intakeArmSystem),
                 new IntakeCollectCommand(intakeCollectorSystem)
         );
+    }
+
+    public Command IntakeFetusCommand() {
+        Command command = new ParallelCommandGroup(
+                new IntakeArmUpSchizophrenia(intakeArmSystem)
+        );
+        command.addRequirements(intakeCollectorSystem);
+        return command;
+    }
+
+    public Command shootHub() {
+        return new DeferredCommand(()-> {
+            double distance = gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
+            return new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance);
+        }, Set.of(storageSystem, staticShooterSystem));
     }
 
     /*public Command IntakeUntilFullCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem) {
@@ -53,7 +78,7 @@ public class GroupCommands {
         );
     }*/
 
-    public Command ShootHubCommandStaticShooterPreRotate(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, GameField gameField, DriverStation.Alliance alliance, Swerve swerve) {
+    /*public Command ShootHubCommandStaticShooterPreRotate(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, GameField gameField, DriverStation.Alliance alliance, Swerve swerve) {
         return new SequentialCommandGroup(
                 new ShootCommandStaticPitchForever(staticShooterSystem,
                         staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(alliance, swerve),
@@ -66,21 +91,10 @@ public class GroupCommands {
                                         RobotMap.SHOOTER_PITCH_DEFAULT_DEG))
                 )
         );
-    }
+    }*/
 
 
-    public Command shootHub(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem) {
-        return new SequentialCommandGroup(
-                Commands.parallel(
-                        //Commands.waitUntil(() -> !storageSystem.atLeast1Ball()),
-                        new ShootCommandStaticPitch(staticShooterSystem, 3.46),
-                        Commands.sequence(
-                                Commands.waitSeconds(5),
-                                new StorageFeedToShooterCommand(storageSystem)
-                        )
-                )
-        );
-    } // staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(alliance, swerve), RobotMap.SHOOTER_PITCH_DEFAULT_DEG)
+    // staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(alliance, swerve), RobotMap.SHOOTER_PITCH_DEFAULT_DEG)
 
 
 
