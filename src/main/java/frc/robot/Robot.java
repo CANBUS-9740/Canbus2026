@@ -82,9 +82,18 @@ public class Robot extends TimedRobot {
         //operationController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
         //operationController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //operationController.rightBumper().whileTrue(new ShootCommandStaticPitch(staticShooterSystem, 2000));
-        operationController.y().onTrue(groupCommands.IntakeFetusCommand());
-        operationController.a().onTrue(groupCommands.IntakeRetardCommand());
-        operationController.b().onTrue(groupCommands.shootHub());
+        //operationController.y().onTrue(groupCommands.IntakeFetusCommand());
+        //operationController.a().onTrue(groupCommands.IntakeRetardCommand());
+        //operationController.b().onTrue(groupCommands.shootHub());
+
+        //final operation controller:
+        operationController.pov(0).onTrue(groupCommands.IntakeRetardCommand());
+        operationController.pov(180).onTrue(groupCommands.IntakeFetusCommand());
+        operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
+        operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
+        operationController.x().onTrue(new StorageFeedToShooterCommand(storageSystem));
+        operationController.rightBumper().whileTrue(groupCommands.shootHub());
+
 
 
         ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
