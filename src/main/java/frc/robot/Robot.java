@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
@@ -89,9 +90,11 @@ public class Robot extends TimedRobot {
         //final operation controller:
         operationController.pov(0).onTrue(groupCommands.IntakeRetardCommand());
         operationController.pov(180).onTrue(groupCommands.IntakeFetusCommand());
-        operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
-        operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
-        operationController.x().onTrue(new StorageFeedToShooterCommand(storageSystem));
+        //operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
+        //operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
+        //operationController.x().onTrue(new StorageFeedToShooterCommand(storageSystem));
+        operationController.x().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(true)));
+        operationController.b().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(false)));
         operationController.rightBumper().whileTrue(groupCommands.shootHub());
 
 

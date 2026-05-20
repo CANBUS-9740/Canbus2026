@@ -57,4 +57,12 @@ public class SwerveDriveCommand extends Command {
             allianceSwapper = 1;
         }
     }
+
+    public void reverseDriving(boolean ifTrue) {
+        if (ifTrue) {
+            allianceSwapper = -1;
+        } else {
+            allianceSwapper = 1;
+        }
+    }
 }
