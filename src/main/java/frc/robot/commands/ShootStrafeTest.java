@@ -7,7 +7,7 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.StaticShooterSystem;
 import frc.robot.subsystems.StorageSystem;
 
-public class ShootCommandStaticPitch extends Command {
+public class ShootStrafeTest extends Command {
     private final StorageSystem storageSystem;
     private final StaticShooterSystem staticShooterSystem;
     //private final double targetDistance
@@ -16,7 +16,7 @@ public class ShootCommandStaticPitch extends Command {
     private double shooterDistance;
     private double shooterDistanceOffset;
 
-    public ShootCommandStaticPitch(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, double shooterDistance) {
+    public ShootStrafeTest(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, double shooterDistance) {
         this.storageSystem = storageSystem;
         this.staticShooterSystem = staticShooterSystem;
         this.shooterDistance = shooterDistance;
@@ -34,14 +34,14 @@ public class ShootCommandStaticPitch extends Command {
 
     @Override
     public void execute() {
-       if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
+        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
             staticShooterSystem.startFeederMotor();
-            storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_MEDIUM_SPEED);
+            storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED);
         }
-       else{
-           staticShooterSystem.stopFeeder();
-           storageSystem.moveGeneralRollers(0);
-       }
+        else{
+            staticShooterSystem.startFeederMotor();
+            storageSystem.moveGeneralRollers(0);
+        }
 
         SmartDashboard.putBoolean("if", MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5));
     }

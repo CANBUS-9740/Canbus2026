@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
     private EdiBoard ediBoard;
 
     private double shooterOffset = 2.7;
-    private double shooterDistance=2;
+    private double shooterDistance=2.23;
 
     @Override
     public void robotInit() {
@@ -171,7 +171,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,shooterDistance));
+        //staticShooterSystem.setShootVoltage(0.5);
+        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(storageSystem,staticShooterSystem,2.23));
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
