@@ -16,6 +16,10 @@ public class ShootCommandStaticPitch extends Command {
     private double shooterDistance;
     private double shooterDistanceOffset;
 
+
+
+    private boolean isCompensating = false;
+
     public ShootCommandStaticPitch(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, double shooterDistance) {
         this.storageSystem = storageSystem;
         this.staticShooterSystem = staticShooterSystem;
@@ -36,8 +40,9 @@ public class ShootCommandStaticPitch extends Command {
     public void execute() {
        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
             staticShooterSystem.startFeederMotor();
-            storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_MEDIUM_SPEED);
+            storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED);
         }
+
        else{
            staticShooterSystem.stopFeeder();
            storageSystem.moveGeneralRollers(0);

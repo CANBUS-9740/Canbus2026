@@ -29,20 +29,22 @@ public class StaticShooterSystem extends SubsystemBase {
     private double Ytag = 0;
     private double arcLen = 0;
 
+    private double compensationDifference;
 
-    //drag calc variables
-    private double travelTimeSeconds;
-    private double dragCoefficient=0.6;
-    private double airDensity=1.225;
-    private double ballSurfaceArea=7.07;
-    private double dragStart;
-    private double dragEnd;
-    private double totalDrag;
-
-    //drag compensation variables
-    private double ballMassKG=0.227;
-    private double totalVelocityLoss;
-    public double ballVelocityrpm;
+//
+//    //drag calc variables
+//    private double travelTimeSeconds;
+//    private double dragCoefficient=0.6;
+//    private double airDensity=1.225;
+//    private double ballSurfaceArea=7.07;
+//    private double dragStart;
+//    private double dragEnd;
+//    private double totalDrag;
+//
+//    //drag compensation variables
+//    private double ballMassKG=0.227;
+//    private double totalVelocityLoss;
+//    public double ballVelocityrpm;
 
     public StaticShooterSystem() {
         shooterMotor = new SparkFlex(RobotMap.MAIN_SHOOTER_MOTOR, SparkLowLevel.MotorType.kBrushless);
@@ -156,6 +158,11 @@ public class StaticShooterSystem extends SubsystemBase {
         feederMotor.set(RobotMap.SHOOTER_FEEDER_CONSTANT);
     }
 
+    public void shootSpeedCompensation(double targetRPM){
+        compensationDifference=targetRPM-getShooterVelocityRPM();
+        setShootSpeed(targetRPM+compensationDifference);
+    }
+
 //    public double travelTimeCalcSeconds(double velocityMetersPerSecond, double distanceMeters) {
 //        b = 4.585528914848 * Math.pow(velocityMetersPerSecond, 2);
 //        c = Math.pow(0.23395555688 * Math.pow(velocityMetersPerSecond, 2), 2);
@@ -201,9 +208,7 @@ public class StaticShooterSystem extends SubsystemBase {
         SmartDashboard.putNumber("shooterPeriod", counter.getPeriod());
         //SmartDashboard.putNumber("shooterdragcomp",MSToRPM(totalVelocityLoss));
         //SmartDashboard.putNumber("projected time",MSToRPM(totalVelocityLoss));
-        SmartDashboard.putNumber("projected drag",dragEnd-dragStart);
         SmartDashboard.putNumber("arclen",arcLen);
-        SmartDashboard.putNumber("tgtrpm",ballVelocityrpm);
         //SmartDashboard.putNumber("projected velocity",RPMToMS(ballVelocityrpm));
 
     }

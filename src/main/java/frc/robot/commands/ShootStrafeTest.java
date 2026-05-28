@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
@@ -16,11 +17,17 @@ public class ShootStrafeTest extends Command {
     private double shooterDistance;
     private double shooterDistanceOffset;
 
+    private boolean isCompensating=false;
+    private boolean justStarted=true;
+    private double compensationDifference;
+    private Timer delaytime;
+
     public ShootStrafeTest(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, double shooterDistance) {
         this.storageSystem = storageSystem;
         this.staticShooterSystem = staticShooterSystem;
         this.shooterDistance = shooterDistance;
         addRequirements(staticShooterSystem, storageSystem);
+        delaytime = new Timer();
     }
 
     @Override
@@ -30,17 +37,25 @@ public class ShootStrafeTest extends Command {
         targetRPM = staticShooterSystem.calculateFiringSpeedRpm(shooterDistance ,70);
         staticShooterSystem.setShootSpeed(targetRPM);
         SmartDashboard.putNumber("ShooterTarget", targetRPM);
+        delaytime.start();
     }
 
     @Override
     public void execute() {
-        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)){
+        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)&&delaytime.get()>1.5){
+            justStarted=false;
             staticShooterSystem.startFeederMotor();
             storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED);
+            if(isCompensating){
+                staticShooterSystem.setShootSpeed(targetRPM);
+                isCompensating=false;
+            }
         }
         else{
-            staticShooterSystem.startFeederMotor();
-            storageSystem.moveGeneralRollers(0);
+            if(!isCompensating && !justStarted){
+                staticShooterSystem.shootSpeedCompensation(targetRPM);
+                isCompensating=true;
+            }
         }
 
         SmartDashboard.putBoolean("if", MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5));

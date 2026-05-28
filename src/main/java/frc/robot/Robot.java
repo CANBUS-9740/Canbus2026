@@ -90,12 +90,20 @@ public class Robot extends TimedRobot {
         //final operation controller:
         operationController.pov(0).onTrue(groupCommands.IntakeRetardCommand());
         operationController.pov(180).onTrue(groupCommands.IntakeFetusCommand());
-        //operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
-        //operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
+        operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
+        operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
         //operationController.x().onTrue(new StorageFeedToShooterCommand(storageSystem));
-        operationController.x().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(true)));
-        operationController.b().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(false)));
+//        operationController.x().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(true)));
+ //       operationController.b().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(false)));
         operationController.rightBumper().whileTrue(groupCommands.shootHub());
+        operationController.b().onTrue(new  ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
+        operationController.b().onTrue(new InstantCommand(()->{
+            System.out.println("========= B PRESSED! =========");
+        }));
+        operationController.b().onFalse(new InstantCommand(()->{
+            System.out.println("========= B RELEASED! =========");
+        }));
+
 
 
 
@@ -172,7 +180,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         //staticShooterSystem.setShootVoltage(0.5);
-        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(storageSystem,staticShooterSystem,2.23));
+
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
