@@ -20,14 +20,14 @@ public class ShootStrafeTest extends Command {
     private boolean isCompensating=false;
     private boolean justStarted=true;
     private double compensationDifference;
-    private Timer delaytime;
+    private Timer delaytimetest;
 
     public ShootStrafeTest(StorageSystem storageSystem, StaticShooterSystem staticShooterSystem, double shooterDistance) {
         this.storageSystem = storageSystem;
         this.staticShooterSystem = staticShooterSystem;
         this.shooterDistance = shooterDistance;
         addRequirements(staticShooterSystem, storageSystem);
-        delaytime = new Timer();
+        delaytimetest = new Timer();
     }
 
     @Override
@@ -37,12 +37,12 @@ public class ShootStrafeTest extends Command {
         targetRPM = staticShooterSystem.calculateFiringSpeedRpm(shooterDistance ,70);
         staticShooterSystem.setShootSpeed(targetRPM);
         SmartDashboard.putNumber("ShooterTarget", targetRPM);
-        delaytime.start();
+        delaytimetest.start();
     }
 
     @Override
     public void execute() {
-        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)&&delaytime.get()>1.5){
+        if (MathUtil.isNear(targetRPM ,staticShooterSystem.getShooterVelocityRPM(), 5)&&delaytimetest.get()>1.5){
             justStarted=false;
             staticShooterSystem.startFeederMotor();
             storageSystem.moveGeneralRollers(RobotMap.STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED);
