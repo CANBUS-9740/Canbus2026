@@ -98,7 +98,7 @@ public class GameField {
     public double getTargetAngleSwerveToHub(Pose2d swervePose, DriverStation.Alliance alliance) { //without turret on robot
         // We assume angles are relative to the positive X direction of the WPILib coordinate system
         Pose2d hubPose = getHubPose(alliance);
-        double angleBetween = Math.atan2(hubPose.getY() - swervePose.getY(), hubPose.getX() - swervePose.getX());
+        double angleBetween = Math.toDegrees(Math.atan2(hubPose.getY() - swervePose.getY(), hubPose.getX() - swervePose.getX()));
 
         return MathUtil.inputModulus(angleBetween, 0, 360);
     }
