@@ -92,23 +92,14 @@ public class Robot extends TimedRobot {
         operationController.pov(180).onTrue(groupCommands.IntakeFetusCommand());
         operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
         operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
-        //operationController.x().onTrue(new StorageFeedToShooterCommand(storageSystem));
-//        operationController.x().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(true)));
- //       operationController.b().onTrue(new InstantCommand(()-> swerveDriveCommand.reverseDriving(false)));
+        operationController.x().whileTrue(new StorageFeedToShooterCommand(storageSystem));
         operationController.rightBumper().whileTrue(groupCommands.shootHub());
         operationController.b().onTrue(new  ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
-        operationController.b().onTrue(new InstantCommand(()->{
-            System.out.println("========= B PRESSED! =========");
-        }));
-        operationController.b().onFalse(new InstantCommand(()->{
-            System.out.println("========= B RELEASED! =========");
-        }));
-
 
         ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
 
 //        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
-//        SparkMaxConfig config = new SparkMaxConSfig();
+//        SparkMaxConfig config = new SparkMaxConfig();
 //        config.inverted(true).idleMode(SparkBaseConfig.IdleMode.kCoast);
 //        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 //
