@@ -17,17 +17,7 @@ public class StorageBothRollersBackwardsCommand extends Command {
     }
 
     @Override
-    public void execute() {
-
-    }
-
-    @Override
     public void end(boolean interrupted) {
         storageSystem.stopMotors();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
     }
 }

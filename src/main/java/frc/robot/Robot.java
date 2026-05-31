@@ -1,18 +1,10 @@
 package frc.robot;
 
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -57,9 +49,10 @@ public class Robot extends TimedRobot {
 
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
 
-        swerveSystem.setDefaultCommand(swerveDriveCommand);
 
         groupCommands = new GroupCommands(swerveSystem, intakeArmSystem, intakeCollectorSystem, storageSystem, staticShooterSystem, gameField);
+
+        swerveSystem.setDefaultCommand(swerveDriveCommand);
 
         //driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
@@ -73,41 +66,26 @@ public class Robot extends TimedRobot {
             System.out.printf("CMD INIT %s %s\n", command.getName(), command.getClass().getName());
         });
         CommandScheduler.getInstance().onCommandInterrupt((command, opt)-> {
-            System.out.printf("CMD INT %s %s\n", command.getName(), command.getClass().getName());
+            System.out.printf("CMD INT %s %s with %s\n", command.getName(), command.getClass().getName(), opt.toString());
         });
         CommandScheduler.getInstance().onCommandFinish((command)-> {
             System.out.printf("CMD FIN %s %s\n", command.getName(), command.getClass().getName());
         });
 
-        //operationController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
-        //operationController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
-        //operationController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
-        //operationController.rightBumper().whileTrue(new ShootCommandStaticPitch(staticShooterSystem, 2000));
-        //operationController.y().onTrue(groupCommands.IntakeFetusCommand());
-        //operationController.a().onTrue(groupCommands.IntakeRetardCommand());
-        //operationController.b().onTrue(groupCommands.shootHub());
+        // Final operation controller:
+        operationController.b().whileTrue(groupCommands.intakeUnjam());
 
-        //final operation controller:
-        operationController.pov(0).onTrue(groupCommands.IntakeRetardCommand());
-        operationController.pov(180).onTrue(groupCommands.IntakeFetusCommand());
-        operationController.a().onTrue(new IntakeArmDownSyndrome(intakeArmSystem));
-        operationController.y().onTrue(new IntakeArmUpSchizophrenia(intakeArmSystem));
-        operationController.x().whileTrue(new StorageFeedToShooterCommand(storageSystem));
-        operationController.rightBumper().whileTrue(groupCommands.shootHub());
-        operationController.b().onTrue(new  ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
+        // TODO: Pressing Y needs to toggle intake/stop-intake
+        operationController.y().whileTrue(groupCommands.intakeAndCollect());
+        operationController.y().onFalse(groupCommands.intakeAndStopCollect());
+
+        // TODO: Pressing X should start the shooter, wait a bit, then feed the fuel to the shooter.
+        operationController.a().whileTrue(new StorageFeedToShooterCommand(storageSystem));
+        operationController.x().whileTrue(groupCommands.shootHub());
+
+//        operationController.b().onTrue(new ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
 
         ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
-
-//        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
-//        SparkMaxConfig config = new SparkMaxConfig();
-//        config.inverted(true).idleMode(SparkBaseConfig.IdleMode.kCoast);
-//        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-//
-//        positionControl = new PositionDutyCycle(0);
-//        neutralControl = new NeutralOut();
-/*
-
-        */
 
         SmartDashboard.putNumber("shooterOffset", shooterOffset);
         SmartDashboard.putNumber("shooterDistance", shooterDistance);

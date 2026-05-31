@@ -4,23 +4,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.IntakeArmSystem;
 
-public class IntakeArmUpSchizophrenia extends Command {
+public class IntakeDownCarefullyCommand extends Command {
+
     private final IntakeArmSystem intakeArmSystem;
 
-    public IntakeArmUpSchizophrenia(IntakeArmSystem intakeArmSystem) {
+    public IntakeDownCarefullyCommand(IntakeArmSystem intakeArmSystem) {
         this.intakeArmSystem = intakeArmSystem;
-
         addRequirements(intakeArmSystem);
     }
 
     @Override
     public void initialize() {
-        intakeArmSystem.setTargetPosition(RobotMap.INTAKE_ARM_MAX_ANGLE_DEG);
-    }
-
-    @Override
-    public void execute() {
-
+        intakeArmSystem.set(-0.2);
     }
 
     @Override
@@ -30,6 +25,6 @@ public class IntakeArmUpSchizophrenia extends Command {
 
     @Override
     public boolean isFinished() {
-        return intakeArmSystem.getPositionDegrees() >= RobotMap.INTAKE_ARM_MAX_ANGLE_DEG && intakeArmSystem.getPositionDegrees() < 180;
+        return intakeArmSystem.getPositionDegrees() <= RobotMap.INTAKE_ARM_MIN_ANGLE_DEG;
     }
 }

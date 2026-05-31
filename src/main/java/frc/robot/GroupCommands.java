@@ -37,22 +37,28 @@ public class GroupCommands {
         this.gameField = gameField;
     }
 
-    // public Command
-
-
-    public Command IntakeRetardCommand() {
+    public Command intakeAndCollect() {
         return new ParallelCommandGroup(
-                new IntakeArmDownSyndrome(intakeArmSystem),
-                new IntakeCollectCommand(intakeCollectorSystem)
+                new IntakeDownCarefullyCommand(intakeArmSystem),
+                new SequentialCommandGroup(
+                        new WaitCommand(0.5),
+                        new IntakeCollectCommand(intakeCollectorSystem)
+                )
         );
     }
 
-    public Command IntakeFetusCommand() {
-        Command command = new ParallelCommandGroup(
-                new IntakeArmUpSchizophrenia(intakeArmSystem)
+    public Command intakeAndStopCollect() {
+        return new ParallelCommandGroup(
+                new IntakeTargetPositionUpCommand(intakeArmSystem),
+                new InstantCommand(() -> {}, intakeCollectorSystem)
         );
-        command.addRequirements(intakeCollectorSystem);
-        return command;
+    }
+
+    public Command intakeUnjam() {
+        return new ParallelCommandGroup(
+                new IntakeCollectorUnjamCommand(intakeCollectorSystem),
+                new StorageBothRollersBackwardsCommand(storageSystem)
+        );
     }
 
     public Command shootHub() {
