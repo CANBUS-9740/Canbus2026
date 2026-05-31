@@ -58,8 +58,21 @@ public class GroupCommands {
     public Command shootHub() {
         return new DeferredCommand(()-> {
             double distance = gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
-            return new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance);
-        }, Set.of(storageSystem, staticShooterSystem));
+            return new ParallelCommandGroup(
+                    new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance),
+                    new IntakeCollectCommand(intakeCollectorSystem)
+                    );
+        }, Set.of(storageSystem, staticShooterSystem, intakeCollectorSystem));
+    }
+
+    public Command rotateToHubAndShoot() {
+        return new DeferredCommand(()-> {
+            double targetAngle = gameField.getTargetAngleSwerveToHub(swerveSystem.getPose(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
+            return new SequentialCommandGroup(
+                    new SwerveRotateToAngle(swerveSystem, targetAngle),
+                    shootHub()
+            );
+        }, Set.of(swerveSystem));
     }
 
     /*public Command IntakeUntilFullCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem) {
@@ -123,4 +136,10 @@ public class GroupCommands {
                 new ClimbOpenArmsCommand(climbSystem, RobotMap.CLIMB_ARM_MAX_HEIGHT)
         );
     }
+
+    public Command cancelAllCommands() {
+        return new InstantCommand(()-> CommandScheduler.getInstance().cancelAll());
+    }
+
+
 }

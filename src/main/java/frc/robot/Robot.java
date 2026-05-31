@@ -105,8 +105,6 @@ public class Robot extends TimedRobot {
         }));
 
 
-
-
         ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
 
 //        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
@@ -180,7 +178,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         //staticShooterSystem.setShootVoltage(0.5);
-
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
