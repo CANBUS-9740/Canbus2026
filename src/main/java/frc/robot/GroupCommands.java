@@ -47,7 +47,7 @@ public class GroupCommands {
         );
     }
 
-    public Command intakeAndStopCollect() {
+    public Command stopIntakeAndStopCollect() {
         return new ParallelCommandGroup(
                 new IntakeTargetPositionUpCommand(intakeArmSystem),
                 new InstantCommand(() -> {}, intakeCollectorSystem)
@@ -64,10 +64,7 @@ public class GroupCommands {
     public Command shootHub() {
         return new DeferredCommand(()-> {
             double distance = gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
-            return new ParallelCommandGroup(
-                    new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance),
-                    new IntakeCollectCommand(intakeCollectorSystem)
-                    );
+            return new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance);
         }, Set.of(storageSystem, staticShooterSystem, intakeCollectorSystem));
     }
 

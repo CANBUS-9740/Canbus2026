@@ -4,7 +4,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -29,8 +31,10 @@ public class Robot extends TimedRobot {
     private GroupCommands groupCommands;
     private EdiBoard ediBoard;
 
-    private double shooterOffset = 2.7;
-    private double shooterDistance=2.23;
+
+    private Command collectCommand;
+    private Command stopCollectCommand;
+    private boolean isCollecting = false;
 
     @Override
     public void robotInit() {
@@ -75,20 +79,28 @@ public class Robot extends TimedRobot {
         // Final operation controller:
         operationController.b().whileTrue(groupCommands.intakeUnjam());
 
-        // TODO: Pressing Y needs to toggle intake/stop-intake
-        operationController.y().whileTrue(groupCommands.intakeAndCollect());
-        operationController.y().onFalse(groupCommands.intakeAndStopCollect());
+        collectCommand = groupCommands.intakeAndCollect();
+        stopCollectCommand = groupCommands.stopIntakeAndStopCollect();
 
-        // TODO: Pressing X should start the shooter, wait a bit, then feed the fuel to the shooter.
-        operationController.a().whileTrue(new StorageFeedToShooterCommand(storageSystem));
-        operationController.x().whileTrue(groupCommands.shootHub());
+        operationController.y().onTrue(new InstantCommand(() -> {
+            isCollecting = !isCollecting;
+
+            if (isCollecting) {
+                CommandScheduler.getInstance().schedule(collectCommand);
+            } else {
+                CommandScheduler.getInstance().schedule(stopCollectCommand);
+            }
+        }));
+
+        // TODO: Test this pls :)
+        operationController.x().onTrue(groupCommands.shootHub());
+
+        operationController.pov(0).onTrue(new IntakeTargetPositionUpCommand(intakeArmSystem));
+        operationController.pov(180).onTrue(new IntakeDownCarefullyCommand(intakeArmSystem));
 
 //        operationController.b().onTrue(new ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
 
         ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
-
-        SmartDashboard.putNumber("shooterOffset", shooterOffset);
-        SmartDashboard.putNumber("shooterDistance", shooterDistance);
     }
 
     @Override
