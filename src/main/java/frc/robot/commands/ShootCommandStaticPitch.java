@@ -32,7 +32,7 @@ public class ShootCommandStaticPitch extends Command {
     @Override
     public void initialize() {
         shooterDistanceOffset = 0.2*Math.pow(shooterDistance,2)-1.83*shooterDistance+6.675;
-        shooterDistance = shooterDistance*shooterDistanceOffset;
+        shooterDistance = (shooterDistance-0.3)*shooterDistanceOffset;
         targetRPM = staticShooterSystem.calculateFiringSpeedRpm(shooterDistance ,70);
         staticShooterSystem.setShootSpeed(targetRPM);
         SmartDashboard.putNumber("ShooterTarget", targetRPM);
