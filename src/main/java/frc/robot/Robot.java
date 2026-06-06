@@ -93,10 +93,11 @@ public class Robot extends TimedRobot {
         }));
 
         // TODO: Test this pls :)
-        operationController.x().onTrue(groupCommands.shootHub());
+        operationController.x().onTrue(groupCommands.rotateToHubAndShoot());
+        operationController.a().onTrue(new StorageFeedToShooterCommand(storageSystem));
 
-        operationController.pov(0).onTrue(new IntakeTargetPositionUpCommand(intakeArmSystem));
-        operationController.pov(180).onTrue(new IntakeDownCarefullyCommand(intakeArmSystem));
+        operationController.start().onTrue(groupCommands.cancelAllCommands());
+        driverController.start().onTrue(groupCommands.cancelAllCommands());
 
 //        operationController.b().onTrue(new ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
 

@@ -53,7 +53,7 @@ public class Swerve extends SubsystemBase {
         swerveDrive.drive(new Translation2d(
                         translationX,
                         translationY),
-                angularRotationX * 10,
+                angularRotationX * 15,
                 true,
                 false);
     }

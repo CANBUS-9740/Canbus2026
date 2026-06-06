@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -71,8 +72,9 @@ public class GroupCommands {
     public Command rotateToHubAndShoot() {
         return new DeferredCommand(()-> {
             double targetAngle = gameField.getTargetAngleSwerveToHub(swerveSystem.getPose(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
+            SmartDashboard.putNumber("robotTargetAngle", targetAngle);
             return new SequentialCommandGroup(
-                    new SwerveRotateToAngle(swerveSystem, targetAngle),
+                    //new SwerveRotateToAngle(swerveSystem, targetAngle),
                     shootHub()
             );
         }, Set.of(swerveSystem));
