@@ -64,7 +64,7 @@ public class GroupCommands {
 
     public Command shootHub() {
         return new DeferredCommand(()-> {
-            double distance = gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
+            double distance = 2.7;//gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
             return new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance);
         }, Set.of(storageSystem, staticShooterSystem, intakeCollectorSystem));
     }

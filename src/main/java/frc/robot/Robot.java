@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
         }));
 
         // TODO: Test this pls :)
-        operationController.x().onTrue(groupCommands.rotateToHubAndShoot());
+        operationController.x().onTrue(groupCommands.shootHub());
         operationController.a().onTrue(new StorageFeedToShooterCommand(storageSystem));
 
         operationController.start().onTrue(groupCommands.cancelAllCommands());

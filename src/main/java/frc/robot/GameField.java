@@ -37,11 +37,48 @@ public class GameField {
         }
     }
 
-    public double getDistanceFromHubMeters(DriverStation.Alliance alliance, Swerve swerve){
+    public Pose2d getAlliancePose1(DriverStation.Alliance alliance) {
+        if (alliance == DriverStation.Alliance.Red) {
+            return new Pose2d(13.5, 5.5, new Rotation2d(0));
+        } else {
+            return new Pose2d(3.5, 5.5, new Rotation2d(0));
+        }
+    }
+
+    public Pose2d getAlliancePose2(DriverStation.Alliance alliance) {
+        if (alliance == DriverStation.Alliance.Red) {
+            return new Pose2d(13.5, 2.5, new Rotation2d(0));
+        } else {
+            return new Pose2d(3.5, 2.5, new Rotation2d(0));
+        }
+    }
+
+    public double getClosestDistanceToAllianceMeters(DriverStation.Alliance alliance, Swerve swerve) {
+        Pose2d Alliance1 = getAlliancePose1(alliance);
+        Pose2d Alliance2 = getAlliancePose2(alliance);
+        double distanceX1 = Math.pow(Alliance1.getX() - swerve.getPose().getX(), 2);
+        double distanceY1 = Math.pow(Alliance1.getY() - swerve.getPose().getY(), 2);
+        double Dist1 = Math.sqrt(distanceY1 + distanceX1);
+
+        double distanceX2 = Math.pow(Alliance2.getX() - swerve.getPose().getX(), 2);
+        double distanceY2 = Math.pow(Alliance2.getY() - swerve.getPose().getY(), 2);
+        double Dist2=  Math.sqrt(distanceY2 + distanceX2);
+
+        if(Dist1>Dist2){
+            return Dist2;
+        }
+        else{
+            return Dist1;
+        }
+    }
+
+    public double getDistanceFromHubMeters(DriverStation.Alliance alliance, Swerve swerve) {
         Pose2d hubPose = getHubPose(alliance);
-        double distanceX = Math.pow(hubPose.getX() - swerve.getPose().getX(), 2)  ;
+        double distanceX = Math.pow(hubPose.getX() - swerve.getPose().getX(), 2);
         double distanceY = Math.pow(hubPose.getY() - swerve.getPose().getY(), 2);
         return Math.sqrt(distanceY + distanceX);
+
+
     }
 
     public Pose2d getTowerMiddleBotPose(DriverStation.Alliance alliance) {
