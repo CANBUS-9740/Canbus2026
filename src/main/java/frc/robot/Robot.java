@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -94,6 +95,7 @@ public class Robot extends TimedRobot {
 
         // TODO: Test this pls :)
         operationController.x().onTrue(groupCommands.shootHub());
+        operationController.rightBumper().onTrue(groupCommands.shootForBallTransfer());
         operationController.a().onTrue(new StorageFeedToShooterCommand(storageSystem));
 
         operationController.start().onTrue(groupCommands.cancelAllCommands());
@@ -122,8 +124,14 @@ public class Robot extends TimedRobot {
         Pose2d hubPose = gameField.getHubPose(DriverStation.Alliance.Red);
         swerveSystem.getField().getObject("HubPose").setPose(hubPose);
 
+        Pose2d transferPose = gameField.getPositionForBallTransfer(DriverStation.Alliance.Red, swerveSystem.getPose());
+        swerveSystem.getField().getObject("TransferPoint").setPose(transferPose);
+
         double distance = gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
         SmartDashboard.putNumber("DistanceToAllianceHub", distance);
+
+        double targetAngle = gameField.getTargetAngleSwerveToHub(swerveSystem.getPose(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
+        SmartDashboard.putNumber("robotTargetAngle", targetAngle);
 
         Pose2d pose2d = swerveSystem.getPose();
 //        Pose2d turretPose = swervePose
@@ -209,9 +217,6 @@ public class Robot extends TimedRobot {
         //intakeArmSystem.move(0.2);
         //position.refresh();
         //SmartDashboard.putNumber("ProcessVariable", position.getValue().in(Units.Rotations));
-
-
-
     }
 
     @Override

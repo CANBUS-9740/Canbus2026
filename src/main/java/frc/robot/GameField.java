@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Swerve;
@@ -139,4 +140,46 @@ public class GameField {
 
         return MathUtil.inputModulus(angleBetween, 0, 360);
     }
+
+    private boolean isBehindHub(Pose2d swervePose) {
+        final double DISTANCE_TO_CENTER_M = 4.03;
+        final double HUB_WIDTH_M = 1.2;
+
+        double yMin = DISTANCE_TO_CENTER_M - HUB_WIDTH_M / 2;
+        double yMax = DISTANCE_TO_CENTER_M + HUB_WIDTH_M / 2;
+        return swervePose.getY() >= yMin && swervePose.getY() <= yMax;
+    }
+
+    public Pose2d getPositionForBallTransfer(DriverStation.Alliance alliance , Pose2d swervePose) {
+        final double DISTANCE_X_M = 2;
+        final double LENGTH_FIELD_M = 16.541;
+
+        double x;
+        if (alliance == DriverStation.Alliance.Red) {
+            x = LENGTH_FIELD_M - DISTANCE_X_M;
+        } else {
+            x = DISTANCE_X_M;
+        }
+
+        double y;
+        if(isBehindHub(swervePose)){
+            y = 1.3;
+        } else {
+            y = swervePose.getY();
+        }
+
+        return new Pose2d(x, y, Rotation2d.kZero);
+    }
+
+    public Pair<Double, Double> calculateDistanceAndAngle(Pose2d swervePose, Pose2d targetPose) {
+        double distanceX = Math.pow(targetPose.getX() - swervePose.getX(), 2);
+        double distanceY = Math.pow(targetPose.getY() - swervePose.getY(), 2);
+        double distance = Math.sqrt(distanceY + distanceX);
+
+        double angle = Math.toDegrees(Math.atan2(targetPose.getY() - swervePose.getY(), targetPose.getX() - swervePose.getX()));
+        angle = MathUtil.inputModulus(angle, 0, 360);
+
+        return Pair.of(distance, angle);
+    }
+
 }

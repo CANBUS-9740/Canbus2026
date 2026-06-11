@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
@@ -7,6 +8,7 @@ import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class GroupCommands {
 
@@ -63,25 +65,37 @@ public class GroupCommands {
         );
     }
 
-    public Command shootHub() {
-        return new DeferredCommand(()-> {
-            double distance = 2.7;//gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
-            return new ParallelCommandGroup(
-                    new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance),
-                    new IntakeTargetPositionUpCommand(intakeArmSystem)
-            );
-        }, Set.of(storageSystem, staticShooterSystem, intakeCollectorSystem));
+    public Command shoot(double distance) {
+        return new ParallelCommandGroup(
+                new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance)
+                //new IntakeTargetPositionUpCommand(intakeArmSystem)
+        );
     }
 
-    public Command rotateToHubAndShoot() {
+    public Command rotateToAndShoot(Supplier<Pose2d> targetPose) {
         return new DeferredCommand(()-> {
-            double targetAngle = gameField.getTargetAngleSwerveToHub(swerveSystem.getPose(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
-            SmartDashboard.putNumber("robotTargetAngle", targetAngle);
+            final var pair = gameField.calculateDistanceAndAngle(swerveSystem.getPose(), targetPose.get());
+            SmartDashboard.putNumber("ShootTargetDistance", pair.getFirst());
+            SmartDashboard.putNumber("ShootTargetAngle", pair.getSecond());
             return new SequentialCommandGroup(
-                    //new SwerveRotateToAngle(swerveSystem, targetAngle),
-                    shootHub()
+                    new SwerveRotateToAngle(swerveSystem, pair.getSecond()),
+                    shoot(pair.getFirst())
             );
-        }, Set.of(swerveSystem));
+        }, Set.of(swerveSystem, intakeCollectorSystem, storageSystem, staticShooterSystem));
+    }
+
+    public Command shootHub() {
+        return rotateToAndShoot(()-> {
+            return gameField.getHubPose(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
+        });
+    }
+
+    public Command shootForBallTransfer() {
+        return rotateToAndShoot(()-> {
+            return gameField.getPositionForBallTransfer(
+                    DriverStation.getAlliance().orElse(DriverStation.Alliance.Red),
+                    swerveSystem.getPose());
+        });
     }
 
     /*public Command IntakeUntilFullCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem) {
