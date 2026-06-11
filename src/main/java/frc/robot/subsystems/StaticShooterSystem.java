@@ -85,6 +85,10 @@ public class StaticShooterSystem extends SubsystemBase {
         feederMotor.set(0.5);
     }
 
+    public void ShooterFeederBackwards(){
+        feederMotor.set(-0.5);
+    }
+
     public double getShooterVelocityRPM() {
         return shooterEncoder.getVelocity();
     }

@@ -58,7 +58,8 @@ public class GroupCommands {
     public Command intakeUnjam() {
         return new ParallelCommandGroup(
                 new IntakeCollectorUnjamCommand(intakeCollectorSystem),
-                new StorageBothRollersBackwardsCommand(storageSystem)
+                new StorageBothRollersBackwardsCommand(storageSystem),
+                new ShooterFeederBackwardsCommand(staticShooterSystem)
         );
     }
 
