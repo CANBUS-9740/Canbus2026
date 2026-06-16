@@ -41,61 +41,77 @@ public class GroupCommands {
     }
 
     public Command intakeAndCollect() {
-        return new ParallelCommandGroup(
+        final var command = new ParallelCommandGroup(
                 new IntakeDownCarefullyCommand(intakeArmSystem),
                 new SequentialCommandGroup(
                         new WaitCommand(0.5),
                         new IntakeCollectCommand(intakeCollectorSystem)
                 )
         );
+        command.setName("GroupCommands.intakeAndCollect");
+        return command;
     }
 
     public Command stopIntakeAndStopCollect() {
-        return new ParallelCommandGroup(
+        final var command = new ParallelCommandGroup(
                 new IntakeTargetPositionUpCommand(intakeArmSystem),
                 new InstantCommand(() -> {}, intakeCollectorSystem)
         );
+        command.setName("GroupCommands.stopIntakeAndStopCollect");
+        return command;
     }
 
     public Command intakeUnjam() {
-        return new ParallelCommandGroup(
-                new IntakeCollectorUnjamCommand(intakeCollectorSystem),
+        final var command = new ParallelCommandGroup(
+                //new IntakeCollectorUnjamCommand(intakeCollectorSystem),
                 new StorageBothRollersBackwardsCommand(storageSystem),
                 new ShooterFeederBackwardsCommand(staticShooterSystem)
         );
+        command.setName("GroupCommands.intakeUnjam");
+        return command;
     }
 
-    public Command shoot(double distance) {
-        return new ParallelCommandGroup(
+    public Command  shoot(double distance) {
+        final var command = new ParallelCommandGroup(
                 new ShootCommandStaticPitch(storageSystem, staticShooterSystem, distance)
                 //new IntakeTargetPositionUpCommand(intakeArmSystem)
         );
+        command.setName("GroupCommands.shoot");
+        return command;
     }
 
     public Command rotateToAndShoot(Supplier<Pose2d> targetPose) {
-        return new DeferredCommand(()-> {
+        var alliance= DriverStation.getRawAllianceStation();
+        final var command = new DeferredCommand(()-> {
             final var pair = gameField.calculateDistanceAndAngle(swerveSystem.getPose(), targetPose.get());
             SmartDashboard.putNumber("ShootTargetDistance", pair.getFirst());
             SmartDashboard.putNumber("ShootTargetAngle", pair.getSecond());
             return new SequentialCommandGroup(
                     new SwerveRotateToAngle(swerveSystem, pair.getSecond()),
-                    shoot(pair.getFirst())
+                    //shoot(pair.getFirst())
+                    shoot(gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red,swerveSystem))
             );
-        }, Set.of(swerveSystem, intakeCollectorSystem, storageSystem, staticShooterSystem));
+        }, Set.of(swerveSystem, storageSystem, staticShooterSystem));
+        command.setName("GroupCommands.rotateToAndShoot");
+        return command;
     }
 
     public Command shootHub() {
-        return rotateToAndShoot(()-> {
+        final var command = rotateToAndShoot(()-> {
             return gameField.getHubPose(DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
         });
+        command.setName("GroupCommands.shootHub");
+        return command;
     }
 
     public Command shootForBallTransfer() {
-        return rotateToAndShoot(()-> {
+        final var command = rotateToAndShoot(()-> {
             return gameField.getPositionForBallTransfer(
                     DriverStation.getAlliance().orElse(DriverStation.Alliance.Red),
                     swerveSystem.getPose());
         });
+        command.setName("GroupCommands.shootForBallTransfer");
+        return command;
     }
 
     /*public Command IntakeUntilFullCommand(IntakeArmSystem intakeArmSystem, IntakeCollectorSystem intakeCollectorSystem, StorageSystem storageSystem) {
@@ -154,14 +170,18 @@ public class GroupCommands {
         );
     }*/
 
-    public Command ClimbDownCommand(ClimbSystem climbSystem) {
-        return new SequentialCommandGroup(
+    public Command climbDownCommand(ClimbSystem climbSystem) {
+        final var command = new SequentialCommandGroup(
                 new ClimbOpenArmsCommand(climbSystem, RobotMap.CLIMB_ARM_MAX_HEIGHT)
         );
+        command.setName("GroupCommands.climbDownCommand");
+        return command;
     }
 
     public Command cancelAllCommands() {
-        return new InstantCommand(()-> CommandScheduler.getInstance().cancelAll());
+        final var command = new InstantCommand(()-> CommandScheduler.getInstance().cancelAll());
+        command.setName("GroupCommands.cancelAllCommands");
+        return command;
     }
 
 
