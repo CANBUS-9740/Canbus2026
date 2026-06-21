@@ -25,7 +25,7 @@ public class ShootCommandStaticPitch extends Command {
         this.storageSystem = storageSystem;
         this.staticShooterSystem = staticShooterSystem;
         this.shooterDistance = (shooterDistance - 0.3) * (0.2 * Math.pow(shooterDistance, 2) - 1.83 * shooterDistance + 6.675);
-        this.targetRPM = staticShooterSystem.calculateFiringSpeedRpm(this.shooterDistance, 70);
+        this.targetRPM = staticShooterSystem.calculateFiringSpeedRpm(this.shooterDistance, 70) * 0.95;
 
         this.justStarted = true;
         this.isCompensating = false;

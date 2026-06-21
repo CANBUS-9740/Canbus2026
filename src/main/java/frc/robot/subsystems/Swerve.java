@@ -1,8 +1,15 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -48,6 +55,7 @@ public class Swerve extends SubsystemBase {
     public void addVisionMeasurement(LimelightHelpers.PoseEstimate poseEstimate) {
         swerveDrive.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
     }
+
 
     public void driveFieldRelative(double translationX, double translationY, double angularRotationX) {
         swerveDrive.drive(new Translation2d(
@@ -115,5 +123,12 @@ public class Swerve extends SubsystemBase {
     public void periodic() {
         swerveDrive.updateOdometry();
         getField().setRobotPose(getPose());
+        final var modules = swerveDrive.getModules();
+        for (int i = 0; i < modules.length; i++) {
+            final SparkMax angleMotor = (SparkMax) modules[i].getAngleMotor().getMotor();
+            final TalonFX driveMotor = (TalonFX) modules[i].getDriveMotor().getMotor();
+            SmartDashboard.putNumber("Swerve" + i + "AngleMotorCurrent", angleMotor.getOutputCurrent());
+            SmartDashboard.putNumber("Swerve" + i + "DriveMotorCurrent", driveMotor.getSupplyCurrent().getValueAsDouble());
+        }
     }
 }

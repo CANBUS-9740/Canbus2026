@@ -94,15 +94,16 @@ public class Robot extends TimedRobot {
         }));
 
         // TODO: Test this pls :)
-        operationController.x().onTrue(groupCommands.shoot(2));
-//        operationController.a().onTrue(new StorageFeedToShooterCommand(storageSystem));
-        operationController.rightBumper().onTrue(groupCommands.shoot(2));
+        operationController.x().onTrue(groupCommands.shootHub());
+        operationController.a().onTrue(new StorageFeedToShooterCommand(storageSystem));
+        operationController.y().onTrue(groupCommands.intakeAndCollect());
+        //operationController.rightBumper().onTrue(groupCommands.shoot(2));
         operationController.start().onTrue(groupCommands.cancelAllCommands());
         driverController.start().onTrue(groupCommands.cancelAllCommands());
 
 //        operationController.b().onTrue(new ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
 
-        ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
+        //ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
     }
 
     @Override

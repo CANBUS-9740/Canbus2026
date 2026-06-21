@@ -151,7 +151,7 @@ public class RobotMap {
 
     // collector
     public static final double COLLECTOR_SPEED =  0.5 ;//0.85;
-    public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED = 0.8;
+    public static final double STORAGE_GENERAL_ROLLERS_FORWARD_HIGH_SPEED =  0.8;//0.8;
     public static final double STORAGE_GENERAL_ROLLERS_FORWARD_MEDIUM_SPEED = 0.4;
     public static final double STORAGE_GENERAL_ROLLERS_BACKWARDS_LOW_SPEED = -0.2;
 
