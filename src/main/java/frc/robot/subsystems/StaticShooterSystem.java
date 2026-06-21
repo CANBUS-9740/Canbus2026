@@ -107,6 +107,8 @@ public class StaticShooterSystem extends SubsystemBase {
         feederMotor.stopMotor();
     }
 
+
+    //this is unused
     public double getDistanceFromSensorMM() {
         double p = counter.getPeriod();
         if (p >= 0.0019) {
@@ -116,6 +118,7 @@ public class StaticShooterSystem extends SubsystemBase {
         return (3.0 / 4.0) * (us - 1000);
     }
 
+    //this is unused
     public boolean isBallInShooter() {
         double d = getDistanceFromSensorMM();
         return d <= RobotMap.SHOOTER_DISTANCE_BALL_DETECTION_MM && d > 0;
