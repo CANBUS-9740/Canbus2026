@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
 
     private GroupCommands groupCommands;
     private EdiBoard ediBoard;
+    private SendableChooser<Command> autoChooser;
 
 
     private Command collectCommand;
@@ -45,7 +47,9 @@ public class Robot extends TimedRobot {
         storageSystem = new StorageSystem();
         staticShooterSystem = new StaticShooterSystem();
 
-        limelightAprilTag = new LimelightAprilTag("limelight-aprilta");
+        //limelightAprilTag = new LimelightAprilTag("limelight-apriltag");
+        limelightAprilTag = new LimelightAprilTag("limelight-forward");
+
         gameField = new GameField();
         pathplanner = new Pathplanner(swerveSystem);
 
@@ -78,7 +82,7 @@ public class Robot extends TimedRobot {
         });
 
         // Final operation controller:
-        operationController.b().whileTrue(groupCommands.intakeUnjam());
+        operationController.b().whileTrue(groupCommands.intakeUnjam2());
 
         collectCommand = groupCommands.intakeAndCollect();
         stopCollectCommand = groupCommands.stopIntakeAndStopCollect();
@@ -93,17 +97,24 @@ public class Robot extends TimedRobot {
             }
         }));
 
-        // TODO: Test this pls :)
-        operationController.x().onTrue(groupCommands.shootHub());
-        operationController.a().onTrue(new StorageFeedToShooterCommand(storageSystem));
-        operationController.y().onTrue(groupCommands.intakeAndCollect());
-        //operationController.rightBumper().onTrue(groupCommands.shoot(2));
+        // TODO: Test this pls :) no
+        operationController.x().onTrue(groupCommands.shoot(2));
+        operationController.a().onTrue(groupCommands.intakeUnjam1());
         operationController.start().onTrue(groupCommands.cancelAllCommands());
+        operationController.b().whileTrue(groupCommands.intakeUnjam2());
+        operationController.leftBumper().onTrue(groupCommands.shootForBallTransfer());
+
         driverController.start().onTrue(groupCommands.cancelAllCommands());
 
 //        operationController.b().onTrue(new ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
 
         //ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
+
+        autoChooser = new SendableChooser<>();
+
+        autoChooser.addOption("dontMove", null);
+        autoChooser.addOption("middle:", groupCommands.autoMiddle());
+        autoChooser.addOption("side:", groupCommands.autoSide());
     }
 
     @Override
@@ -191,6 +202,11 @@ public class Robot extends TimedRobot {
 //        CommandScheduler.getInstance().schedule(new ParallelCommandGroup(new ShootCommandStaticPitch(staticShooterSystem,
 //                        staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(DriverStation.Alliance.Blue, swerveSystem) * shooterOffset, 70))),
 //                new StorageFeedToShooterCommand(storageSystem));
+
+        Command auto = autoChooser.getSelected();
+        if (auto != null) {
+            CommandScheduler.getInstance().schedule(auto);
+        }
     }
 
     @Override

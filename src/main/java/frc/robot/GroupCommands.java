@@ -61,9 +61,19 @@ public class GroupCommands {
         return command;
     }
 
-    public Command intakeUnjam() {
+    public Command intakeUnjam1() {
         final var command = new ParallelCommandGroup(
-                //new IntakeCollectorUnjamCommand(intakeCollectorSystem),
+                new IntakeCollectorUnjamCommand(intakeCollectorSystem),
+                new StorageBothRollersBackwardsCommand(storageSystem),
+                new ShooterFeederBackwardsCommand(staticShooterSystem)
+        );
+        command.setName("GroupCommands.intakeUnjam");
+        return command;
+    }
+
+    public Command intakeUnjam2() {
+        final var command = new ParallelCommandGroup(
+
                 new StorageBothRollersBackwardsCommand(storageSystem),
                 new ShooterFeederBackwardsCommand(staticShooterSystem)
         );
@@ -183,6 +193,22 @@ public class GroupCommands {
         command.setName("GroupCommands.cancelAllCommands");
         return command;
     }
+
+    public Command autoMiddle(){
+        return new SequentialCommandGroup(
+                new DriveStupid(swerveSystem),
+                new ShootCommandStaticPitch(storageSystem, staticShooterSystem, 2)
+        );
+    }
+
+    public Command autoSide(){
+        return new SequentialCommandGroup(
+                new DriveStupid(swerveSystem),
+                shootHub()
+        );
+    }
+
+
 
 
 }
