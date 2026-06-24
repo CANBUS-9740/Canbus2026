@@ -8,8 +8,13 @@ public class DriveStupid extends Command {
 
     private final Swerve swerve;
     private double lastPos;
+    private double velocity;
+    private double distance;
 
-    public DriveStupid(Swerve swerve) {
+    public  DriveStupid(Swerve swerve, double velocity, double distance) {
+        this.velocity = velocity;
+        this.distance = distance;
+
         this.swerve = swerve;
         addRequirements(swerve);
     }
@@ -21,12 +26,12 @@ public class DriveStupid extends Command {
 
     @Override
     public void execute() {
-        swerve.swerveDrive.drive(new ChassisSpeeds(0.5, 0, 0));
+        swerve.swerveDrive.drive(new ChassisSpeeds(velocity, 0, 0));
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(swerve.swerveDrive.getModules()[0].getPosition().distanceMeters - lastPos) >= 1.5;
+        return Math.abs(swerve.swerveDrive.getModules()[0].getPosition().distanceMeters - lastPos) >= distance;
     }
 
     @Override

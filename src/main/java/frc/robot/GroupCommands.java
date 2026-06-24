@@ -196,14 +196,14 @@ public class GroupCommands {
 
     public Command autoMiddle(){
         return new SequentialCommandGroup(
-                new DriveStupid(swerveSystem),
+                new DriveStupid(swerveSystem, -0.3, 1.5),
                 new ShootCommandStaticPitch(storageSystem, staticShooterSystem, 2)
         );
     }
 
     public Command autoSide(){
         return new SequentialCommandGroup(
-                new DriveStupid(swerveSystem),
+                new DriveStupid(swerveSystem, 0.5 , 2),
                 shootHub()
         );
     }
