@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
         });
 
         // Final operation controller:
-        operationController.b().whileTrue(groupCommands.intakeUnjam2());
+
 
         collectCommand = groupCommands.intakeAndCollect();
         stopCollectCommand = groupCommands.stopIntakeAndStopCollect();
@@ -98,7 +98,7 @@ public class Robot extends TimedRobot {
         }));
 
         // TODO: Test this pls :) no
-        operationController.x().onTrue(groupCommands.shoot(2));
+        operationController.x().onTrue(groupCommands.shootHub());
         operationController.a().onTrue(groupCommands.intakeUnjam1());
         operationController.start().onTrue(groupCommands.cancelAllCommands());
         operationController.b().whileTrue(groupCommands.intakeUnjam2());

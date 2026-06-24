@@ -163,7 +163,7 @@ public class GameField {
 
         double y;
         if(isBehindHub(swervePose)){
-            y = 1.3;
+            y = 1.5;
         } else {
             y = swervePose.getY();
         }
