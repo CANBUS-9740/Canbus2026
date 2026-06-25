@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -99,10 +100,11 @@ public class Robot extends TimedRobot {
 
         // TODO: Test this pls :) no
         operationController.x().onTrue(groupCommands.shootHub());
-        operationController.a().onTrue(groupCommands.intakeUnjam1());
+        operationController.a().whileTrue(groupCommands.intakeUnjam1());
         operationController.start().onTrue(groupCommands.cancelAllCommands());
         operationController.b().whileTrue(groupCommands.intakeUnjam2());
         operationController.leftBumper().onTrue(groupCommands.shootForBallTransfer());
+        operationController.pov(270).onTrue(groupCommands.shoot(2));
 
         driverController.start().onTrue(groupCommands.cancelAllCommands());
 
@@ -115,6 +117,8 @@ public class Robot extends TimedRobot {
         autoChooser.addOption("dontMove", null);
         autoChooser.addOption("middle:", groupCommands.autoMiddle());
         autoChooser.addOption("side:", groupCommands.autoSide());
+
+        SmartDashboard.putData("auto chooser", autoChooser);
     }
 
     @Override
@@ -211,7 +215,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        staticShooterSystem.setPower(0.5);
+
     }
 
     @Override
@@ -221,6 +225,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
+        storageSystem.moveGeneralRollers(0.2);
         //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand3(intakeArmSystem));
         //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
         //IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 22);

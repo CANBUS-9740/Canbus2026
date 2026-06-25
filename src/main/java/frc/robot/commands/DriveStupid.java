@@ -21,22 +21,26 @@ public class DriveStupid extends Command {
 
     @Override
     public void initialize() {
-        lastPos = swerve.swerveDrive.getModules()[0].getPosition().distanceMeters;
+        //lastPos = swerve.swerveDrive.getModules()[0].getPosition().distanceMeters;
+        lastPos = swerve.getPose().getX();
     }
 
     @Override
     public void execute() {
+        double currentDis = Math.abs(swerve.swerveDrive.getPose().getX() - lastPos);
         swerve.swerveDrive.drive(new ChassisSpeeds(velocity, 0, 0));
     }
 
     @Override
     public boolean isFinished() {
-        return Math.abs(swerve.swerveDrive.getModules()[0].getPosition().distanceMeters - lastPos) >= distance;
+        //return Math.abs(swerve.swerveDrive.getModules()[0].getPosition().distanceMeters - lastPos) >= distan
+        return Math.abs(swerve.swerveDrive.getPose().getX() - lastPos) >= distance;
+
     }
 
     @Override
     public void end(boolean interrupted) {
         System.out.println("Bitch");
-        swerve.swerveDrive.drive(new ChassisSpeeds(0, 0, 0));
+        swerve.stop();
     }
 }

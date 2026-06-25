@@ -194,17 +194,33 @@ public class GroupCommands {
         return command;
     }
 
+    public Command intakeUpDownSyndrom(){
+        return new SequentialCommandGroup(
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG),
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG),
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG),
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG),
+                new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG)
+        );
+    }
+
     public Command autoMiddle(){
         return new SequentialCommandGroup(
-                new DriveStupid(swerveSystem, -0.3, 1.5),
-                new ShootCommandStaticPitch(storageSystem, staticShooterSystem, 2)
+                new DriveStupid(swerveSystem, -0.8, 1.5),
+                new ParallelCommandGroup(
+                        shoot(2),
+                        intakeUpDownSyndrom()
+                )
         );
     }
 
     public Command autoSide(){
         return new SequentialCommandGroup(
                 new DriveStupid(swerveSystem, 0.5 , 2),
-                shootHub()
+                new ParallelCommandGroup(
+                        shootHub(),
+                        intakeUpDownSyndrom()
+                )
         );
     }
 
