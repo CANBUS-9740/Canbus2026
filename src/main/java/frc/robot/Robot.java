@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     private GroupCommands groupCommands;
     private EdiBoard ediBoard;
     private SendableChooser<Command> autoChooser;
+    private Pose2d swervePose;
 
 
     private Command collectCommand;
@@ -98,13 +99,20 @@ public class Robot extends TimedRobot {
             }
         }));
 
-        // TODO: Test this pls :) no
+
         operationController.x().onTrue(groupCommands.shootHub());
+        operationController.rightBumper().onTrue(groupCommands.shootForBallTransfer());
+
+
+
+
+        // TODO: Test this pls :) no
         operationController.a().whileTrue(groupCommands.intakeUnjam1());
         operationController.start().onTrue(groupCommands.cancelAllCommands());
         operationController.b().whileTrue(groupCommands.intakeUnjam2());
         operationController.leftBumper().onTrue(groupCommands.shootForBallTransfer());
         operationController.pov(270).onTrue(groupCommands.shoot(2));
+        operationController.pov(45).onTrue(new ShooterFeederBackwardsCommand(staticShooterSystem));
 
         driverController.start().onTrue(groupCommands.cancelAllCommands());
 
@@ -115,7 +123,7 @@ public class Robot extends TimedRobot {
         autoChooser = new SendableChooser<>();
 
         autoChooser.addOption("dontMove", null);
-        autoChooser.addOption("middle:", groupCommands.autoMiddle());
+        autoChooser.addOption("middle:", groupCommands.autoMiddle(limelightAprilTag.hasAprilTag()));
         autoChooser.addOption("side:", groupCommands.autoSide());
 
         SmartDashboard.putData("auto chooser", autoChooser);
@@ -148,7 +156,9 @@ public class Robot extends TimedRobot {
         double targetAngle = gameField.getTargetAngleSwerveToHub(swerveSystem.getPose(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
         SmartDashboard.putNumber("robotTargetAngle", targetAngle);
 
-        Pose2d pose2d = swerveSystem.getPose();
+        Pose2d swervePose = swerveSystem.getPose();
+
+
 //        Pose2d turretPose = swervePose
 //                .transformBy(RobotMap.SHOOTER_POSE_ON_ROBOT_2D)
 //                .transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(shootTurretSystem.getEncoderAngleInDegrees())));
@@ -225,7 +235,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        storageSystem.moveGeneralRollers(0.2);
         //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand3(intakeArmSystem));
         //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
         //IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 22);

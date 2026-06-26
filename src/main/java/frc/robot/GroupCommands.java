@@ -204,14 +204,30 @@ public class GroupCommands {
         );
     }
 
-    public Command autoMiddle(){
+//    public Command autoMiddle(boolean hasApriltag){
+//        return new SequentialCommandGroup(
+//                new DriveStupid(swerveSystem, -0.8, 1.5),
+//                new ParallelCommandGroup(
+//                        new InstantCommand(()-> {
+//                            if (hasApriltag){
+//                                shootHub() ;
+//                            } else{
+//                                shoot(2);
+//                            }
+//                        }),
+//                        intakeUpDownSyndrom()
+//                    )
+//                );
+//    }
+
+    public Command autoMiddle(boolean hasApriltag){
         return new SequentialCommandGroup(
                 new DriveStupid(swerveSystem, -0.8, 1.5),
                 new ParallelCommandGroup(
                         shoot(2),
                         intakeUpDownSyndrom()
                 )
-        );
+        )
     }
 
     public Command autoSide(){

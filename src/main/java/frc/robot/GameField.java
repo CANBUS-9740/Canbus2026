@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 
 import java.util.Locale;
@@ -141,14 +142,36 @@ public class GameField {
         return MathUtil.inputModulus(angleBetween, 0, 360);
     }
 
-    private boolean isBehindHub(Pose2d swervePose) {
+   public boolean isBehindHub(Pose2d swervePose) {
         final double DISTANCE_TO_CENTER_M = 4.03;
         final double HUB_WIDTH_M = 1.2;
 
         double yMin = DISTANCE_TO_CENTER_M - HUB_WIDTH_M / 2;
         double yMax = DISTANCE_TO_CENTER_M + HUB_WIDTH_M / 2;
+
         return swervePose.getY() >= yMin && swervePose.getY() <= yMax;
     }
+
+   /*public boolean isBehindHub(Pose2d swervePose) {
+       // Start with your original Blue Alliance math
+       double distanceToLine = 4.03;
+       final double HUB_WIDTH_M = 1.2;
+
+       // Check if you are on Red, and flip the line measurement from the Red wall
+       var alliance = DriverStation.getAlliance();
+       if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+           distanceToLine = 8.07 - distanceToLine; // 8.07m is the total 2026 field width
+       }
+
+       // Your exact math, using the alliance-corrected line distance
+       double yMin = distanceToLine - HUB_WIDTH_M / 2;
+       double yMax = distanceToLine + HUB_WIDTH_M / 2;
+
+       SmartDashboard.putBoolean("ifConHub1", swervePose.getY() >= yMin);
+       SmartDashboard.putBoolean("ifConHub2", swervePose.getY() <= yMax);
+
+       return swervePose.getY() >= yMin && swervePose.getY() <= yMax;
+   }*/
 
     public Pose2d getPositionForBallTransfer(DriverStation.Alliance alliance , Pose2d swervePose) {
         final double DISTANCE_X_M = 2;
