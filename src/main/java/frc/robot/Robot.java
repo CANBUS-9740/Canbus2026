@@ -123,9 +123,9 @@ public class Robot extends TimedRobot {
         autoChooser = new SendableChooser<>();
 
         autoChooser.addOption("dontMove", null);
-        autoChooser.addOption("middle:", groupCommands.autoMiddle(limelightAprilTag.hasAprilTag()));
-        autoChooser.addOption("side:", groupCommands.autoSide());
-
+        autoChooser.addOption("middle:", groupCommands.autoMiddle());
+        autoChooser.addOption("right:", groupCommands.autoSideRight());
+        autoChooser.addOption("left:", groupCommands.autoSideLeft());
         SmartDashboard.putData("auto chooser", autoChooser);
     }
 
@@ -157,6 +157,7 @@ public class Robot extends TimedRobot {
         SmartDashboard.putNumber("robotTargetAngle", targetAngle);
 
         Pose2d swervePose = swerveSystem.getPose();
+        SmartDashboard.putNumber("swerveAngleRobotFinal:", swervePose.getRotation().getDegrees());
 
 
 //        Pose2d turretPose = swervePose

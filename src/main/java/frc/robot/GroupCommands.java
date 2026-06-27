@@ -220,19 +220,35 @@ public class GroupCommands {
 //                );
 //    }
 
-    public Command autoMiddle(boolean hasApriltag){
+    public Command autoMiddle(){
         return new SequentialCommandGroup(
                 new DriveStupid(swerveSystem, -0.8, 1.5),
                 new ParallelCommandGroup(
                         shoot(2),
                         intakeUpDownSyndrom()
                 )
-        )
+        );
     }
 
-    public Command autoSide(){
+    public Command autoSideRight(){
         return new SequentialCommandGroup(
-                new DriveStupid(swerveSystem, 0.5 , 2),
+                new DriveStupid(swerveSystem, -0.8,0.8),
+                new SwerveRotateToAngle(swerveSystem, 95),
+                new DriveStupid(swerveSystem, 0.8 , 2),
+                new SwerveRotateToAngle(swerveSystem, 25),
+                new ParallelCommandGroup(
+                        shootHub(),
+                        intakeUpDownSyndrom()
+                )
+        );
+    }
+
+    public Command autoSideLeft(){
+        return new SequentialCommandGroup(
+                new DriveStupid(swerveSystem, -0.8,0.8),
+                new SwerveRotateToAngle(swerveSystem, -95),
+                new DriveStupid(swerveSystem, 0.8 , 2),
+                new SwerveRotateToAngle(swerveSystem, 25),
                 new ParallelCommandGroup(
                         shootHub(),
                         intakeUpDownSyndrom()

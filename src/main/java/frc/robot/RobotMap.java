@@ -50,7 +50,7 @@ public class RobotMap {
     public static final double INTAKE_ARM_MASS_KG = 5;
     public static final double INTAKE_ARM_LENGTH_METERS = 0.5;
     public static final double INTAKE_ARM_MOI = 1 / 3.0 * INTAKE_ARM_MASS_KG * INTAKE_ARM_LENGTH_METERS * INTAKE_ARM_LENGTH_METERS;
-    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 4;
+    public static final double INTAKE_ARM_MIN_ANGLE_DEG = 5;
     public static final double INTAKE_ARM_MAX_ANGLE_DEG = 90;
     public static final double INTAKE_ARM_START_ANGLE_RAD = INTAKE_ARM_MAX_ANGLE_DEG;
     public static final double INTAKE_ARM_MIN_ANGLE_RAD = 0;
@@ -156,7 +156,7 @@ public class RobotMap {
     public static final double STORAGE_GENERAL_ROLLERS_BACKWARDS_LOW_SPEED = -0.2;
 
 
-    public static final double TOLERANCE_ARM_POSITION = 2;
+    public static final double TOLERANCE_ARM_POSITION = 5;
     public static final double TOLERANCE_ARM_SPEED = 20;
     public static final double ARM_COS = 0.04;
     public static final PIDConstants ARM_PID = new PIDConstants(2.5, 0, 0);
