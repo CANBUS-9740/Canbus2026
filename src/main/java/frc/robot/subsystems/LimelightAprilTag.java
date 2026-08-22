@@ -42,4 +42,8 @@ public class LimelightAprilTag extends SubsystemBase {
         SmartDashboard.putBoolean("hasAprilTag", true);
         return Optional.of(poseEstimate);
     }
+
+    public Boolean hasAprilTag(){
+        return LimelightHelpers.getTV(name);
+    }
 }

@@ -3,8 +3,10 @@ package frc.robot;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Swerve;
 
 import java.util.Locale;
@@ -37,11 +39,48 @@ public class GameField {
         }
     }
 
-    public double getDistanceFromHubMeters(DriverStation.Alliance alliance, Swerve swerve){
+    public Pose2d getAlliancePose1(DriverStation.Alliance alliance) {
+        if (alliance == DriverStation.Alliance.Red) {
+            return new Pose2d(13.5, 5.5, new Rotation2d(0));
+        } else {
+            return new Pose2d(3.5, 5.5, new Rotation2d(0));
+        }
+    }
+
+    public Pose2d getAlliancePose2(DriverStation.Alliance alliance) {
+        if (alliance == DriverStation.Alliance.Red) {
+            return new Pose2d(13.5, 2.5, new Rotation2d(0));
+        } else {
+            return new Pose2d(3.5, 2.5, new Rotation2d(0));
+        }
+    }
+
+    public double getClosestDistanceToAllianceMeters(DriverStation.Alliance alliance, Swerve swerve) {
+        Pose2d Alliance1 = getAlliancePose1(alliance);
+        Pose2d Alliance2 = getAlliancePose2(alliance);
+        double distanceX1 = Math.pow(Alliance1.getX() - swerve.getPose().getX(), 2);
+        double distanceY1 = Math.pow(Alliance1.getY() - swerve.getPose().getY(), 2);
+        double Dist1 = Math.sqrt(distanceY1 + distanceX1);
+
+        double distanceX2 = Math.pow(Alliance2.getX() - swerve.getPose().getX(), 2);
+        double distanceY2 = Math.pow(Alliance2.getY() - swerve.getPose().getY(), 2);
+        double Dist2=  Math.sqrt(distanceY2 + distanceX2);
+
+        if(Dist1>Dist2){
+            return Dist2;
+        }
+        else{
+            return Dist1;
+        }
+    }
+
+    public double getDistanceFromHubMeters(DriverStation.Alliance alliance, Swerve swerve) {
         Pose2d hubPose = getHubPose(alliance);
-        double distanceX = Math.pow(hubPose.getX() - swerve.getPose().getX(), 2)  ;
+        double distanceX = Math.pow(hubPose.getX() - swerve.getPose().getX(), 2);
         double distanceY = Math.pow(hubPose.getY() - swerve.getPose().getY(), 2);
         return Math.sqrt(distanceY + distanceX);
+
+
     }
 
     public Pose2d getTowerMiddleBotPose(DriverStation.Alliance alliance) {
@@ -98,8 +137,72 @@ public class GameField {
     public double getTargetAngleSwerveToHub(Pose2d swervePose, DriverStation.Alliance alliance) { //without turret on robot
         // We assume angles are relative to the positive X direction of the WPILib coordinate system
         Pose2d hubPose = getHubPose(alliance);
-        double angleBetween = Math.atan2(hubPose.getY() - swervePose.getY(), hubPose.getX() - swervePose.getX());
+        double angleBetween = Math.toDegrees(Math.atan2(hubPose.getY() - swervePose.getY(), hubPose.getX() - swervePose.getX()));
 
         return MathUtil.inputModulus(angleBetween, 0, 360);
     }
+
+   public boolean isBehindHub(Pose2d swervePose) {
+        final double DISTANCE_TO_CENTER_M = 4.03;
+        final double HUB_WIDTH_M = 1.2;
+
+        double yMin = DISTANCE_TO_CENTER_M - HUB_WIDTH_M / 2;
+        double yMax = DISTANCE_TO_CENTER_M + HUB_WIDTH_M / 2;
+
+        return swervePose.getY() >= yMin && swervePose.getY() <= yMax;
+    }
+
+   /*public boolean isBehindHub(Pose2d swervePose) {
+       // Start with your original Blue Alliance math
+       double distanceToLine = 4.03;
+       final double HUB_WIDTH_M = 1.2;
+
+       // Check if you are on Red, and flip the line measurement from the Red wall
+       var alliance = DriverStation.getAlliance();
+       if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+           distanceToLine = 8.07 - distanceToLine; // 8.07m is the total 2026 field width
+       }
+
+       // Your exact math, using the alliance-corrected line distance
+       double yMin = distanceToLine - HUB_WIDTH_M / 2;
+       double yMax = distanceToLine + HUB_WIDTH_M / 2;
+
+       SmartDashboard.putBoolean("ifConHub1", swervePose.getY() >= yMin);
+       SmartDashboard.putBoolean("ifConHub2", swervePose.getY() <= yMax);
+
+       return swervePose.getY() >= yMin && swervePose.getY() <= yMax;
+   }*/
+
+    public Pose2d getPositionForBallTransfer(DriverStation.Alliance alliance , Pose2d swervePose) {
+        final double DISTANCE_X_M = 2;
+        final double LENGTH_FIELD_M = 16.541;
+
+        double x;
+        if (alliance == DriverStation.Alliance.Red) {
+            x = LENGTH_FIELD_M - DISTANCE_X_M;
+        } else {
+            x = DISTANCE_X_M;
+        }
+
+        double y;
+        if(isBehindHub(swervePose)){
+            y = 1.5;
+        } else {
+            y = swervePose.getY();
+        }
+
+        return new Pose2d(x, y, Rotation2d.kZero);
+    }
+
+    public Pair<Double, Double> calculateDistanceAndAngle(Pose2d swervePose, Pose2d targetPose) {
+        double distanceX = Math.pow(targetPose.getX() - swervePose.getX(), 2);
+        double distanceY = Math.pow(targetPose.getY() - swervePose.getY(), 2);
+        double distance = Math.sqrt(distanceY + distanceX);
+
+        double angle = Math.toDegrees(Math.atan2(targetPose.getY() - swervePose.getY(), targetPose.getX() - swervePose.getX()));
+        angle = MathUtil.inputModulus(angle, 0, 360);
+
+        return Pair.of(distance, angle);
+    }
+
 }

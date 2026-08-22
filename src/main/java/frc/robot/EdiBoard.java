@@ -10,19 +10,18 @@ public class EdiBoard extends SubsystemBase {
     private NetworkTable table;
     private final StaticShooterSystem shooterSystem;
     private final IntakeCollectorSystem intakeCollectorSystem;
-    private final ShootTurretSystem turretSystem;
-    private final ClimbSystem climbSystem;
+    private final IntakeArmSystem intakeArmSystem;
     private final GameField gameField;
     private final Swerve swerve;
     private final StorageSystem storageSystem;
 
-    public EdiBoard(StorageSystem storageSystem, ShootTurretSystem shootTurretSystem,
+    public EdiBoard(StorageSystem storageSystem,
                     IntakeCollectorSystem intakeCollectorSystem, StaticShooterSystem shooterSystem,
-                    ClimbSystem climbSystem, GameField gameField, Swerve swerve) {
-        this.turretSystem = shootTurretSystem;
+                    IntakeArmSystem intakeArmSystem,
+                    GameField gameField, Swerve swerve) {
         this.intakeCollectorSystem = intakeCollectorSystem;
         this.shooterSystem = shooterSystem;
-        this.climbSystem = climbSystem;
+        this.intakeArmSystem = intakeArmSystem;
         this.gameField = gameField;
         this.storageSystem = storageSystem;
         this.swerve = swerve;
@@ -63,17 +62,17 @@ public class EdiBoard extends SubsystemBase {
         table = NetworkTableInstance.getDefault().getTable("EdiBoard");
         table.getEntry("ShooterFeeder").setBoolean(false); // TODO: put if the ShooterFeeder is running
         table.getEntry("ShooterJam").setBoolean(false);// TODO: put if the Shooter is jammed
-        table.getEntry("ClimbLeftSwitch").setBoolean(climbSystem.isBottomSwitchLeftPressed());
-        table.getEntry("ClimbRightSwitch").setBoolean(climbSystem.isBottomSwitchRightPressed());
+        //table.getEntry("ClimbLeftSwitch").setBoolean(climbSystem.isBottomSwitchLeftPressed());
+        //table.getEntry("ClimbRightSwitch").setBoolean(climbSystem.isBottomSwitchRightPressed());
 
-        table.getEntry("ClimbLeftPos").setDouble(climbSystem.getLeftPositionMeters());
-        table.getEntry("ClimbRightPos").setDouble(climbSystem.getRightPositionMeters());
-        table.getEntry("TurretAngle").setDouble(turretSystem.getEncoderAngleInDegrees());
+        //table.getEntry("ClimbLeftPos").setDouble(climbSystem.getLeftPositionMeters());
+        //table.getEntry("ClimbRightPos").setDouble(climbSystem.getRightPositionMeters());
+        //table.getEntry("TurretAngle").setDouble(turretSystem.getEncoderAngleInDegrees());
         table.getEntry("HubAngle").setDouble(gameField.getTargetAngleTurretToHub(swerve.getPose(), DriverStation.getAlliance().get()));
 
-        table.getEntry("TurretLeftSwitch").setBoolean(turretSystem.getLimitSwitchMax());
-        table.getEntry("TurretRightSwitch").setBoolean(turretSystem.getLimitSwitchMin());
-        table.getEntry("TurretCenterSwitch").setBoolean(turretSystem.getLimitSwitchMin());
+        //table.getEntry("TurretLeftSwitch").setBoolean(turretSystem.getLimitSwitchMax());
+        //table.getEntry("TurretRightSwitch").setBoolean(turretSystem.getLimitSwitchMin());
+        //table.getEntry("TurretCenterSwitch").setBoolean(turretSystem.getLimitSwitchMin());
 
         // table.getEntry("ShooterAngle").setDouble(shooterSystem.getPitchAngleDegrees());
         table.getEntry("ShooterRPM").setDouble(shooterSystem.getShooterVelocityRPM());
@@ -88,7 +87,9 @@ public class EdiBoard extends SubsystemBase {
         table.getEntry("StorageRollerFeed").setInteger(1);
 
         table.getEntry("IntakePos").setDouble(0.0);
-        table.getEntry("IntakeArmLocation").setDouble(0.0);
+        table.getEntry("IntakeArmLocation").setDouble(intakeArmSystem.getPositionDegrees());
+        table.getEntry("ArmDownSwitch").setBoolean(intakeArmSystem.getPositionDegrees() <= RobotMap.INTAKE_ARM_MIN_ANGLE_DEG);
+        table.getEntry("ArmUpSwitch").setBoolean(intakeArmSystem.getPositionDegrees() >= RobotMap.INTAKE_ARM_MAX_ANGLE_DEG);
     }
 
     public boolean getShooterBtnPressed() {

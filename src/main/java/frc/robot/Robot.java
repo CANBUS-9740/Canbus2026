@@ -1,20 +1,20 @@
 package frc.robot;
 
-import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.NeutralOut;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
+import java.util.Optional;
 
 public class Robot extends TimedRobot {
     private Swerve swerveSystem;
@@ -31,35 +31,39 @@ public class Robot extends TimedRobot {
     private CommandXboxController operationController;
     private SwerveDriveCommand swerveDriveCommand;
 
-    private SparkMax motor;
-    private StatusSignal<Angle> position;
-    private PositionDutyCycle positionControl;
-    private NeutralOut neutralControl;
-
     private GroupCommands groupCommands;
+    private EdiBoard ediBoard;
+    private SendableChooser<Command> autoChooser;
+    private Pose2d swervePose;
 
-    private double shooterOffset = 2.7;
-    private double shooterDistance=2;
+
+    private Command collectCommand;
+    private Command stopCollectCommand;
+    private boolean isCollecting = false;
 
     @Override
     public void robotInit() {
         swerveSystem = new Swerve();
-        //intakeArmSystem = new IntakeArmSystem();
-        //intakeCollectorSystem = new IntakeCollectorSystem();
-        //storageSystem = new StorageSystem();
+        intakeArmSystem = new IntakeArmSystem();
+        intakeCollectorSystem = new IntakeCollectorSystem();
+        storageSystem = new StorageSystem();
         staticShooterSystem = new StaticShooterSystem();
 
-        limelightAprilTag = new LimelightAprilTag("limelight-aprilta");
-        gameField = new GameField();
-        //pathplanner = new Pathplanner(swerveSystem);
+        //limelightAprilTag = new LimelightAprilTag("limelight-apriltag");
+        limelightAprilTag = new LimelightAprilTag("limelight-forward");
 
-        //driverController = new CommandXboxController(0);
-        //operationController = new CommandXboxController(1);
+        gameField = new GameField();
+        pathplanner = new Pathplanner(swerveSystem);
+
+        driverController = new CommandXboxController(0);
+        operationController = new CommandXboxController(1);
 
         swerveDriveCommand = new SwerveDriveCommand(swerveSystem, driverController, false);
-        //swerveSystem.setDefaultCommand(swerveDriveCommand);
 
-        //groupCommands = new GroupCommands();
+
+        groupCommands = new GroupCommands(swerveSystem, intakeArmSystem, intakeCollectorSystem, storageSystem, staticShooterSystem, gameField);
+
+        swerveSystem.setDefaultCommand(swerveDriveCommand);
 
         //driverController.a().whileTrue(new IntakeCollectCommand(intakeCollectorSystem));
         //driverController.b().whileTrue(new StorageFeedToShooterCommand(storageSystem));
@@ -67,43 +71,95 @@ public class Robot extends TimedRobot {
         //driverController.x().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
         //driverController.y().onTrue(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MIN_ANGLE_DEG));
 
-//        motor = new SparkMax(14, SparkLowLevel.MotorType.kBrushless);
-//        SparkMaxConfig config = new SparkMaxConSfig();
-//        config.inverted(true).idleMode(SparkBaseConfig.IdleMode.kCoast);
-//        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-//
-//        positionControl = new PositionDutyCycle(0);
-//        neutralControl = new NeutralOut();
-/*
-        SmartDashboard.putNumber("kP", pidConfig.kP);
-        SmartDashboard.putNumber("kI", pidConfig.kI);
-        SmartDashboard.putNumber("kD", pidConfig.kD);
-        SmartDashboard.putNumber("SetPoint", 0);
-        SmartDashboard.putNumber("ProcessVariable", 0);
-        */
+        //new StorageFeedToShooterCommand(storageSystem)
 
-        SmartDashboard.putNumber("shooterOffset", shooterOffset);
-        SmartDashboard.putNumber("shooterDistance", shooterDistance);
+        CommandScheduler.getInstance().onCommandInitialize((command)-> {
+            System.out.printf("CMD INIT %s %s\n", command.getName(), command.getClass().getName());
+        });
+        CommandScheduler.getInstance().onCommandInterrupt((command, opt)-> {
+            System.out.printf("CMD INT %s %s with %s\n", command.getName(), command.getClass().getName(), opt.toString());
+        });
+        CommandScheduler.getInstance().onCommandFinish((command)-> {
+            System.out.printf("CMD FIN %s %s\n", command.getName(), command.getClass().getName());
+        });
+
+        // Final operation controller:
+
+
+        collectCommand = groupCommands.intakeAndCollect();
+        stopCollectCommand = groupCommands.stopIntakeAndStopCollect();
+
+        operationController.y().onTrue(new InstantCommand(() -> {
+            isCollecting = !isCollecting;
+
+            if (isCollecting) {
+                CommandScheduler.getInstance().schedule(collectCommand);
+            } else {
+                CommandScheduler.getInstance().schedule(stopCollectCommand);
+            }
+        }));
+
+
+        operationController.x().onTrue(groupCommands.shootHub());
+        operationController.rightBumper().onTrue(groupCommands.shootForBallTransfer());
+
+
+
+
+        // TODO: Test this pls :) no
+        operationController.a().whileTrue(groupCommands.intakeUnjam1());
+        operationController.start().onTrue(groupCommands.cancelAllCommands());
+        operationController.b().whileTrue(groupCommands.intakeUnjam2());
+        operationController.leftBumper().onTrue(groupCommands.shootForBallTransfer());
+        operationController.pov(270).onTrue(groupCommands.shoot(2));
+        operationController.pov(45).onTrue(new ShooterFeederBackwardsCommand(staticShooterSystem));
+
+        driverController.start().onTrue(groupCommands.cancelAllCommands());
+
+//        operationController.b().onTrue(new ShootStrafeTest(storageSystem,staticShooterSystem,2.22+0.56));
+
+        //ediBoard = new EdiBoard(storageSystem, intakeCollectorSystem, staticShooterSystem, intakeArmSystem, gameField, swerveSystem);
+
+        autoChooser = new SendableChooser<>();
+
+        autoChooser.addOption("dontMove", null);
+        autoChooser.addOption("middle:", groupCommands.autoMiddle());
+        autoChooser.addOption("right:", groupCommands.autoSideRight());
+        autoChooser.addOption("left:", groupCommands.autoSideLeft());
+        SmartDashboard.putData("auto chooser", autoChooser);
     }
 
     @Override
     public void robotPeriodic() {
         SmartDashboard.updateValues();
-
-        SmartDashboard.putNumber("distanceShooter", staticShooterSystem.getDistanceFromSensorMM());
-        shooterDistance = SmartDashboard.getNumber("shooterDistance", shooterDistance);
-        shooterOffset = SmartDashboard.getNumber("shooterOffset", shooterOffset);
-
         CommandScheduler.getInstance().run();
-        if (limelightAprilTag.getPose().isPresent()) {
-            LimelightHelpers.PoseEstimate posCam = limelightAprilTag.getPose().orElse(new LimelightHelpers.PoseEstimate());
 
-            if (!posCam.equals(new LimelightHelpers.PoseEstimate())) {
-                swerveSystem.addVisionMeasurement(posCam);
-            }
+        SmartDashboard.putNumber("FeedSensor", staticShooterSystem.getDistanceFromSensorMM());
+
+
+
+        Optional<LimelightHelpers.PoseEstimate> poseOpt = limelightAprilTag.getPose();
+        if (poseOpt.isPresent()) {
+            LimelightHelpers.PoseEstimate posCam = poseOpt.get();
+            swerveSystem.addVisionMeasurement(posCam);
         }
 
-        Pose2d pose2d = swerveSystem.getPose();
+        Pose2d hubPose = gameField.getHubPose(DriverStation.Alliance.Red);
+        swerveSystem.getField().getObject("HubPose").setPose(hubPose);
+
+        Pose2d transferPose = gameField.getPositionForBallTransfer(DriverStation.Alliance.Red, swerveSystem.getPose());
+        swerveSystem.getField().getObject("TransferPoint").setPose(transferPose);
+
+        double distance = gameField.getDistanceFromHubMeters(DriverStation.Alliance.Red, swerveSystem);
+        SmartDashboard.putNumber("DistanceToAllianceHub", distance);
+
+        double targetAngle = gameField.getTargetAngleSwerveToHub(swerveSystem.getPose(), DriverStation.getAlliance().orElse(DriverStation.Alliance.Red));
+        SmartDashboard.putNumber("robotTargetAngle", targetAngle);
+
+        Pose2d swervePose = swerveSystem.getPose();
+        SmartDashboard.putNumber("swerveAngleRobotFinal:", swervePose.getRotation().getDegrees());
+
+
 //        Pose2d turretPose = swervePose
 //                .transformBy(RobotMap.SHOOTER_POSE_ON_ROBOT_2D)
 //                .transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(shootTurretSystem.getEncoderAngleInDegrees())));
@@ -137,10 +193,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem,shooterDistance));
+        //staticShooterSystem.setShootVoltage(0.5);
         //CommandScheduler.getInstance().schedule(new IntakeCollectCommand(intakeCollectorSystem));
         //CommandScheduler.getInstance().schedule(new StorageFeedToShooterCommand(storageSystem));
         //CommandScheduler.getInstance().schedule(new ShootCommandStaticPitch(staticShooterSystem, 500));
+
+
+
     }
 
     @Override
@@ -158,11 +217,16 @@ public class Robot extends TimedRobot {
 //        CommandScheduler.getInstance().schedule(new ParallelCommandGroup(new ShootCommandStaticPitch(staticShooterSystem,
 //                        staticShooterSystem.calculateFiringSpeedRpm(gameField.getDistanceFromHubMeters(DriverStation.Alliance.Blue, swerveSystem) * shooterOffset, 70))),
 //                new StorageFeedToShooterCommand(storageSystem));
+
+        Command auto = autoChooser.getSelected();
+        if (auto != null) {
+            CommandScheduler.getInstance().schedule(auto);
+        }
     }
 
     @Override
     public void autonomousPeriodic() {
-        staticShooterSystem.setPower(0.5);
+
     }
 
     @Override
@@ -172,47 +236,18 @@ public class Robot extends TimedRobot {
 
     @Override
     public void testInit() {
-        IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 20);
-        CommandScheduler.getInstance().schedule(command);
+        //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand3(intakeArmSystem));
+        //CommandScheduler.getInstance().schedule(new IntakeArmPositionCommand(intakeArmSystem, RobotMap.INTAKE_ARM_MAX_ANGLE_DEG));
+        //IntakeArmPositionCommand command = new IntakeArmPositionCommand(intakeArmSystem, 22);
+        //CommandScheduler.getInstance().schedule(command);
         //CommandScheduler.getInstance().schedule(new GroupCommands().IntakeUntilFullCommand(intakeArmSystem, intakeCollectorSystem, storageSystem));
     }
 
     @Override
     public void testPeriodic() {
-        System.out.println(intakeArmSystem.getPositionRaw());
         //intakeArmSystem.move(0.2);
         //position.refresh();
         //SmartDashboard.putNumber("ProcessVariable", position.getValue().in(Units.Rotations));
-
-/*
-        double setPoint = SmartDashboard.getNumber("SetPoint", 0);
-        if (setPoint != positionControl.Position) {
-            positionControl.Position = setPoint;
-            motor.setControl(positionControl);
-        }
-
-        boolean configChanged = false;
-
-        double kp = SmartDashboard.getNumber("kP", 0);
-        if (kp != pidConfig.kP) {
-            pidConfig.kP = kp;
-            configChanged = true;
-        }
-        double ki = SmartDashboard.getNumber("kI", 0);
-        if (ki != pidConfig.kI) {
-            pidConfig.kI = ki;
-            configChanged = true;
-        }
-        double kd = SmartDashboard.getNumber("kD", 0);
-        if (kd != pidConfig.kD) {
-            pidConfig.kD = kd;
-            configChanged = true;
-        }
-
-        if (configChanged) {
-            motor.getConfigurator().apply(pidConfig);
-        }
-*/
     }
 
     @Override
